@@ -32,6 +32,7 @@ class FuncController extends Controller{
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
+			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
 			"creerCompteClient" => "creerCompteClient",
 			"creerCompteClientAdmin" => "creerCompteClientAdmin",
 			"creerDiner" => "creerDiner",
@@ -204,6 +205,65 @@ class FuncController extends Controller{
 						</div>';
 		return $html;
 	}
+	
+	public function getModalFormulaireRecherche($lnkInd, $crit){
+		$html = '		<li class="nav-item">
+							<a data-toggle="modal" data-target="#dinerModal" style="cursor:pointer">Rechercher un dîner</a>
+						</li>
+						<!-- Modal -->
+<!-- Formulaire de recherche d un diner -->
+						<div class="modal fade" id="dinerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="myModalLabel">Rechercher un dîner</h4>
+									</div>
+									<form method="post" action="'.$lnkInd.'Vue/recherche.php">
+										<div class="modal-body">
+											<p><h4>Sélectionnez les critères que vous désirez !</h4></p>
+											<div class="input-group">
+												<span class="input-group-addon">Nom</span>
+												<input name="nom" type="text" class="form-control" placeholder="Nom du dîner" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group date">
+												<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+												<input id="date" name="date" type="text" class="form-control" data-provide="datepicker">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon">Lieu</span>
+												<textarea name="lieu" type="text" class="form-control" placeholder="Lieu du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon">Prix maximum :</span>
+												<input name="prix" class="form-control" type="number" name="prix" min="0" max="1000" step="10" placeholder="Prix du dîner">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon">Maximum d\'invités:</span >
+												<input name = "capa" class="form-control" type = "number" name = "capa" min = "0" max = "200" step = "1" placeholder = "Capacité du diner" >
+											</div >
+											 <select name = "critere" class="form-control" >
+												<option value = "0" selected disabled > Critère</option>'.
+												$crit
+												.'</select>
+											<script>
+												$("#date").datepicker({
+												    format: \'yyyy-mm-dd\',
+                                                    startDate: \'-d\'
+												});
+											</script>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+											<button class="btn btn-info" type="submit">Recherche</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>';
+		return $html;
+	}
+	
 	
 	//Fonction utilisée lors de la création d'un compte client depuis la page principale
     public function creerCompteClient(){
