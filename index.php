@@ -9,7 +9,6 @@ include_once 'Controleur/FuncController.php';
 
 $f = new FuncController();
 $barre = $f->getTheBarre();
-var_dump($barre);
 
 ?>
 

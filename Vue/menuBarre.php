@@ -81,26 +81,13 @@ public function  barreAbonne() {
     }
 	
 	$f = new FuncController();
-    
-	//Chargement des informations de l'utilisateur connecté
-	$utilisateur = $f->getInfoClientByIdu($_SESSION['idu']);
-	$idu = $_SESSION['idu'];
-    foreach ($utilisateur as $uti) {
-        $pseudoAbo = $uti['pseudo'];
-        $mailAbo = $uti['email'];
-        $telAbo = $uti['telephone'];
-        $addAbo = $uti['addresse'];
-        $cpAbo = $uti['codePost'];
-        $villeAbo = $uti['ville'];
-		$soldeAbo = $uti['solde'];
-    }
 	
 	//Chargement des critères pour les utiliser dans une select-bar
 	$critere = $f->getAllCritere();
 	$criteres = "";
-	foreach($critere as $t) {
+	/*foreach($critere as $t) {
 		$criteres .='<option value="'.$t->idc.'">'.$t->nom.'</option>';
-	} 
+	} */
 	
 	//Chargement d'autres variables
     $today = date('Y-m-d');
@@ -183,19 +170,6 @@ public function  barreAdmin() {
 	/*foreach ($accesList as $acc){
 		$acces .= '<option value="'.$acc['ida'].'">'.$acc['nom'].'</option>';
 	}*/
-	    
-	//Chargement des informations du compte connecté
-  //  $utilisateur = $f->getInfoClientByIdu($_SESSION['idu']);
-	$idu = $_SESSION['idu'];
-   /* foreach ($utilisateur as $uti) {
-        $pseudoAbo = $uti['pseudo'];
-        $mailAbo = $uti['email'];
-        $telAbo = $uti['telephone'];
-        $addAbo = $uti['addresse'];
-        $cpAbo = $uti['codePost'];
-        $villeAbo = $uti['ville'];
-		$soldeAbo = $uti['solde'];
-    }*/
 	
 	//Chargement d'autres variables
     $today = date('Y-m-d');

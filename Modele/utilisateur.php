@@ -101,12 +101,12 @@ class utilisateur{
     }
 
 	// Fonction permettant d'ajouter un compte Abonne dans la base de donnée
-    public function insertClient($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $historique, $diplome){
+    public function insertClient($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $diplome){
 		$mdp = password_hash($mdp, PASSWORD_BCRYPT);
 		$dateInscription = time();
         $c = Base::getConnection();
-        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, historique, diplome, dateInscription)
-                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :historique, :diplome, :dateInscription)");
+        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, diplome, dateInscription)
+                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :diplome, :dateInscription)");
         $query->bindParam (':mail', $mail, PDO::PARAM_STR);
         $query->bindParam (':mdp',$mdp, PDO::PARAM_STR);
 		$query->bindParam (':pseudo',$pseudo, PDO::PARAM_STR);
@@ -116,7 +116,6 @@ class utilisateur{
         $query->bindParam (':tel',$tel, PDO::PARAM_STR);
 		$query->bindParam (':solde', $solde, PDO::PARAM_INT);
 		$query->bindParam (':niveau', $niveau, PDO::PARAM_INT);
-		$query->bindParam (':historique', $historique, PDO::PARAM_STR);
 		$query->bindParam (':diplome', $diplome, PDO::PARAM_STR);
 		$query->bindParam (':dateInscription', $dateInscription, PDO::PARAM_INT);
         $query->execute();
@@ -145,10 +144,10 @@ class utilisateur{
 	}
 	
 	// Fonction permettant de modifier les informations de compte d'un abonne
-    public static function updateInfosClient($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nHistorique, $nDiplome){
+    public static function updateInfosClient($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome){
         $c = Base::getConnection();
-        if(isset($id) && isset($nEmail) && isset($nMdp) && isset($nPseudo) && isset($nAdresse) && isset($nCodep) && isset($nVille) && isset($nTel) && isset($nSolde) && isset($nAcces) && isset($nNiveau) && isset($nHistorique) && isset($nDiplome)){
-                $req = $c->prepare("UPDATE utilisateur SET email = :newEmail, mdp = :newMdp, pseudo = :newPseudo, addresse = :newAdd, codePost = :newCP, ville = :newVille, telephone = :newTel, solde = :newSolde, acces = :newAcces, niveau = :newNiveau, historique = :newHistorique, diplome = :newDiplome WHERE idu = :idu");  
+        if(isset($id) && isset($nEmail) && isset($nMdp) && isset($nPseudo) && isset($nAdresse) && isset($nCodep) && isset($nVille) && isset($nTel) && isset($nSolde) && isset($nAcces) && isset($nNiveau) && isset($nDiplome)){
+                $req = $c->prepare("UPDATE utilisateur SET email = :newEmail, mdp = :newMdp, pseudo = :newPseudo, addresse = :newAdd, codePost = :newCP, ville = :newVille, telephone = :newTel, solde = :newSolde, acces = :newAcces, niveau = :newNiveau, diplome = :newDiplome WHERE idu = :idu");  
 				$req->bindParam (':newEmail', $nEmail, PARAM_STR);
                 $req->bindParam (':newMdp',$nMdp, PDO::PARAM_STR);
                 $req->bindParam (':newPseudo',$nPseudo, PDO::PARAM_STR);
@@ -159,7 +158,6 @@ class utilisateur{
                 $req->bindParam (':newSole',$nSolde, PDO::PARAM_INT);
 				$req->bindParam (':newAcces',$nAcces, PDO::PARAM_INT);
 				$req->bindParam (':newNiveau',$nNiveau, PDO::PARAM_INT);
-				$req->bindParam (':newHistorique', $nHistorique, PDO::PARAM_STR);
 				$req->bindParam (':newDiplome', $nDiplome, PDO::PARAM_STR);
                 $req->bindParam (':idu',$id, PDO::PARAM_INT); 
                 $req->execute();
