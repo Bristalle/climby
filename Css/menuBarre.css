@@ -1,0 +1,43 @@
+#label_prix{
+    width: 17%;
+}
+
+#label_participant{
+    width: 20%;
+}
+
+.prix{
+    width: 360%;
+}
+
+.people{
+    width: 360%;
+}
+
+#limit_participant{
+    width: 20%;
+}
+
+#note{
+    width: 420%;
+}
+
+#label_note{
+    width: 25.7%;
+}
+
+.input_file{
+    position:absolute;
+    top:0;
+    right:0;
+    opacity:0;
+    filter:alpha(opacity=0);
+}
+
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+
+input[type="date"]::-webkit-input-placeholder{ 
+    visibility: hidden !important;
+}

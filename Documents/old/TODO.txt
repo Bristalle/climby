@@ -1,0 +1,3 @@
+Fonction de mail a modifier
+Cryptage à modifier
+Modele/Utiisateur.php -> InsertClient : Modifier le cryptage
