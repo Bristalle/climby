@@ -3,6 +3,7 @@
 * Fichier de Modele
 * Permet la connexion au site
 */
+
 	include_once './../base.php';
 	if (file_exists("index.php")){
             $linkIndex = './';
@@ -24,7 +25,7 @@
 
 	// Connexion et affectation des variables de sessions.
 	if(isset($id) && isset($pswd)) {
-		
+
         $c = Base::getConnection();
         $query = $c->prepare("select mdp from utilisateur where email = :mail");
         $query->bindParam(':mail', $id, PDO::PARAM_STR);

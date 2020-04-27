@@ -32,8 +32,6 @@ class menuBarre{
         $nom = $this->tabAction[$sel];
         return $this->$nom();
     }
-
-
 	
 //Barre pour les visiteurs (sans compte)
 public function barreVisiteur(){
@@ -59,42 +57,7 @@ public function barreVisiteur(){
 				.'<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="nav navbar-nav">'
 						.$f->getModalFormulaireRecherche($linkIndex, $criteres)
-						
-						/*<li class="nav-item">
-							<a style="cursor:pointer" data-toggle="modal" data-target="#adminModal" style="cursor:pointer">Contacter un Administrateur</a>
-						</li>
-						<!-- Modal -->
-<!-- Formulaire d envoie de mail à un administrateur -->
-						<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-										<h4 class="modal-title" id="exampleModalLabel">Nouveau Message</h4>
-									</div>
-									<div class="modal-body">
-										<form method="post" action="'.$linkIndex.'Site.php?a=contactAdmin">
-											<div class="form-group">
-												<label for="recipient-name" class="control-label">Votre mail:</label>
-												<input type="mail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
-											</div>
-											<div class="form-group">
-												<label for="recipient-name" class="control-label">Objet:</label>
-												<input type="text" class="form-control" id="recipient-name" name="objet">
-											</div>
-											<div class="form-group">
-												<label for="message-text" class="control-label">Message:</label>
-												<textarea class="form-control" id="message-text" name="msg" style="resize: vertical;" readonly>Cette fonctionnalité est désactivée dûe à un problème technique.</textarea>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-												<button class="btn btn-info" type="submit" disabled>Envoyer</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>*/
+						.$f->getModalFormulaireContacterAdmin($linkIndex)
 					.'</ul>
 					<ul class="nav navbar-nav navbar-right">'
 						.$f->getModalFormulaireCreationCompte($linkIndex)

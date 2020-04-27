@@ -33,45 +33,46 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
-			"creerCompteClient" => "creerCompteClient",
-			"creerCompteClientAdmin" => "creerCompteClientAdmin",
-			"creerDiner" => "creerDiner",
-			"creerDinerAdmin" => "creerDinerAdmin",
-			"creerCritere" => "creerCritere",
-			"participer" => "participer",
-			"noterDiner" => "noterDiner",
-			"getAllUsers" => "getAllUsers",
-			"getInfoClientByIdu" => "getInfoClientByIdu",
-			"getInfoDinerByIdd" => "getInfoDinerByIdd",
-			"getAllDinerAvenirByIdu" => "getAllDinerAvenirByIdu",
-			"getHistoDinerByIdu" => "getHistoDinerByIdu",
-			"rechercherDiner" => "rechercherDiner",
-			"getNbParticipantsByIdd" => "getNbParticipantsByIdd",
-			"getResaEnCoursByIdu" => "getResaEnCoursByIdu",
-			"getHistoResaByIdu" => "getHistoResaByIdu",
-			"getAllAcces" => "getAllAcces",
-			"getAllCritere" => "getAllCritere",
-			"getNoteMoyenneHoteByIdu" => "getNoteMoyenneHoteByIdu",
-			"getNoteMoyenneHoteByIdd" => "getNoteMoyenneHoteByIdd",
-			"getNoteMoyenneInviteByIdu" => "getNoteMoyenneInviteByIdu",
-			"getNoteInviteByIdd" => "getNoteInviteByIdd",
-			"dinerDejaNote" => "dinerDejaNote",
-			"modifCompteAbonne" => "modifCompteAbonne",
-			"modifCompteAdmin" => "modifCompteAdmin",
-			"modifSolde" => "modifSolde",
-			"modifierDiner" => "modifierDiner",
-			"modifDinerAdmin" => "modifDinerAdmin",
-			"annulerDiner" => "annulerDiner",
-			"annulerResa" => "annulerResa",
-			"contactAdmin" => "contactAdmin",
-			"get3LatestDiners" => "get3LatestDiners",
-			"supprimerUtilisateurAdm" => "supprimerUtilisateurAdm",
-            "insert_resa" => "insert_resa",
-            "justDoIt" => "justDoIt",
-            "retirerSolde" => "retirerSolde",
-            "getSolde" => "getSolde",
-            "getResaEnCours" => "getResaEnCours",
-            "getCapacite" => "getCapacite"
+			"getModalFormulaireContacterAdmin" => "getModalFormulaireContacterAdmin",
+	//		"creerCompteClient" => "creerCompteClient",
+	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
+	//		"creerDiner" => "creerDiner",
+	//		"creerDinerAdmin" => "creerDinerAdmin",
+	//		"creerCritere" => "creerCritere",
+	//		"participer" => "participer",
+	//		"noterDiner" => "noterDiner",
+	//		"getAllUsers" => "getAllUsers",
+			"getUtilisateur" => "getUtilisateur",
+	//		"getInfoDinerByIdd" => "getInfoDinerByIdd",
+	//		"getAllDinerAvenirByIdu" => "getAllDinerAvenirByIdu",
+	//		"getHistoDinerByIdu" => "getHistoDinerByIdu",
+	//		"rechercherDiner" => "rechercherDiner",
+	//		"getNbParticipantsByIdd" => "getNbParticipantsByIdd",
+	//		"getResaEnCoursByIdu" => "getResaEnCoursByIdu",
+	//		"getHistoResaByIdu" => "getHistoResaByIdu",
+	//		"getAllAcces" => "getAllAcces",
+	//		"getAllCritere" => "getAllCritere",
+	//		"getNoteMoyenneHoteByIdu" => "getNoteMoyenneHoteByIdu",
+	//		"getNoteMoyenneHoteByIdd" => "getNoteMoyenneHoteByIdd",
+	//		"getNoteMoyenneInviteByIdu" => "getNoteMoyenneInviteByIdu",
+	//		"getNoteInviteByIdd" => "getNoteInviteByIdd",
+	//		"dinerDejaNote" => "dinerDejaNote",
+	//		"modifCompteAbonne" => "modifCompteAbonne",
+	//		"modifCompteAdmin" => "modifCompteAdmin",
+	//		"modifSolde" => "modifSolde",
+	//		"modifierDiner" => "modifierDiner",
+	//		"modifDinerAdmin" => "modifDinerAdmin",
+	//		"annulerDiner" => "annulerDiner",
+	//		"annulerResa" => "annulerResa",
+	//		"contactAdmin" => "contactAdmin",
+	//		"get3LatestDiners" => "get3LatestDiners",
+	//		"supprimerUtilisateurAdm" => "supprimerUtilisateurAdm",
+    //      "insert_resa" => "insert_resa",
+    //      "justDoIt" => "justDoIt",
+    //      "retirerSolde" => "retirerSolde",
+    //      "getSolde" => "getSolde",
+    //      "getResaEnCours" => "getResaEnCours",
+    //      "getCapacite" => "getCapacite"
         );
     }
 	
@@ -264,30 +265,49 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
+	public function getModalFormulaireContacterAdmin($lnkInd){
+		$html = '		<li class="nav-item">
+							<a style="cursor:pointer" data-toggle="modal" data-target="#adminModal" style="cursor:pointer">Contacter un Administrateur</a>
+						</li>
+						<!-- Modal -->
+<!-- Formulaire d envoie de mail à un administrateur -->
+						<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="exampleModalLabel">Nouveau Message</h4>
+									</div>
+									<div class="modal-body">
+										<form method="post" action="'.$lnkInd.'Site.php?a=contactAdmin">
+											<div class="form-group">
+												<label for="recipient-name" class="control-label">Votre mail:</label>
+												<input type="mail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
+											</div>
+											<div class="form-group">
+												<label for="recipient-name" class="control-label">Objet:</label>
+												<input type="text" class="form-control" id="recipient-name" name="objet">
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Message:</label>
+												<textarea class="form-control" id="message-text" name="msg" style="resize: vertical;" readonly>Cette fonctionnalité est désactivée dûe à un problème technique.</textarea>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button class="btn btn-info" type="submit" disabled>Envoyer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>';
+		return $html;
+	}
 	
 	//Fonction utilisée lors de la création d'un compte client depuis la page principale
     public function creerCompteClient(){
-
+/*
         // Chargement de la barre de navigation
-        /*session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }*/
 		$barre = getTheBarre();
 
         // Début des vérifications de tous les paramètres.
@@ -421,12 +441,12 @@ class FuncController extends Controller{
     </div>
     <div class="alert alert-success" role="alert">
     '.$res.'
-    </div>';
+    </div>';*/
     }
 
 	//Fonction utilisée lors de la création d'un compte client par un administrateur
     public function creerCompteClientAdmin(){
-
+/*
         // Chargement de la barre de navigation
         session_start();
         $barre = "barreVisiteur";
@@ -588,7 +608,7 @@ class FuncController extends Controller{
     </div>
     <div class="alert alert-success" role="alert">
     '.$res.'
-    </div>';
+    </div>';*/
     }
 
 	//Fonction utilisée lors de la création d'un diner par le menu de navigation
@@ -978,7 +998,7 @@ class FuncController extends Controller{
 	
 	// Fonction utilisée lors de la création d'un nouveau critère
 	public function creerCritere(){
-		// Chargement de la barre de navigation
+	/*	// Chargement de la barre de navigation
 		session_start();
         $barre = "barreVisiteur";
         if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
@@ -1073,7 +1093,7 @@ class FuncController extends Controller{
     <div class="alert alert-success" role="alert">
         L\'insertion de votre dîner a été effectué avec
         <a href="#" class="alert-link">Succès !</a>
-    </div>';
+    </div>';*/
     }
 	
 	// Fonction permettant de s'inscrire à un diner
@@ -1288,101 +1308,101 @@ class FuncController extends Controller{
     }	
 	
 	// Fonction permettant de récupérer les infos d'un compte donné
-	public function getInfoClientByIdu($id){
+	public function getUtilisateur($idu){
 		$u = new utilisateur();
-		$info = $u->getId($id);
+		$info = $u->getId($idu);
 		return $info;
 	}
 
 	// Fonction permettant de récupérer les infos d'un diner donné
 	public function getInfoDinerByIdd($idd) {
-		$d = new diner();
-		return $d->getInfosDiner($idd);
+	/*	$d = new diner();
+		return $d->getInfosDiner($idd);*/
 	}
 
 	// Fonction permettant de récupérer les infos de tous les diners à venir d'un hote donné
 	public function getAllDinerAvenirByIdu($idu) {
-		$d = new diner();
-		return $d->getDinersAvenir($idu);
+	/*	$d = new diner();
+		return $d->getDinersAvenir($idu);*/
 	}
 	
 	// Fonction permettant de récupérer les infos de tous les diners passés pour un hote donné
 	public function getHistoDinerByIdu($id){
-		$d = new diner();
-		return $d->getHistoDiners($id);
+	/*	$d = new diner();
+		return $d->getHistoDiners($id);*/
 	}
 
 	// Fonction utilisée pour la recherche de diner
 	// Les vérifications de formulaires se font dans le fichier Modele/diner.php
     public function rechercherDiner($idu,$nom,$date,$prix,$capa,$critere,$lieu){
-        $d = new diner();
-        return $d->rechercher($idu,$nom,$date,$prix,$capa,$critere,$lieu);
+    /*    $d = new diner();
+        return $d->rechercher($idu,$nom,$date,$prix,$capa,$critere,$lieu);*/
     }
 
 	// Fonction permettant d'obtenir le nombre de participants à un diner donné
 	public function getNbParticipantsByIdd($id){
-		$r = new reservation();
-		return $r->getNbParticipants($id);
+	/*	$r = new reservation();
+		return $r->getNbParticipants($id);*/
 	}
 	
 	// Fonction permettant de récupérer les informations des réservations en cours d'un compte donné
 	public function getResaEnCoursByIdu($id){
-		$r = new reservation();
-		return $r->getResaEnCours($id);
+	/*	$r = new reservation();
+		return $r->getResaEnCours($id);*/
 	}
 	
 	// Fonction permettant de récupérer les informations des réservations passées d'un compte donné
 	public function getHistoResaByIdu($id){
-		$r = new reservation();
-		return $r->getHistoResa($id);
+	/*	$r = new reservation();
+		return $r->getHistoResa($id);*/
 	}
 	
 	// Fonction permettant de récupérer la liste des niveaux d'accès
 	public function getAllAcces(){
-		$a = new acces();
-		return $a->getAll();
+	/*	$a = new acces();
+		return $a->getAll();*/
 	}
 	
 	// Fonction permettant de récupérer la liste des critères
     public function  getAllCritere(){
-	    $c = new critere();
-	    return $c->getAll();
+	/*    $c = new critere();
+	    return $c->getAll();*/
     }
 
 	// Fonction permettant de récupérer la note moyenne d'hote d'un compte donné
 	public function getNoteMoyenneHoteByIdu($id){
-		$nh = new noteHote();
-		return $nh->getMoyenneHote($id);
+	/*	$nh = new noteHote();
+		return $nh->getMoyenneHote($id);*/
 	}
 	
 	// Fonction permettant de récupérer la note moyenne d'hote pour un diner donné
 	public function getNoteMoyenneHoteByIdd($id){
-		$nh = new noteHote();
-		return $nh->getMoyenneDiner($id);
+	/*	$nh = new noteHote();
+		return $nh->getMoyenneDiner($id);*/
 	}
 	
 	// Fonction permettant de récupérer la note moyenne d'invité d'un compte donné
 	public function getNoteMoyenneInviteByIdu($id){
-		$ni = new noteInvite();
-		return $ni->getMoyenneInvite($id);
+	/*	$ni = new noteInvite();
+		return $ni->getMoyenneInvite($id);*/
 	}
 	
 	// Fonction permettant de récupérer la note d'invité d'un compte pour un diner donné
 	public function getNoteInviteByIdd($idu, $idd){
-		$ni = new noteInvite();
-		return $ni->getNoteInvite($idu, $idd);
+	/*	$ni = new noteInvite();
+		return $ni->getNoteInvite($idu, $idd);*/
 	}
 	
 	// Fonction permettant de savoir si un diner a déjà été noté par un utilisateur
 	public function dinerDejaNote($idd, $idu){
-		$nH = new noteHote();
-		return $nH->getAlreadyNoted($idd, $idu);		
+	/*	$nH = new noteHote();
+		return $nH->getAlreadyNoted($idd, $idu);*/		
 	}
  
 	//Fonction qui permet à un abonné de modifier son compte
     public function modifCompteAbonne(){   
     // Chargement de la barre de navigation
-    session_start();
+    /*session_start();
     $barre = "barreVisiteur";
     if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
     {
@@ -1535,13 +1555,13 @@ echo '<div class="container">
     </div>
     <div class="alert alert-success" role="alert">
     '.$res.'
-    </div>';
+    </div>';*/
     }
     
 	// Fonction permettant à un administrateur de modifier un compte
 	public function modifCompteAdmin(){
 	// Chargement de la barre de navigation
-    session_start();
+    /*session_start();
     $barre = "barreVisiteur";
     if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
     {
@@ -1686,13 +1706,13 @@ echo '<div class="container">
     </div>
     <div class="alert alert-success" role="alert">
     '.$res.'
-    </div>';
+    </div>';*/
     }
 
 	// Fonction permettant à un administrateur de modifier le solde d'un compte
 	public function modifSolde(){
 		// Chargement de la barre de navigation
-		session_start();
+		/*session_start();
         $barre = "barreVisiteur";
         if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
         {
@@ -1799,7 +1819,7 @@ echo '<div class="container">
     </div>
 	<div class="alert alert-warning" role="alert">
        '.$res.'
-    </div>';
+    </div>';*/
 	}
 	
 	// Fonction permettant à un abonné de modifier un de ses diner
@@ -2099,7 +2119,7 @@ echo '<div class="container">
 	// Fonction permettant de supprimer un diner
     public function annulerDiner($p){
 
-        $idd = strip_tags(htmlentities($p['idd']));
+    /*    $idd = strip_tags(htmlentities($p['idd']));
 
         $d = new diner();
         $d = $d->getInfosDiner($idd);
@@ -2164,12 +2184,12 @@ echo '<div class="container">
             $msg = $msgErreur;
         }
         
-        header('Location:./Vue/mesDiners.php?message='.$msg);
+        header('Location:./Vue/mesDiners.php?message='.$msg);*/
     }
 
 	// Fonction permettant d'annuler une réservation
     public function annulerResa($p){
-        $id = 0;
+    /*    $id = 0;
 		session_start();
         $id=$_SESSION['idu'];
 
@@ -2184,13 +2204,13 @@ echo '<div class="container">
         $u->credSolde($r->idu, $montantRemb);
         $message = 'La reservation n°'.$r->idr.' a bien été annulée.';
 
-        header('Location:./Vue/mesResa.php?message='.$message);
+        header('Location:./Vue/mesResa.php?message='.$message);*/
     }
 
     //Fonction utilisé pour contacter l'administrateur
     //Ne produit rien si mauvais paramétrage du serveur smtp
     public function contactAdmin(){
-        $target="victor.breton@u-psud.fr"; //Adresse de l'administrateur
+    /*    $target="victor.breton@u-psud.fr"; //Adresse de l'administrateur
 
         //Test sur le champ mail
         $passage_ligne = "\n";
@@ -2223,18 +2243,18 @@ echo '<div class="container">
 
         mail($target,$sujet,$message,$head);
 
-        header("Location:index.php");
+        header("Location:index.php");*/
     }
 
     //Fonction d'obtention des 3 derniers diners mis en ligne
     public function get3LatestDiners(){
-		$d = new diner();
-		return $d->get3Latest();
+	/*	$d = new diner();
+		return $d->get3Latest();*/
     }
 	
 	// Fonction permettant à un administrateur de supprimer un compte donné
 	public function supprimerUtilisateurAdm(){
-			// Chargement de la barre de navigation
+	/*		// Chargement de la barre de navigation
 		session_start();
         $barre = "barreVisiteur";
         if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
@@ -2314,45 +2334,45 @@ echo '<div class="container">
             </div>
         </div>
     </div>'
-	.$res;
+	.$res;*/
 	}
 
     public function insert_resa($idu,$idd,$date){
-        $r = new reservation();
+    /*    $r = new reservation();
         if(!empty($idu) && !empty($idd) && !empty($date))
-            $r->insert($idu,$idd,$date);
+            $r->insert($idu,$idd,$date);*/
     }
 
     public function retirerSolde($idu,$solde){
-        $u = new utilisateur();
-        $u->retirerSolde($idu,$solde);
+    /*    $u = new utilisateur();
+        $u->retirerSolde($idu,$solde);*/
     }
 
     public function getSolde($id){
-        $u = new utilisateur();
-        return $u->getId($id);
+    /*    $u = new utilisateur();
+        return $u->getId($id);*/
     }
 
 	//Participer à un diner avec verification du solde
 	public function justDoIt($idu,$idd,$date,$prix){
-        $f = new FuncController();
+    /*    $f = new FuncController();
         $info=$f->getInfoClientByIdu($idu);
         if($info[0]['solde']-$prix >= 0) {
             $f->insert_resa($idu, $idd, $date);
             $f->retirerSolde($idu,$prix);
             return true;
         }
-        return false;
+        return false;*/
     }
 
     public function getResaEnCours($id){
-        $r = new reservation();
-        return $r->getAll($id);
+    /*    $r = new reservation();
+        return $r->getAll($id);*/
     }
 
     public function getCapacite($idd){
-        $r = new reservation();
-        return $r->getNbParticipants($idd);
+    /*    $r = new reservation();
+        return $r->getNbParticipants($idd);*/
     }
 }
 ?>

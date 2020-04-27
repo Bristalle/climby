@@ -7,28 +7,9 @@
 include_once 'Vue/menuBarre.php';
 include_once 'Controleur/FuncController.php';
 
-session_start();
-//Chargement de la barre par défaut
-$barre = "barreVisiteur";
+$f = new FuncController();
+$barre = $f->getTheBarre();
 
-//Chargement de la barre en fonction des droits d'accès
-if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-{
-    $grade=$_SESSION['acces'];
-    $id=$_SESSION['idu'];
-
-    switch($grade) {
-        case "Abonne":
-            $barre = "barreAbonne";
-            break;
-        case "Administrateur":
-            $barre = "barreAdmin";
-            break;
-    }
-}else{
-    if(isset($grade))
-        unset($grade);
-}
 ?>
 
 <!DOCTYPE html>
