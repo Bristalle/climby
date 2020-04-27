@@ -1,12 +1,11 @@
-﻿Pour installer le site de réservation de salle "TER" :
+﻿Pour installer la plateforme de grimpette "Climby" :
 
 Installation des fichiers
 1. Décompressez l'archive "climby.zip"
 2. Placez le dossier climby dans votre dossier par défaut (www ou htdoc en général)
 
 Initialisation de la base de donnée
-1. Créez votre base de donnée à l'aide du script "Init.sql"
-	(Si vous avez une erreur, utiliser Init2.sql)
+1. Créez votre base de donnée à l'aide du script "Document/Init.sql"
 
 Paramétrage du site
 1. Editez le fichier "param_co.php" situé à la racine du dossier "climby"
