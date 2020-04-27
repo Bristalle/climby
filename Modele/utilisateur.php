@@ -77,6 +77,7 @@ class utilisateur{
 	
 	private $historique;
 	private $diplome;
+	private $dateInscription;
 
 	public function __construct() {
     	
@@ -102,9 +103,10 @@ class utilisateur{
 	// Fonction permettant d'ajouter un compte Abonne dans la base de donnée
     public function insertClient($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $historique, $diplome){
 		$mdp = password_hash($mdp, PASSWORD_BCRYPT);
+		$dateInscription = time();
         $c = Base::getConnection();
-        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, historique, diplome)
-                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :historique, :diplome)");
+        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, historique, diplome, dateInscription)
+                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :historique, :diplome, :dateInscription)");
         $query->bindParam (':mail', $mail, PDO::PARAM_STR);
         $query->bindParam (':mdp',$mdp, PDO::PARAM_STR);
 		$query->bindParam (':pseudo',$pseudo, PDO::PARAM_STR);
@@ -116,30 +118,32 @@ class utilisateur{
 		$query->bindParam (':niveau', $niveau, PDO::PARAM_INT);
 		$query->bindParam (':historique', $historique, PDO::PARAM_STR);
 		$query->bindParam (':diplome', $diplome, PDO::PARAM_STR);
+		$query->bindParam (':dateInscription', $dateInscription, PDO::PARAM_INT);
         $query->execute();
         $this->idu = $c->LastInsertId('utilisateur');
 	}
 	
-	// Fonction d'administration permettant d'ajouter un compte dans la base de donnée
-	public function insertClientAdm($droit, $nom,$prenom, $add, $cp, $ville, $tel, $mail,$mdp){
-/*		$c = Base::getConnection();
-        $query = $c->prepare("insert into utilisateur(ida,nom,prenom,addresse,codePost,ville,telephone,email,mdp,solde)
-                              values(:droit,:nom,:prenom,:add,:cp,:ville,:tel,:mail,sha1(:mdp),0)");
-		$query->bindParam (':droit',$droit, PDO::PARAM_INT);
-        $query->bindParam (':nom',$nom, PDO::PARAM_STR);
-        $query->bindParam (':prenom',$prenom, PDO::PARAM_STR);
-        $query->bindParam (':add',$add, PDO::PARAM_STR);
-        $query->bindParam (':cp',$cp, PDO::PARAM_STR);
-        $query->bindParam (':ville',$ville, PDO::PARAM_STR);
-        $query->bindParam (':tel',$tel, PDO::PARAM_STR);
-        $query->bindParam (':mail',$mail, PDO::PARAM_STR);
-        $query->bindParam (':mdp',$mdp, PDO::PARAM_STR);
+		// Fonction d'administration retournant la liste des informations d'un compte
+	public static function getUtilisateurById($id){
+        $c = Base::getConnection();
+        if(isset($id)){
+            $query = $c->prepare("SELECT * FROM utilisateur where idu = :idu");
+            $query->bindParam (':idu',$id, PDO::PARAM_INT);
+            $query->execute();
+            $query = $query->fetchAll();
+            return $query[0];
+        }
+		return null;
+    }
+	
+	public static function getAllUtilisateur() {
+		$c = Base::getConnection();
+        $query = $c->prepare("select * from utilisateur");
         $query->execute();
-        $this->idu = $c->LastInsertId('utilisateur');
-
-		//header("Location: /sallesgla/index.php");*/
+        $query = $query->fetchAll();
+        return $query;
 	}
-
+	
 	// Fonction permettant de modifier les informations de compte d'un abonne
     public static function updateInfosClient($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nHistorique, $nDiplome){
         $c = Base::getConnection();
@@ -170,13 +174,34 @@ class utilisateur{
 		$query->bindParam(':idu', $idu, PDO::PARAM_INT);
 		$query->execute();
 	}
+	
+		// Fonction d'administration permettant d'ajouter un compte dans la base de donnée
+	public function insertClientAdm($droit, $nom,$prenom, $add, $cp, $ville, $tel, $mail,$mdp){
+/*		$c = Base::getConnection();
+        $query = $c->prepare("insert into utilisateur(ida,nom,prenom,addresse,codePost,ville,telephone,email,mdp,solde)
+                              values(:droit,:nom,:prenom,:add,:cp,:ville,:tel,:mail,sha1(:mdp),0)");
+		$query->bindParam (':droit',$droit, PDO::PARAM_INT);
+        $query->bindParam (':nom',$nom, PDO::PARAM_STR);
+        $query->bindParam (':prenom',$prenom, PDO::PARAM_STR);
+        $query->bindParam (':add',$add, PDO::PARAM_STR);
+        $query->bindParam (':cp',$cp, PDO::PARAM_STR);
+        $query->bindParam (':ville',$ville, PDO::PARAM_STR);
+        $query->bindParam (':tel',$tel, PDO::PARAM_STR);
+        $query->bindParam (':mail',$mail, PDO::PARAM_STR);
+        $query->bindParam (':mdp',$mdp, PDO::PARAM_STR);
+        $query->execute();
+        $this->idu = $c->LastInsertId('utilisateur');
+
+		//header("Location: /sallesgla/index.php");*/
+	}
+	
 		// Fonction permettant de récupérer toutes les informations de tous les utilisateurs
     public static function getAll() {
  /*       $c = Base::getConnection();
         $query = $c->prepare("select * from utilisateur");
         $query->execute();
         $query = $query->fetchAll();
-        return $query;*/ return array();
+        return $query;*/
     }
 	
 	// Fonction permettant de récupérer tous les emails de tous les utilisateurs
@@ -187,21 +212,6 @@ class utilisateur{
         $query = $query->fetchAll();
         return $query;*/ return array();
     }
-	
-	// Fonction d'administration retournant la liste des informations d'un compte
-	public static function getId($id){
-/*        $c = Base::getConnection();
-        if(isset($id)){
-            $query = $c->prepare("SELECT email, nom, prenom, addresse, codePost, ville, telephone, solde, ida FROM utilisateur where idu = :idu");
-            $query->bindParam (':idu',$id, PDO::PARAM_INT);
-            $query->execute();
-            $query = $query->fetchAll();
-            return $query;
-        }
-    return null;*/ return array();
-    }
-
-
     
 	// Fonction permettant de modifier les informations d'un compte abonne sauf l'email
     public static function updateInfosClientNoMail($id, $nNom, $nPrenom, $nAdresse, $nCodep, $nVille, $nTel){

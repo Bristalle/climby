@@ -9,6 +9,7 @@ include_once 'Controleur/FuncController.php';
 
 $f = new FuncController();
 $barre = $f->getTheBarre();
+var_dump($barre);
 
 ?>
 
@@ -70,7 +71,7 @@ echo $v->affichage($barre);
             <h2>Les Nouveautés</h2>
         </div>
         <?php
-        $f = new FuncController();
+        /*$f = new FuncController();
         $listeD = $f->get3LatestDiners();
         foreach($listeD as $d){
             $capacite=$f->getCapacite($d->idd);
@@ -165,7 +166,7 @@ echo $v->affichage($barre);
                             </div>
                         </div>
                     </div>';
-        }
+        }*/
         ?>
     </div>
 </div>

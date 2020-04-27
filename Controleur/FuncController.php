@@ -34,6 +34,8 @@ class FuncController extends Controller{
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
 			"getModalFormulaireContacterAdmin" => "getModalFormulaireContacterAdmin",
+			"getModalFormulaireCreationEvent" => "getModalFormulaireCreationEvent",
+			"getModalMonCompte" => "getModalMonCompte", 
 	//		"creerCompteClient" => "creerCompteClient",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
@@ -41,8 +43,8 @@ class FuncController extends Controller{
 	//		"creerCritere" => "creerCritere",
 	//		"participer" => "participer",
 	//		"noterDiner" => "noterDiner",
-	//		"getAllUsers" => "getAllUsers",
-			"getUtilisateur" => "getUtilisateur",
+			"getAllUsers" => "getAllUsers",
+			"getUtilisateurId" => "getUtilisateurId",
 	//		"getInfoDinerByIdd" => "getInfoDinerByIdd",
 	//		"getAllDinerAvenirByIdu" => "getAllDinerAvenirByIdu",
 	//		"getHistoDinerByIdu" => "getHistoDinerByIdu",
@@ -301,6 +303,159 @@ class FuncController extends Controller{
 								</div>
 							</div>
 						</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationEvent($lnkInd, $crit) {
+		$html = '			<li class="nav-item">
+                                <a style="cursor:pointer" data-toggle="modal" data-target="#proposeModal">Proposer un Dîner</a>
+                            </li>
+                            <!-- Modal -->
+<!-- Formulaire de création d un diner par un Abonné -->
+                            <div class="modal fade" id="proposeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="exampleModalLabel">Proposer un nouveau diner</h4>
+										</div>
+										<div class="modal-body">
+                                            <form enctype="multipart/form-data" method="post" action="'.$lnkInd.'Site.php?a=creerDiner">
+												<div class="input-group date">
+                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    <input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" min="'.date('Y-m-d').'">
+                                                </div>
+												<div class="input-group">
+                                                    <span class="input-group-addon">Nom</span>
+                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du dîner" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Lieu</span>
+                                                    <textarea name="lieu" type="text" class="form-control" placeholder="Lieu du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Description</span>
+                                                    <textarea name="desc" type="text-area" class="form-control" placeholder="Description du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Prix:</span>
+                                                    <input name="prix" class="form-control" type="number" name="prix" min="0" max="1000" step="10" placeholder="Prix du dîner">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Maximum d\'invités:</span >
+                                                    <input name = "capa" class="form-control" type = "number" name = "capa" min = "0" max = "200" step = "1" placeholder = "Capacité du diner" >
+                                                </div >
+                                                <select name = "critere" class="form-control" >
+													<option value = "0" selected disabled >Critère</option >'
+													.$crit
+												.'</select>
+												<script>
+                                                    $("#date_insert").datepicker({
+												    format: \'yyyy-mm-dd\',
+                                                    startDate: \'-d\'
+												});
+                                                </script>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Image : </span>
+                                                    <input type="text" id="input_text" class="form-control" name="image" />
+                                                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_SIZE; ?>" />
+                                                    <input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("input_text") . value = this . value\'  />
+                                                    <span class="input-group-addon">Parcourir</span>
+                                                </div>
+                                                <div class="alert alert-warning" role="alert"><small class="alert_info">
+                                                    L\'image insérée doit avoir des dimensions inférieures à 5000x5000px et une taille inférieure à 500Mo .</small >
+                                                </div >
+                                                <div class="modal-footer" >
+                                                    <button type = "button" class="btn btn-default" data-dismiss="modal"> Fermer</button >
+                                                    <button class="btn btn-info" type = "submit" > Envoyer</button >
+                                                </div >
+										    </form >
+                                        </div>
+									</div>
+								</div>
+                            </div>';
+		return $html;
+	}
+	
+	public function getModalMonCompte($lnkInd, $idu) {
+		$u = $this->getUtilisateurId($idu);		
+		$html = '			<li>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mon compte <span class="caret"></span></a>
+<!-- Menu déroulant d interface de gestion de compte -->
+                                <ul class="dropdown-menu">
+                                    <li><a class="nav-link" data-toggle="modal" data-target="#compteModal" style="cursor:pointer">Mes infos</a></li>
+                                    <li><a href="'.$lnkInd.'Vue/mesDiners.php">Mes dîners</a></li>
+                                    <li><a href="'.$lnkInd.'Vue/mesResa.php">Mes réservations</a></li>
+
+                                </ul>
+                                
+                            <!-- Modal -->
+<!-- Formulaire de modification des informations du compte connecté -->
+                            <div class="modal fade" id="compteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">Informations et modification du compte pour : '.$u['email'].'</h4>
+                                        </div>
+                                        <form method="post" action="'.$lnkInd.'Site.php?a=modifCompteAbonne">
+                                            <div class="modal-body">
+                                                Modifiez vos informations ici
+												<input type="hidden" name="idu" value="'.$idu.'">
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Pseudo:</label>
+                                                <input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" value="'.$u['pseudo'].'" >
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Adresse:</label>
+                                                <textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;">'.$u['addresse'].'</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Code Postal:</label>
+                                                <input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal" value="'.$u['codePost'].'">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Ville:</label>
+                                                <input type="text" class="form-control" id="recipient-name" name="ville" value="'.$u['ville'].'">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">N° de téléphone:</label>
+                                                <input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel" value="'.$u['telephone'].'">
+                                            </div>
+											<div class="form-group">
+                                                <label for="message-text" class="control-label">Solde:</label>
+                                                <input type="number" class="form-control" id="recipient-name" name="solde" value="'.$u['solde'].'" disabled>
+                                            </div>
+				<!-- Pas Encore implémenté -->
+											<!--
+                                            <div class="form-group">
+                                                    <label for="message-text" class="control-label">Votre note moyenne d\'invité : '.'5'.' / 5</label>
+                                            </div>
+											-->
+                                            <div class="form-group">
+                                                    <label for="message-text" class="control-label">Votre note moyenne d\'hote : '.'5'.' / 5</label>
+                                                </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Nouveau mot de passe:</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdp1">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">répéter le Nouveau mot de passe:</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdp2">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Mot de passe actuel (pour valider les changements) :</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdpV">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                                <button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div> 
+                            </li>';
 		return $html;
 	}
 	
@@ -1304,13 +1459,13 @@ class FuncController extends Controller{
     //Fonction utilisée pour obtenir l'ensemble des comptes existants
     public function getAllUsers(){
         $u = new utilisateur();
-        return $u->getAll();
+        return $u->getAllUtilisateur();
     }	
 	
 	// Fonction permettant de récupérer les infos d'un compte donné
-	public function getUtilisateur($idu){
+	public function getUtilisateurId($idu){
 		$u = new utilisateur();
-		$info = $u->getId($idu);
+		$info = $u->getUtilisateurById($idu);
 		return $info;
 	}
 
