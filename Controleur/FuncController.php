@@ -36,6 +36,14 @@ class FuncController extends Controller{
 			"getModalFormulaireContacterAdmin" => "getModalFormulaireContacterAdmin",
 			"getModalFormulaireCreationEvent" => "getModalFormulaireCreationEvent",
 			"getModalMonCompte" => "getModalMonCompte", 
+			"getModalFormulaireDeconnexion" => "getModalFormulaireDeconnexion",
+			"getModalMenuAdministration" => "getModalMenuAdministration",
+			"getModalFormulaireCreationCompteByAdmin" => "getModalFormulaireCreationCompteByAdmin",
+			"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
+			"getModalFormulaireCreationCritere" => "getModalFormulaireCreationCritere",
+			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
+			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
+			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 	//		"creerCompteClient" => "creerCompteClient",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
@@ -456,6 +464,293 @@ class FuncController extends Controller{
                                 </div>
                             </div> 
                             </li>';
+		return $html;
+	}
+	
+	public function getModalFormulaireDeconnexion($lnkInd) {
+		$html = '			<li>
+                                <a class="nav-link" data-toggle="modal" data-target="#DeconnexionModal" style="cursor:pointer"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> Déconnexion</a>
+                            </li>
+                            <!-- Modal -->
+<!-- Formulaire de déconnexion -->
+                            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="DeconnexionModal">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">Deconnexion</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            Voulez vous vraiment vous deconnecter ?
+                                            <form method="post" action="'.$lnkInd.'Modele/Deconnexion.php" id="form_deconnexion">
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                                    <button type="submit" class="btn btn-info" >Deconnexion</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>';
+		return $html;
+	}
+	
+	public function getModalMenuAdministration($lnkInd) {
+		$html = '			<li class="nav-item">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administration <span class="caret"></span></a>
+<!-- Menu Déroulant de l interface d administration -->
+								<ul class="dropdown-menu">
+									<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>
+									<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>
+									<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>
+									<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>
+									<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>
+									<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>
+									<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>
+								</ul>
+                            </li>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationCompteByAdmin($lnkInd, $acces) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de creation de compte via Admin -->
+							<div class="modal fade" id="creerCompteAdm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Création d\'un compte client</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=creerCompteClientAdmin">
+												<div class="modal-body">
+													Veuillez renseigner vos informations
+													<div class="form-group">
+														<label for="message-text" class="control-label">Pseudo:</label>
+														<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Adresse:</label>
+														<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Code Postal:</label>
+														<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Ville:</label>
+														<input type="text" class="form-control" id="recipient-name" name="ville">
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">N° de téléphone:</label>
+														<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
+													</div>
+													<div class="form-group">
+														<label for="recipient-name" class="control-label">Email:</label>
+														<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Mot de passe:</label>
+														<input type="password" class="form-control" id="recipient-name" name="mdp">
+													</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Droits:</label>
+														<select class="form-control" id="recipient-name" name="droit">'.
+															$acces
+														.'</select>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationEventByAdmin($lnkInd, $crit, $options) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de creation de diner via admin -->
+                            <div class="modal fade" id="creerDinerAdm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="exampleModalLabel">Proposer un nouveau diner</h4>
+										</div>
+										<div class="modal-body">
+                                            <form method="post" action="'.$lnkInd.'Site.php?a=creerDinerAdmin">
+											
+												<div class="input-group">
+													<span class="input-group-addon">Organisateur</span>
+													<select class="form-control" name="orga">'.
+														$options
+													.'</select>
+												</div>
+												<div class="input-group date">
+                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    <input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" min="'.date('Y-m-d').'">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Nom</span>
+                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du dîner" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Lieu</span>
+                                                    <textarea name="lieu" type="text" class="form-control" placeholder="Lieu du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Description</span>
+                                                    <textarea name="desc" type="text-area" class="form-control" placeholder="Description du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Prix:</span>
+                                                    <input name="prix" class="form-control" type="number" name="prix" min="0" max="1000" placeholder="Prix du dîner">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Maximum d\'invités:</span >
+                                                    <input name = "capa" class="form-control" type = "number" name = "capa" min = "0" max = "200" step = "1" placeholder = "Capacité du diner" >
+                                                </div >
+                                                <select name = "critere" class="form-control" >
+                                                    <option value = "0" selected disabled >Critère</option > '.
+													$crit
+												.'</select><script>
+                                                    $("#date_insert").datepicker({
+												    format: \'yyyy-mm-dd\',
+                                                    startDate: \'-d\'
+												});
+                                                </script>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Image : </span>
+                                                    <input type="text" id="input_text" class="form-control" name="image" />
+                                                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_SIZE; ?>" />
+                                                    <input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("input_text") . value = this . value\'  />
+                                                    <span class="input-group-addon">Parcourir</span>
+                                                </div>
+                                                <div class="alert alert-warning" role="alert"><small class="alert_info">
+                                                    L\'image insérée doit avoir des dimensions inférieures à 5000x5000px et une taille inférieure à 500Mo .</small >
+                                                </div >
+												<div class="modal-footer" >
+                                                    <button type = "button" class="btn btn-default" data-dismiss="modal"> Fermer</button >
+                                                    <button class="btn btn-info" type = "submit" > Envoyer</button >
+                                                </div >
+                                            </form >
+                                        </div>
+									</div>
+								</div>
+                            </div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationCritere($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de création de critère -->
+							<div class="modal fade" id="creerCritere" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=creerCritere">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">
+														<span class="input-group-addon">Nom</span>
+														<input name="nom" type="text" class="form-control" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression de compte -->
+							<div class="modal fade" id="supprimerCompteAdm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Supprimer un compte</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=supprimerUtilisateurAdm">
+												<div class="modal-body">
+													<div class="input-group">
+														<span class="input-group-addon">Compte:</span>
+														<select class="form-control" name="orga">'.
+															$options
+														.'</select>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireModifierSolde($lnkInd, $options) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de solde -->
+							<div class="modal fade" id="modifSolde" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Modifier un solde</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=modifSolde">
+												<div class="modal-body">
+													<div class="input-group">
+														<span class="input-group-addon">Compte:</span>
+														<select class="form-control" name="idu">'.
+															$options
+														.'</select>
+													</div>
+													<div class=modal-body">
+														<div class="input-group">
+															<span class="input-group-addon">Modification:</span>
+															<input class="form-control" type="number" name="solde" step="1" placeholder="Utiliser - pour retirer">
+														</div>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalScriptForMenuBarre() {
+		$html = '
+			<script>
+                $("#myModal").on("shown.bs.modal", function () {
+                    $("#myInput").focus()
+                })
+            </script>';
 		return $html;
 	}
 	
