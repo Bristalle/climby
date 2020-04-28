@@ -1,0 +1,15 @@
+1: aller dans le dossier C:wamp64/www/climby
+2: clic droit "git bash here"
+3: dans la console git ecrire "git pull"
+4: dans un navigateur, aller à l'url 127.0.0.1/phpmyadmin
+5: id : root    mdp : 
+6: dans le menu à gauche, cliquer sur climbydb
+7: cliquer sur "Tout cocher" et dans le menu déroulant, supprimer
+8: executer
+9: oui
+10: en haut, cliquer sur importer
+11: aller chercher le fichier Init.sql dans C:wamp64/www/climby/Documents
+12: lancer l'importation
+
+13: aller sur l'url 127.0.0.1/climby/index.php
+14: les id de connexion admin@admin.fr       cagrimpesec
