@@ -10,8 +10,8 @@ CREATE TABLE `utilisateur` (
   `solde` float,
   `acces` int,
   `niveau` int,
-  `historique` varchar(255),
-  `diplome` varchar(255)
+  `diplome` varchar(255),
+  `dateInscription` int
 );
 
 INSERT INTO `utilisateur` VALUES
@@ -62,9 +62,7 @@ CREATE TABLE `event` (
   `createur` int,
   `hasLead` boolean,
   `nbPlace` int,
-  `niveaux` varchar(255),
-  `types` varchar(255),
-  `critere` varchar(255)
+  `niveaux` varchar(255)
 );
 
 CREATE TABLE `notesdestination` (
@@ -84,43 +82,19 @@ CREATE TABLE `destination` (
   `idd` int PRIMARY KEY AUTO_INCREMENT,
   `nom` varchar(255),
   `description` varchar(255),
-  `adresse` varchar(255),
   `gps` varchar(255),
   `pointEau` boolean,
-  `photo` varchar(255)
+  `critere` int,
+  `typeDeGrimpe` int,
+  `hauteurDuSpot` int,
+  `nbVoies` int,
+  `cotationMin` varchar(255),
+  `cotationMax` varchar(255),
+  `pays` varchar(255),
+  `region` varchar(255)
 );
 
 CREATE TABLE `typegrimpe` (
   `idt` int PRIMARY KEY AUTO_INCREMENT,
   `nom` varchar(255)
 );
-
-ALTER TABLE `acces` ADD FOREIGN KEY (`ida`) REFERENCES `utilisateur` (`acces`);
-
-ALTER TABLE `niveau` ADD FOREIGN KEY (`idl`) REFERENCES `utilisateur` (`niveau`);
-
-ALTER TABLE `notesguide` ADD FOREIGN KEY (`ciblenote`) REFERENCES `utilisateur` (`idu`);
-
-ALTER TABLE `notesguide` ADD FOREIGN KEY (`noteur`) REFERENCES `utilisateur` (`idu`);
-
-ALTER TABLE `event` ADD FOREIGN KEY (`createur`) REFERENCES `utilisateur` (`idu`);
-
-ALTER TABLE `inscription` ADD FOREIGN KEY (`participant`) REFERENCES `utilisateur` (`idu`);
-
-ALTER TABLE `inscriptionannulee` ADD FOREIGN KEY (`participant`) REFERENCES `utilisateur` (`idu`);
-
-ALTER TABLE `inscriptionannulee` ADD FOREIGN KEY (`idi`) REFERENCES `inscription` (`idi`);
-
-ALTER TABLE `event` ADD FOREIGN KEY (`ide`) REFERENCES `inscription` (`event`);
-
-ALTER TABLE `event` ADD FOREIGN KEY (`ide`) REFERENCES `inscriptionannulee` (`event`);
-
-ALTER TABLE `event` ADD FOREIGN KEY (`types`) REFERENCES `typegrimpe` (`idt`);
-
-ALTER TABLE `event` ADD FOREIGN KEY (`critere`) REFERENCES `critere` (`idc`);
-
-ALTER TABLE `destination` ADD FOREIGN KEY (`idd`) REFERENCES `event` (`destination`);
-
-ALTER TABLE `utilisateur` ADD FOREIGN KEY (`idu`) REFERENCES `notesdestination` (`noteur`);
-
-ALTER TABLE `destination` ADD FOREIGN KEY (`idd`) REFERENCES `notesdestination` (`destination`);
