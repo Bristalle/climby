@@ -52,6 +52,16 @@ class inscription
         $query->execute();
     }
 	
+	public function insertInscriptionWithId($idi, $participant,$event,$date){
+        $c = Base::getConnection();
+        $query = $c->prepare("insert into inscription(idi participant, event, date) values(:idi, :participant,:event,:date)");
+		$query->bindParam (':idi', $idi, PDO::PARAM_INT); 
+        $query->bindParam (':participant',$participant, PDO::PARAM_INT);
+        $query->bindParam (':event',$event, PDO::PARAM_INT);
+        $query->bindParam (':date',$date, PDO::PARAM_INT);
+        $query->execute();
+    }
+	
 	public function updateInscription($idi, $participant, $event, $date) {
 		$c = Base::getConnection();
         $query = $c->prepare("UPDATE inscription SET participant = :participant, , event = :event, , date = :date WHERE idi = :idi)");
@@ -77,7 +87,7 @@ class inscription
 		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
 		$query->execute();
 		$ia = new inscriptionAnnulee();
-		$ia->insertInscriptionAnnulee($i['idi'], $i['participant'], $i['event'], $i['date'], time());
+		$ia->insertInscriptionAnnuleeWithId($i['idi'], $i['participant'], $i['event'], $i['date'], time());
 	}
 
 	// Fonction retournant la liste des informations d'une réservation

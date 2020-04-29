@@ -55,8 +55,7 @@ class image
     public function insertImage($path){
 		//Heberger l'image ?
 		$c = Base::getConnection();
-		$query = $c->prepare("insert into image(path)
-					  values(:adresse)");
+		$query = $c->prepare("insert into image(path) values(:adresse)");
 		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
 		$query->execute();
     }
@@ -64,8 +63,7 @@ class image
 	private function insertImageWithId($idp, $path){
 		//Heberger l'image ?
 		$c = Base::getConnection();
-		$query = $c->prepare("insert into image(idp, path)
-					  values(:idp, :adresse)");
+		$query = $c->prepare("insert into image(idp, path) values(:idp, :adresse)");
 		$query->bindParam (':idp', $idp, PDO::PARAM_INT);
 		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
 		$query->execute();
