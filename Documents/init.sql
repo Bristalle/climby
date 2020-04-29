@@ -83,7 +83,6 @@ CREATE TABLE `destination` (
   `nom` varchar(255),
   `description` varchar(255),
   `gps` varchar(255),
-  `pointEau` boolean,
   `critere` int,
   `typeDeGrimpe` int,
   `hauteurDuSpot` int,
