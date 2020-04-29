@@ -12,12 +12,14 @@ else {
 include_once 'Controller.php';
 include_once $linkIndex.'Vue/menuBarre.php';
 include_once $linkIndex.'Modele/utilisateur.php';
-include_once $linkIndex.'Modele/noteHote.php';
-include_once $linkIndex.'Modele/noteInvite.php';
+//include_once $linkIndex.'Modele/noteUtilisateur.php';
+include_once $linkIndex.'Modele/noteDestination.php';
 include_once $linkIndex.'Modele/event.php';
 include_once $linkIndex.'Modele/destination.php';
 include_once $linkIndex.'Modele/image.php';
-include_once $linkIndex.'Modele/resaAnnulee.php';
+include_once $linkIndex.'Modele/inscriptionAnnulee.php';
+include_once $linkIndex.'Modele/inscription.php';
+include_once $linkIndex.'Modele/niveau.php';
 include_once $linkIndex.'Modele/acces.php';
 include_once $linkIndex.'Modele/critere.php';
 

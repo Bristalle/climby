@@ -28,7 +28,7 @@ INSERT INTO `acces` (`ida`, `nom`) VALUES
 (3, 'Moderateur'),
 (4, 'Administrateur');
 
-CREATE TABLE `notesguide` (
+CREATE TABLE `noteguide` (
   `idng` int PRIMARY KEY AUTO_INCREMENT,
   `ciblenote` int,
   `noteur` int,
@@ -66,7 +66,7 @@ CREATE TABLE `event` (
   `date` int
 );
 
-CREATE TABLE `notesdestination` (
+CREATE TABLE `notedestination` (
   `idnd` int PRIMARY KEY AUTO_INCREMENT,
   `noteur` int,
   `destination` int,

@@ -44,8 +44,8 @@ echo $v->affichage($barre);
 ?>
 <div class="container">
     <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
+        <h1 class="shadow" style="color: #ffffff">On grimpe ?</h1>
+        <p class="shadow" style="color: #ffffff">Choisissez votre groupe, choisissez votre grimpe !</p>
         <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
         <!-- Modal -->
         <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -56,10 +56,7 @@ echo $v->affichage($barre);
                         <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d'un projet universitaire, au cours du M1 MIAGE à l'Université Paris-Saclay.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-
+                        <p>Content à remplir ? Miaou miaou</p>
                     </div>
                 </div>
             </div>
