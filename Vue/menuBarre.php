@@ -40,7 +40,7 @@ public function barreVisiteur(){
     }else {
         $linkIndex = '../';
     }
-		
+	
 	$f = new FuncController();
 		
 	//Chargement des critères pour les utiliser dans une select-bar
@@ -87,7 +87,6 @@ public function  barreAbonne() {
 	} */
 	
 	//Chargement d'autres variables
-    $today = date('Y-m-d');
     $moyHote = $f->getNoteMoyenneHoteByIdu($_SESSION['idu']);
     $moyInvit = $f->getNoteMoyenneInviteByIdu($_SESSION['idu']);
 
@@ -143,7 +142,6 @@ public function  barreAdmin() {
 	}*/
 	
 	//Chargement d'autres variables
-    $today = date('Y-m-d');
     $moyHote = $f->getNoteMoyenneHoteByIdu($_SESSION['idu']);
     $moyInvit = $f->getNoteMoyenneInviteByIdu($_SESSION['idu']);	
      											
