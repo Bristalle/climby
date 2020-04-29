@@ -78,7 +78,7 @@ class destination {
 		$query->bindParam (':cotationMax',$cotationMax, PDO::PARAM_STR);
 		$query->bindParam (':pays',$pays, PDO::PARAM_STR);
 		$query->bindParam (':region',$region, PDO::PARAM_STR);
-		$query->bindParam (':photo', $photo, PDO::PARAM_STR);
+		$query->bindParam (':photo', $photo, PDO::PARAM_INT);
 		$query->execute();
 	}
 
@@ -101,6 +101,8 @@ class destination {
     }
 	
 	public function deleteDestination($idd) {
+		//Ajouter le delete d'image
+		//Controle sur les events ?
 		$c = Base::getConnection();
 		$query = $c->prepare("DELETE FROM destination WHERE idd = :idd");
 		$query->bindParam(':idd', $idd, PDO::PARAM_INT);
