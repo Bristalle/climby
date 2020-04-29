@@ -50,7 +50,7 @@ class acces
     }
 	
 	// Fonction qui retourne la listes des niveaux d'accès
-	public function getAll(){
+	public function getAllAcces(){
 		$c = Base::getConnection();
         $query = $c->prepare("select * from acces");
         $query->execute();

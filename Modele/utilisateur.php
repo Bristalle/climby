@@ -101,7 +101,7 @@ class utilisateur{
     }
 
 	// Fonction permettant d'ajouter un compte Abonne dans la base de donnée
-    public function insertClient($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $diplome){
+    public function insertUtilisateur($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $diplome){
 		$mdp = password_hash($mdp, PASSWORD_BCRYPT);
 		$dateInscription = time();
         $c = Base::getConnection();
@@ -135,7 +135,7 @@ class utilisateur{
 		return null;
     }
 	
-	public static function getAllUtilisateur() {
+	public static function getAllUtilisateurs() {
 		$c = Base::getConnection();
         $query = $c->prepare("select * from utilisateur");
         $query->execute();
@@ -144,7 +144,7 @@ class utilisateur{
 	}
 	
 	// Fonction permettant de modifier les informations de compte d'un abonne
-    public static function updateInfosClient($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome){
+    public static function updateUtilisateur($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome){
         $c = Base::getConnection();
         if(isset($id) && isset($nEmail) && isset($nMdp) && isset($nPseudo) && isset($nAdresse) && isset($nCodep) && isset($nVille) && isset($nTel) && isset($nSolde) && isset($nAcces) && isset($nNiveau) && isset($nDiplome)){
                 $req = $c->prepare("UPDATE utilisateur SET email = :newEmail, mdp = :newMdp, pseudo = :newPseudo, addresse = :newAdd, codePost = :newCP, ville = :newVille, telephone = :newTel, solde = :newSolde, acces = :newAcces, niveau = :newNiveau, diplome = :newDiplome WHERE idu = :idu");  
@@ -166,7 +166,7 @@ class utilisateur{
     }
 	
 	// Fonction permettant de retirer de la base un utilisateur donné
-	public function deleteUser($idu){
+	public function deleteUtilisateur($idu){
 		$c = Base::getConnection();
 		$query = $c->prepare("DELETE FROM utilisateur WHERE idu = :idu");
 		$query->bindParam(':idu', $idu, PDO::PARAM_INT);

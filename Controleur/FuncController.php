@@ -51,7 +51,7 @@ class FuncController extends Controller{
 	//		"creerCritere" => "creerCritere",
 	//		"participer" => "participer",
 	//		"noterDiner" => "noterDiner",
-			"getAllUsers" => "getAllUsers",
+			"getAllUtilisateurs" => "getAllUsers",
 			"getUtilisateurId" => "getUtilisateurId",
 	//		"getInfoDinerByIdd" => "getInfoDinerByIdd",
 	//		"getAllDinerAvenirByIdu" => "getAllDinerAvenirByIdu",
@@ -1752,9 +1752,9 @@ class FuncController extends Controller{
 	}
 	
     //Fonction utilisée pour obtenir l'ensemble des comptes existants
-    public function getAllUsers(){
+    public function getAllUtilisateurs(){
         $u = new utilisateur();
-        return $u->getAllUtilisateur();
+        return $u->getAllUtilisateurs();
     }	
 	
 	// Fonction permettant de récupérer les infos d'un compte donné
@@ -1809,8 +1809,8 @@ class FuncController extends Controller{
 	
 	// Fonction permettant de récupérer la liste des niveaux d'accès
 	public function getAllAcces(){
-	/*	$a = new acces();
-		return $a->getAll();*/
+		$a = new acces();
+		return $a->getAllAcces();
 	}
 	
 	// Fonction permettant de récupérer la liste des critères
