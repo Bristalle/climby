@@ -21,7 +21,7 @@ class image
      * @access private
      * @var integer
      */
-    private $idi;
+    private $idp;
 
     /**
      * Adresse de l'image
@@ -61,34 +61,34 @@ class image
 		$query->execute();
     }
 	
-	private function insertImageWithId($idi, $path){
+	private function insertImageWithId($idp, $path){
 		//Heberger l'image ?
 		$c = Base::getConnection();
-		$query = $c->prepare("insert into image(idi, path)
-					  values(:idi, :adresse)");
-		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
+		$query = $c->prepare("insert into image(idp, path)
+					  values(:idp, :adresse)");
+		$query->bindParam (':idp', $idp, PDO::PARAM_INT);
 		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
 		$query->execute();
     }
 
-	public function getImage($idi) {
+	public function getImage($idp) {
 		$c = Base::getConnection();
-		$query = $c->prepare("SELECT * FROM image WHERE idi = :idi");
-		$query->bindParam (':idi',$idi, PDO::PARAM_INT);
+		$query = $c->prepare("SELECT * FROM image WHERE idp = :idp");
+		$query->bindParam (':idp',$idp, PDO::PARAM_INT);
 		$query->execute();
 		return $query->fetch();
 	}
 	
-	public function updateImage($idi, $path) {
-		$this->deleteImage($idi);
-		$this->insertImageWithId($idi, $path);
+	public function updateImage($idp, $path) {
+		$this->deleteImage($idp);
+		$this->insertImageWithId($idp, $path);
 	}
 	
-	public function deleteImage($idi) {
+	public function deleteImage($idp) {
 		//Supprimer le fichier image
 		$c = Base::getConnection();
-		$query = $c->prepare("DELETE FROM image WHERE idi = :idi");
-		$query->bindParam (':idi',$idi, PDO::PARAM_INT);
+		$query = $c->prepare("DELETE FROM image WHERE idp = :idp");
+		$query->bindParam (':idp',$idp, PDO::PARAM_INT);
 		$query->execute();
 	}
 

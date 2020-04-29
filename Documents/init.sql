@@ -101,6 +101,6 @@ CREATE TABLE `typegrimpe` (
 );
 
 CREATE TABLE `image` (
-  `idi` int PRIMARY KEY AUTO_INCREMENT,
+  `idp` int PRIMARY KEY AUTO_INCREMENT,
   `path` varchar(255)
 );
