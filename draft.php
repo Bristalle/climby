@@ -28,7 +28,7 @@ for($id = 1; $id<=5; $id++){
 }
 */
 
-var_dump($c->getAllCriteres());
+//var_dump($c->getAllCriteres());
 
 //header('./Modele/Deconnexion.php');
 
