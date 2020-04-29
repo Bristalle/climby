@@ -90,10 +90,16 @@ CREATE TABLE `destination` (
   `cotationMin` varchar(255),
   `cotationMax` varchar(255),
   `pays` varchar(255),
-  `region` varchar(255)
+  `region` varchar(255),
+  `photo` int
 );
 
 CREATE TABLE `typegrimpe` (
   `idt` int PRIMARY KEY AUTO_INCREMENT,
   `nom` varchar(255)
+);
+
+CREATE TABLE `image` (
+  `idi` int PRIMARY KEY AUTO_INCREMENT,
+  `path` varchar(255)
 );

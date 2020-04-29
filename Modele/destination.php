@@ -2,6 +2,7 @@
 /**
 * Fichier de Modele
 */
+include_once 'image.php';
 
 if (file_exists('base.php')){
     include_once 'base.php';
@@ -38,6 +39,7 @@ class destination {
 	private $cotationMax;
 	private $pays;
 	private $region;
+	private $photo;
 
     public function __construct() {
         
@@ -61,10 +63,10 @@ class destination {
     }
 	
 	// Fonction permettant d'ajouter un nouveau critère dans la base
-	public function insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region){
+	public function insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo){
 		$c = Base::getConnection();
-		$query = $c->prepare("insert into destination (nom, description, gps, critere, typeDeGrimpe, hauteurDuSpot, nbVoies, cotationMin, cotationMax, pays, region)
-							values (:nom, :description, :gps, :critere, :typeDeGrimpe, :hauteurDuSpot, :nbVoies, :cotationMin, :cotationMax, :pays, :region)");
+		$query = $c->prepare("insert into destination (nom, description, gps, critere, typeDeGrimpe, hauteurDuSpot, nbVoies, cotationMin, cotationMax, pays, region, photo)
+							values (:nom, :description, :gps, :critere, :typeDeGrimpe, :hauteurDuSpot, :nbVoies, :cotationMin, :cotationMax, :pays, :region, :photo)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->bindParam (':description',$description, PDO::PARAM_STR);
 		$query->bindParam (':gps',$gps, PDO::PARAM_STR);
@@ -76,6 +78,7 @@ class destination {
 		$query->bindParam (':cotationMax',$cotationMax, PDO::PARAM_STR);
 		$query->bindParam (':pays',$pays, PDO::PARAM_STR);
 		$query->bindParam (':region',$region, PDO::PARAM_STR);
+		$query->bindParam (':photo', $photo, PDO::PARAM_STR);
 		$query->execute();
 	}
 
