@@ -49,38 +49,9 @@ class critere {
         }
         $emess = __CLASS__ . ": unknown member $attr_name (setAttr)";
     }
-
-	// Fonction qui retourne la liste des criteres
-    public function getAll(){
-        $c=Base::getConnection();
-        $query = $c->prepare("select * from critere");
-        $c = base::getConnection();
-        $dbres = $query->execute();
-        $d = $query->fetchAll();
-        $tab = array();
-        foreach ($d as $key => $value) {
-            $a = new critere();
-            $a->idc = $value['idc'];
-            $a->nom = $value['nom'];
-            $tab[] = $a;
-        }
-        return $tab;
-    }
-////////////////////////////////////////////////////////////////////////////////////
-	// A supprimer mdr
-    public function getId($idc){
-        $c = Base::getConnection();
-        $d = new critere();
-        $reponse = $c->query('SELECT * FROM critere WHERE idc ='.$idc);
-        $donnees = $reponse->fetch();
-        $d->idc = $idc;
-        $d->nom = $donnees['nom'];
-        return $d;
-    }
-////////////////////////////////////////////////////////////////////////////////////
 	
 	// Fonction permettant d'ajouter un nouveau critère dans la base
-	public function insert($nom){
+	public function insertCritere($nom){
 		$c = Base::getConnection();
 		$query = $c->prepare("insert into critere (nom)
 							values (:nom)");
@@ -88,4 +59,28 @@ class critere {
 		$query->execute();
 	}
 
+	public function getCritereById($idc) {
+		$c = Base::getConnection();
+        $d = new critere();
+        $reponse = $c->query('SELECT * FROM critere WHERE idc ='.$idc);
+        $donnees = $reponse->fetch();
+        return $donnees;
+	}
+
+	// Fonction qui retourne la liste des criteres
+    public function getAllCriteres(){
+        $c=Base::getConnection();
+        $query = $c->prepare("select * from critere");
+        $c = base::getConnection();
+        $dbres = $query->execute();
+        $d = $query->fetchAll();
+        return $d;
+    }
+	
+	public function deleteCritere($idc) {
+		$c = Base::getConnection();
+		$query = $c->prepare("DELETE FROM critere WHERE idc = :idc");
+		$query->bindParam(':idc', $idc, PDO::PARAM_INT);
+		$query->execute();
+	}
 }
