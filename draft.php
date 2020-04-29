@@ -4,9 +4,11 @@ include_once('./Controleur/Controller.php');
 include_once('./Controleur/FuncController.php');
 include_once('./Modele/utilisateur.php');
 include_once('base.php');
+include_once('./Modele/critere.php');
 
 $f = new FuncController();
 $u = new utilisateur();
+$c = new critere();
 //$u->insertClient('banane@gmail.com', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', '500', 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf');
 
 
@@ -26,6 +28,8 @@ for($id = 1; $id<=5; $id++){
 }
 */
 
-header('./Modele/Deconnexion.php');
+var_dump($c->getAllCriteres());
+
+//header('./Modele/Deconnexion.php');
 
 ?>
