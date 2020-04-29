@@ -62,7 +62,8 @@ CREATE TABLE `event` (
   `createur` int,
   `hasLead` boolean,
   `nbPlace` int,
-  `niveaux` varchar(255)
+  `niveaux` varchar(255),
+  `date` int
 );
 
 CREATE TABLE `notesdestination` (

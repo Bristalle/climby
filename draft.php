@@ -9,6 +9,10 @@ include_once('./Modele/critere.php');
 $f = new FuncController();
 $u = new utilisateur();
 $c = new critere();
+$e = new event();
+
+$e->deleteEvent(2);
+var_dump($e->getAllEvents());
 //$u->insertClient('banane@gmail.com', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', '500', 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf');
 
 

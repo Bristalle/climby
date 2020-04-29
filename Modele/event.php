@@ -22,6 +22,7 @@ class event{
 	private $hasLead;
 	private $nbPlace;
 	private $niveaux;
+	private $date;
 
 	public function __construct() {
     	
@@ -46,26 +47,57 @@ class event{
 
 
     // Fonction permettant d'ajouter un nouveau event dans la base
-    public function insert($idu, $nom, $lieu, $description, $prix , $date, $capacite,$image,$critere){
- /*       $c = Base::getConnection();
-        $query = $c->prepare("insert into event(idu,nom,lieu,description,prix,date, capacite,idc)
-                          values(:idu,:nom,:lieu,:description,:prix, :date, :capacite, :critere)");
-        $query->bindParam (':idu',$idu, PDO::PARAM_INT);
-        $query->bindParam (':nom',$nom, PDO::PARAM_STR);
+    public function insertEvent($destination, $createur, $hasLead, $nbPlace, $niveaux, $date){
+        $c = Base::getConnection();
+        $query = $c->prepare("insert into event(destination, createur, hasLead, nbPlace, niveaux, date)
+                          values(:destination, :createur, :hasLead, :nbPlace, :niveaux, :date)");
+        $query->bindParam (':destination',$destination, PDO::PARAM_INT);
+        $query->bindParam (':createur',$createur, PDO::PARAM_STR);
         $query->bindParam (':lieu',$lieu, PDO::PARAM_STR);
         $query->bindParam (':description',$description, PDO::PARAM_STR);
         $query->bindParam (':prix',$prix, PDO::PARAM_INT);
         $query->bindParam (':date',$date, PDO::PARAM_STR);
         $query->bindParam (':capacite',$capacite, PDO::PARAM_INT);
         $query->bindParam (':critere',$critere, PDO::PARAM_INT);
+		$query->bindParam (':date',$date, PDO::PARAM_INT);
         $query->execute();
-
-        $this->idd = $c->LastInsertId('event');
-		
-        //insertion de l'image
-        $i = new image();
-        $i->insert($this->idd,$image);*/
     }
+	
+	public function updateEvent($ide, $destination, $createur, $hasLead, $nbPlace, $niveaux, $date) {
+		$c = Base::getConnection();
+		$req = $c->prepare("UPDATE event SET destination = :destination, createur = :createur, hasLead = :hasLead, nbPlace = :nbPlace, niveaux = :niveaux, date = :date WHERE ide = :ide");  
+		$req->bindParam (':destination', $destination, PDO::PARAM_INT);
+		$req->bindParam (':createur', $createur, PDO::PARAM_INT);
+		$req->bindParam (':hasLead', $hasLead, PDO::PARAM_BOOL);
+		$req->bindParam (':nbPlace', $nbPlace, PDO::PARAM_INT);
+		$req->bindParam (':niveaux', $niveaux, PDO::PARAM_STR);
+		$req->bindParam (':date', $date, PDO::PARAM_INT);
+		$req->bindParam (':ide', $ide, PDO::PARAM_INT);
+		$req->execute();
+        return $req->rowCount();
+	}
+	
+	public function getEventById($ide) {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM event WHERE ide = :ide");
+		$query->bindParam(':ide', $ide, PDO::PARAM_INT);
+		$query->execute();
+		return $query->fetch();
+	}
+	
+	public function getAllEvents() {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM event");
+		$query->execute();
+		return $query->fetchAll();
+	}
+	
+	public function deleteEvent($ide) {
+		$c = Base::getConnection();
+		$query = $c->prepare("DELETE FROM event WHERE ide = :ide");
+		$query->bindParam (':ide', $ide, PDO::PARAM_INT);
+		$query->execute();
+	}
 
     //Fonction retournant les 3 derniers events postés avec leurs images
     public function get3Latest(){
@@ -210,24 +242,6 @@ class event{
         return $tab;*/ return array();
     }
 	
-	// Fonction permettant de modifier un event
-    public function updateevent($event){
- /*       $c = Base::getConnection();
-        if(isset($event->idd) && isset($event->nom) && isset($event->desc) && isset($event->capacite) && isset($event->critere)){
-                $req = $c->prepare("UPDATE event SET nom = :newNom, description = :newDescr, capacite = :newCapa, idc = :newIdc WHERE idd = :idd");  
-                $req->bindParam (':newNom',$event->nom, PDO::PARAM_STR);
-                $req->bindParam (':newDescr',$event->desc, PDO::PARAM_STR);
-                $req->bindParam (':newCapa',$event->capacite, PDO::PARAM_STR);
-				$req->bindParam (':newIdc',$event->critere, PDO::PARAM_INT);
-                $req->bindParam (':idd',$event->idd, PDO::PARAM_INT); 
-                $req->execute();
-                return $req->rowCount();
-        }
-        else { return 0;}
-        
-*/return null;
-    }
-	
 	// Fonction d'administration permettant de modifier un event
 	public function updateeventAdmin($event){
 /*		$c = Base::getConnection();
@@ -241,14 +255,5 @@ class event{
 		$req->bindParam (':newCapa',$event->capacite, PDO::PARAM_INT);
 		$req->bindParam (':idd',$event->idd, PDO::PARAM_INT); 
 		$req->execute(); */
-    }
-
-	// Fonction permettant de supprimer un event
-    public function deleteevent($idd){
-/*        $c = Base::getConnection();
-        $query = $c->prepare("DELETE from event where idd=:idd");
-        $query->bindParam(':idd', $idd, PDO::PARAM_INT);
-        $query->execute();
-        return $query->rowCount();*/
     }
 }

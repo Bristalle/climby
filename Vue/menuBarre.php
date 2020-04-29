@@ -121,7 +121,7 @@ public function  barreAdmin() {
 	$f = new FuncController();
 	
 	//Chargement de la liste des utilisateur pour être utilisé dans une select-bar
-	$users = $f->getAllUsers();
+	$users = $f->getAllUtilisateurs();
 	$options = "";
 	foreach ($users as $utilisateur){
 		$options .= '<option value="'.$utilisateur['idu'].'">'.$utilisateur['idu'].' - '.$utilisateur['pseudo'].' - '.$utilisateur['email'].'</option>';

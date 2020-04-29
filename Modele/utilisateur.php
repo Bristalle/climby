@@ -119,19 +119,16 @@ class utilisateur{
 		$query->bindParam (':diplome', $diplome, PDO::PARAM_STR);
 		$query->bindParam (':dateInscription', $dateInscription, PDO::PARAM_INT);
         $query->execute();
-        $this->idu = $c->LastInsertId('utilisateur');
 	}
 	
 		// Fonction d'administration retournant la liste des informations d'un compte
 	public static function getUtilisateurById($id){
         $c = Base::getConnection();
-        if(isset($id)){
-            $query = $c->prepare("SELECT * FROM utilisateur where idu = :idu");
-            $query->bindParam (':idu',$id, PDO::PARAM_INT);
-            $query->execute();
-            $query = $query->fetchAll();
-            return $query[0];
-        }
+        $query = $c->prepare("SELECT * FROM utilisateur where idu = :idu");
+		$query->bindParam (':idu',$id, PDO::PARAM_INT);
+		$query->execute();
+		$query = $query->fetchAll();
+		return $query[0];
 		return null;
     }
 	
@@ -146,22 +143,20 @@ class utilisateur{
 	// Fonction permettant de modifier les informations de compte d'un abonne
     public static function updateUtilisateur($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome){
         $c = Base::getConnection();
-        if(isset($id) && isset($nEmail) && isset($nMdp) && isset($nPseudo) && isset($nAdresse) && isset($nCodep) && isset($nVille) && isset($nTel) && isset($nSolde) && isset($nAcces) && isset($nNiveau) && isset($nDiplome)){
-                $req = $c->prepare("UPDATE utilisateur SET email = :newEmail, mdp = :newMdp, pseudo = :newPseudo, addresse = :newAdd, codePost = :newCP, ville = :newVille, telephone = :newTel, solde = :newSolde, acces = :newAcces, niveau = :newNiveau, diplome = :newDiplome WHERE idu = :idu");  
-				$req->bindParam (':newEmail', $nEmail, PARAM_STR);
-                $req->bindParam (':newMdp',$nMdp, PDO::PARAM_STR);
-                $req->bindParam (':newPseudo',$nPseudo, PDO::PARAM_STR);
-                $req->bindParam (':newAdd',$nAdresse, PDO::PARAM_STR);
-                $req->bindParam (':newCP',$nCodep, PDO::PARAM_STR);
-                $req->bindParam (':newVille',$nVille, PDO::PARAM_STR);
-                $req->bindParam (':newTel',$nTel, PDO::PARAM_STR);
-                $req->bindParam (':newSole',$nSolde, PDO::PARAM_INT);
-				$req->bindParam (':newAcces',$nAcces, PDO::PARAM_INT);
-				$req->bindParam (':newNiveau',$nNiveau, PDO::PARAM_INT);
-				$req->bindParam (':newDiplome', $nDiplome, PDO::PARAM_STR);
-                $req->bindParam (':idu',$id, PDO::PARAM_INT); 
-                $req->execute();
-        }
+		$req = $c->prepare("UPDATE utilisateur SET email = :newEmail, mdp = :newMdp, pseudo = :newPseudo, addresse = :newAdd, codePost = :newCP, ville = :newVille, telephone = :newTel, solde = :newSolde, acces = :newAcces, niveau = :newNiveau, diplome = :newDiplome WHERE idu = :idu");  
+		$req->bindParam (':newEmail', $nEmail, PARAM_STR);
+		$req->bindParam (':newMdp',$nMdp, PDO::PARAM_STR);
+		$req->bindParam (':newPseudo',$nPseudo, PDO::PARAM_STR);
+		$req->bindParam (':newAdd',$nAdresse, PDO::PARAM_STR);
+		$req->bindParam (':newCP',$nCodep, PDO::PARAM_STR);
+		$req->bindParam (':newVille',$nVille, PDO::PARAM_STR);
+		$req->bindParam (':newTel',$nTel, PDO::PARAM_STR);
+		$req->bindParam (':newSole',$nSolde, PDO::PARAM_INT);
+		$req->bindParam (':newAcces',$nAcces, PDO::PARAM_INT);
+		$req->bindParam (':newNiveau',$nNiveau, PDO::PARAM_INT);
+		$req->bindParam (':newDiplome', $nDiplome, PDO::PARAM_STR);
+		$req->bindParam (':idu',$id, PDO::PARAM_INT); 
+		$req->execute();
         return $req->rowCount();
     }
 	

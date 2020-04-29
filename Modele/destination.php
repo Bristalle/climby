@@ -65,6 +65,12 @@ class destination {
 	// Fonction permettant d'ajouter un nouveau critère dans la base
 	public function insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo){
 		$c = Base::getConnection();
+		
+		//insertion de l'image
+        $i = new image();
+        $i->insert($this->idd,$image);
+		//retourner l'idi dans $photo à voir comment ca se gere s't'histoire
+		
 		$query = $c->prepare("insert into destination (nom, description, gps, critere, typeDeGrimpe, hauteurDuSpot, nbVoies, cotationMin, cotationMax, pays, region, photo)
 							values (:nom, :description, :gps, :critere, :typeDeGrimpe, :hauteurDuSpot, :nbVoies, :cotationMin, :cotationMax, :pays, :region, :photo)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
@@ -80,6 +86,8 @@ class destination {
 		$query->bindParam (':region',$region, PDO::PARAM_STR);
 		$query->bindParam (':photo', $photo, PDO::PARAM_INT);
 		$query->execute();
+		
+
 	}
 
 	public function getDestinationById($idd) {
@@ -102,7 +110,7 @@ class destination {
 	
 	public function deleteDestination($idd) {
 		//Ajouter le delete d'image
-		//Controle sur les events ?
+		//Controle sur les events : image par defaut avec "destination introuveable" et mail aux createur.
 		$c = Base::getConnection();
 		$query = $c->prepare("DELETE FROM destination WHERE idd = :idd");
 		$query->bindParam(':idd', $idd, PDO::PARAM_INT);
