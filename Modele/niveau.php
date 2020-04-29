@@ -10,24 +10,13 @@ else {
     include_once '../base.php';
 }
 /**
-* Classe permettant d'accéder à la table critere de la base de donnée
-* La table critere permet de définir les différents critères de diner pouvant être assignés (1 seul par diner)
+* Classe permettant d'accéder à la table niveau de la base de donnée
+* La table niveau permet de définir les différents critères de diner pouvant être assignés (1 seul par diner)
 */
-class critere {
+class niveau {
 
-	/**
-    * identifiant du critere
-    * @access private
-    *  @var integer
-    */
-    private $idc;
-
-	/**
-    * nom du critere
-    * @access private
-    *  @var string
-    */
-    private $nom;
+    private $idl;
+	private $nom;
 
     public function __construct() {
         
@@ -51,32 +40,32 @@ class critere {
     }
 	
 	// Fonction permettant d'ajouter un nouveau critère dans la base
-	public function insertCritere($nom){
+	public function insertNiveau($nom){
 		$c = Base::getConnection();
-		$query = $c->prepare("insert into critere (nom) values (:nom)");
+		$query = $c->prepare("insert into niveau (nom) values (:nom)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->execute();
 	}
 
-	public function getCritereById($idc) {
+	public function getNiveauById($idl) {
 		$c = Base::getConnection();
-        $query = $c->query('SELECT * FROM critere WHERE idc ='.$idc);
-        return $query->fetch();;
+        $query = $c->query('SELECT * FROM niveau WHERE idl ='.$idl);
+        return $query->fetch();
 	}
 
-	// Fonction qui retourne la liste des criteres
-    public function getAllCriteres(){
+	// Fonction qui retourne la liste des niveaus
+    public function getAllNiveaux(){
         $c = Base::getConnection();
-        $query = $c->prepare("select * from critere");
-        $query = $query->execute();
+        $query = $c->prepare("select * from niveau");;
+        $dbres = $query->execute();
         return $query->fetchAll();
     }
 	
-	public function deleteCritere($idc) {
-		// Modifier les destinations
+	public function deleteNiveau($idl) {
+		//Modifier le niveau des users
 		$c = Base::getConnection();
-		$query = $c->prepare("DELETE FROM critere WHERE idc = :idc");
-		$query->bindParam(':idc', $idc, PDO::PARAM_INT);
+		$query = $c->prepare("DELETE FROM niveau WHERE idl = :idl");
+		$query->bindParam(':idl', $idl, PDO::PARAM_INT);
 		$query->execute();
 	}
 }
