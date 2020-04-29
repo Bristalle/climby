@@ -5,14 +5,26 @@ include_once('./Controleur/FuncController.php');
 include_once('./Modele/utilisateur.php');
 include_once('base.php');
 include_once('./Modele/critere.php');
+include_once('./Modele/image.php');
+
 
 $f = new FuncController();
 $u = new utilisateur();
 $c = new critere();
 $e = new event();
+$i = new image();
 
-$e->deleteEvent(2);
-var_dump($e->getAllEvents());
+
+
+$i->updateImage(5, "gloups");
+//$i->insert("miaou");
+//$i->insertWithId(5, "miaou2");
+
+
+
+
+//$e->deleteEvent(2);
+//var_dump($e->getAllEvents());
 //$u->insertClient('banane@gmail.com', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', '500', 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf');
 
 

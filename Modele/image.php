@@ -24,18 +24,11 @@ class image
     private $idi;
 
     /**
-     * Identifiant du dîner
-     * @access private
-     * @var integer²
-     */
-    private $idd;
-
-    /**
      * Adresse de l'image
      * @access private
      * @var integer
      */
-    private $ad;
+    private $path;
 
     public function __construct() {
         
@@ -59,17 +52,45 @@ class image
     }
 
 	// Fonction permettant d'ajouter un nouvelle image dans la base
-    public function insert($idd,$path){
- /*       if(isset($idd) && isset($path)) {
-            $c = Base::getConnection();
-            $query = $c->prepare("insert into image(idd,adresse)
-                          values(:idd,:adresse)");
-            $query->bindParam (':idd',$idd, PDO::PARAM_INT);
-            $query->bindParam (':adresse',$path, PDO::PARAM_STR);
-            $query->execute();
-            $this->idi = $c->LastInsertId('image');
-        }*/
+    public function insertImage($path){
+		//Heberger l'image ?
+		$c = Base::getConnection();
+		$query = $c->prepare("insert into image(path)
+					  values(:adresse)");
+		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
+		$query->execute();
     }
+	
+	private function insertImageWithId($idi, $path){
+		//Heberger l'image ?
+		$c = Base::getConnection();
+		$query = $c->prepare("insert into image(idi, path)
+					  values(:idi, :adresse)");
+		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
+		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
+		$query->execute();
+    }
+
+	public function getImage($idi) {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM image WHERE idi = :idi");
+		$query->bindParam (':idi',$idi, PDO::PARAM_INT);
+		$query->execute();
+		return $query->fetch();
+	}
+	
+	public function updateImage($idi, $path) {
+		$this->deleteImage($idi);
+		$this->insertImageWithId($idi, $path);
+	}
+	
+	public function deleteImage($idi) {
+		//Supprimer le fichier image
+		$c = Base::getConnection();
+		$query = $c->prepare("DELETE FROM image WHERE idi = :idi");
+		$query->bindParam (':idi',$idi, PDO::PARAM_INT);
+		$query->execute();
+	}
 
     // Fonction retournant l'adresse de l'image d'un diner donné
     public function getAdd($idd){
