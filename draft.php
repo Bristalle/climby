@@ -16,7 +16,7 @@ $i = new image();
 
 
 
-$i->updateImage(5, "gloups");
+//$i->updateImage(5, "gloups");
 //$i->insert("miaou");
 //$i->insertWithId(5, "miaou2");
 
