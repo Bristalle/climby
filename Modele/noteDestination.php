@@ -78,8 +78,8 @@ class noteDestination
 	public function getAllNoteDestination() {
 		$c = Base::getConnection();
 		$query = $c->prepare("SELECT * FROM notedestination");
-		$query->execute()
-		$return $query->fetchAll();
+		$query->execute();
+		return $query->fetchAll();
 	}
 	
 	public function deleteNoteDestination($idnd) {

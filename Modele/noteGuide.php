@@ -15,33 +15,11 @@ else {
 */
 class noteInvite
 {
-	/**
-    * identifiant de la note
-    * @access private
-    *  @var int
-    */
-    private $idn_Inv;
-
-    /**
-    * identifiant de l'invité
-    * @access private
-    *  @var int
-    */
-    private $idu_Inv;
-
-    /**
-    * identifiant de l'hote ayant donné la note
-    * @access private
-    *  @var int
-    */
-    private $idu_Hot;
-
-    /**
-    * nom du diner
-    * @access private
-    *  @var int
-    */
-    private $note;
+    private $idng;
+	private $ciblenote;
+	private $noteur;
+	private $note;
+	private $commentaire;
 
     public function __construct() {
         
@@ -63,6 +41,50 @@ class noteInvite
         }
         $emess = __CLASS__ . ": unknown member $attr_name (setAttr)";
     }
+
+		public function insertNoteGuide($ciblenote, $noteur, $note, $commentaire){
+       	$c = Base::getConnection();
+		$query = $c->prepare("INSERT into noteguide(ciblenote, noteur, note, commentaire)
+                              VALUES(:ciblenote, :noteur, :note, :commentaire)");
+        $query->bindParam (':ciblenote',$ciblenote, PDO::PARAM_INT);
+        $query->bindParam (':noteur',$noteur, PDO::PARAM_INT);
+        $query->bindParam (':note',$note, PDO::PARAM_INT);
+        $query->bindParam (':commentaire',$commentaire, PDO::PARAM_STR);
+        $query->execute();
+	}
+	
+	public function updateNoteGuide($idng, $ciblenote, $noteur, $note, $commentaire) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE noteguide SET ciblenote = :ciblenote, noteur = :noteur, note = :note, commentaire = :commentaire WHERE idng = :idng");
+		$query->bindParam(':ciblenote', $ciblenote, PDO::PARAM_INT);
+		$query->bindParam(':noteur', $noteur, PDO::PARAM_INT);
+		$query->bindParam(':note', $note, PDO::PARAM_INT);
+		$query->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+		$query->bindParam(':idng', $idng, PDO::PARAM_INT);
+		$query->execute();
+	}
+	
+	public function getNoteGuideById($idng) {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM noteguide WHERE idng = :idng");
+		$query->bindParam(':idng', $idng, PDO::PARAM_INT);
+		$query->execute();
+		return $query->fetch();
+	}
+	
+	public function getAllNoteGuide() {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM noteguide");
+		$query->execute();
+		return $query->fetchAll();
+	}
+	
+	public function deleteNoteGuide($idng) {
+		$c = Base::getConnection();
+		$query = $c->prepare("DELETE FROM noteguide WHERE idng = :idng");
+		$query->bindParam (':idng', $idng, PDO::PARAM_INT);
+		$query->execute();
+	}
 
     // Fonction permettant d'obtenir la note moyenne d'un invite donné
     public function getMoyenneInvite($idu){
