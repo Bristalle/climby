@@ -12,7 +12,7 @@ else {
 include_once 'Controller.php';
 include_once $linkIndex.'Vue/menuBarre.php';
 include_once $linkIndex.'Modele/utilisateur.php';
-//include_once $linkIndex.'Modele/noteUtilisateur.php';
+include_once $linkIndex.'Modele/noteGuide.php';
 include_once $linkIndex.'Modele/noteDestination.php';
 include_once $linkIndex.'Modele/event.php';
 include_once $linkIndex.'Modele/destination.php';
@@ -22,6 +22,7 @@ include_once $linkIndex.'Modele/inscription.php';
 include_once $linkIndex.'Modele/niveau.php';
 include_once $linkIndex.'Modele/acces.php';
 include_once $linkIndex.'Modele/critere.php';
+include_once $linkIndex.'Modele/typeGrimpe.php';
 
 /**
 *
@@ -33,6 +34,8 @@ class FuncController extends Controller{
         $this->tab=array(
 			"getTheBarre" => "getTheBarre",
 			"getBouttonAccueil" => "getBouttonAccueil",
+			"getReturnedPage" => "getReturnedPage",
+			"getSelectBoxInitializedNiveaux" => "getSelectBoxInitializedNiveaux",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
@@ -47,6 +50,8 @@ class FuncController extends Controller{
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
+			"getJumbotron" => "getJumbotron",
+			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
 	//		"creerCompteClient" => "creerCompteClient",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
@@ -85,7 +90,10 @@ class FuncController extends Controller{
     //      "retirerSolde" => "retirerSolde",
     //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
-    //      "getCapacite" => "getCapacite"
+    //      "getCapacite" => "getCapacite",
+			"getAllNiveaux" => "getAllNiveaux",
+			"changerMdp" => "changerMdp",
+			"updateUtilisateur" => "updateUtilisateur",
         );
     }
 	
@@ -126,6 +134,65 @@ class FuncController extends Controller{
 				<a class="navbar-brand" href="'.$lnkInd.'index.php">Accueil</a>
 			</div>';
 	return $html;
+	}
+	
+	public function getReturnedPage($content) {
+		$v = new menuBarre();
+		$barre = $this->getTheBarre();
+		$html = '
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Dîner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- CSS -->
+    <link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
+    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
+    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
+    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
+    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
+
+
+
+    <!--JS-->
+    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
+    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
+    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
+    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
+    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
+    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
+
+</head>
+<body id="body">'
+.$v->affichage($barre)
+.'<div class="container">'
+    .$this->getJumbotron()
+	.'<div class="alert alert-success" role="alert">
+    '.$content.'
+    </div>';
+	return $html;
+	}
+	
+	public function getSelectBoxInitializedNiveaux($selectedIdl) {
+		// Chargement des niveaux et création de la selectbox
+		$l = new niveau();
+		$lvl = $l->getAllNiveaux();
+		$niveaux = '';
+		foreach($lvl as $lv){
+			if($lv['idl'] == $selectedIdl){
+				$niveaux = $niveaux . '<option value="'.$lv['idl'].'" selected>'.$lv['nom'].'</option>';
+			} else {
+				$niveaux = $niveaux . '<option value="'.$lv['idl'].'">'.$lv['nom'].'</option>';
+			}
+		}
+				$html = '<label for="message-test" class="control-label">Niveau:</label>
+					<select name="niveau" class="form-control">'
+						.$niveaux
+					.'</select>';
+		return $html;
 	}
 	
 	public function getModalFormulaireCreationCompte($lnkInd) {
@@ -395,9 +462,8 @@ class FuncController extends Controller{
 <!-- Menu déroulant d interface de gestion de compte -->
                                 <ul class="dropdown-menu">
                                     <li><a class="nav-link" data-toggle="modal" data-target="#compteModal" style="cursor:pointer">Mes infos</a></li>
-                                    <li><a href="'.$lnkInd.'Vue/mesDiners.php">Mes dîners</a></li>
-                                    <li><a href="'.$lnkInd.'Vue/mesResa.php">Mes réservations</a></li>
-
+                                    <li><a href="'.$lnkInd.'Vue/mesDiners.php">Mes évenements</a></li>
+                                    <li><a href="'.$lnkInd.'Vue/mesResa.php">Mes inscriptions</a></li>
                                 </ul>
                                 
                             <!-- Modal -->
@@ -405,11 +471,11 @@ class FuncController extends Controller{
                             <div class="modal fade" id="compteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <h4 class="modal-title" id="myModalLabel">Informations et modification du compte pour : '.$u['email'].'</h4>
-                                        </div>
-                                        <form method="post" action="'.$lnkInd.'Site.php?a=modifCompteAbonne">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Informations et modification du compte pour : '.$u['email'].'</h4>
+										</div>
+										<form method="post" action="'.$lnkInd.'Site.php?a=modifCompteAbonne">
                                             <div class="modal-body">
                                                 Modifiez vos informations ici
 												<input type="hidden" name="idu" value="'.$idu.'">
@@ -433,36 +499,54 @@ class FuncController extends Controller{
                                                 <label for="message-text" class="control-label">N° de téléphone:</label>
                                                 <input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel" value="'.$u['telephone'].'">
                                             </div>
+											<div class="form-group">'
+												.$this->getSelectBoxInitializedNiveaux($u['niveau'])
+											.'</div>
 											<div class="form-group">
                                                 <label for="message-text" class="control-label">Solde:</label>
                                                 <input type="number" class="form-control" id="recipient-name" name="solde" value="'.$u['solde'].'" disabled>
                                             </div>
 				<!-- Pas Encore implémenté -->
 											<!--
+											<div class="form-group">
+												<label for="message-text" class="control-label">Vos diplômes :</label>
+												
+											</div>
                                             <div class="form-group">
-                                                    <label for="message-text" class="control-label">Votre note moyenne d\'invité : '.'5'.' / 5</label>
+                                                <label for="message-text" class="control-label">Votre note moyenne d\'invité : '.'5'.' / 5</label>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Votre note moyenne d\'hote : '.'5'.' / 5</label>
                                             </div>
 											-->
                                             <div class="form-group">
-                                                    <label for="message-text" class="control-label">Votre note moyenne d\'hote : '.'5'.' / 5</label>
-                                                </div>
-                                            <div class="form-group">
-                                                <label for="message-text" class="control-label">Nouveau mot de passe:</label>
-                                                <input type="password" class="form-control" id="recipient-name" name="mdp1">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="message-text" class="control-label">répéter le Nouveau mot de passe:</label>
-                                                <input type="password" class="form-control" id="recipient-name" name="mdp2">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="message-text" class="control-label">Mot de passe actuel (pour valider les changements) :</label>
-                                                <input type="password" class="form-control" id="recipient-name" name="mdpV">
-                                            </div>
+												<label for="message-text" class="control-label">Inscrit depuis le : '.date('d/m/Y', $u['dateInscription']).'</label>
+											</div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                                                 <button id="bouton" class="btn btn-info" type="submit">Modifier</button>
                                             </div>
                                         </form>
+										</br></br>
+										<form method="post" action="'.$lnkInd.'Site.php?a=changerMdp">
+											<input type="hidden" name="idu" value="'.$idu.'">
+											<div class="form-group">
+                                                <label for="message-text" class="control-label">Mot de passe actuel :</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdpV">
+                                            </div>
+											<div class="form-group">
+                                                <label for="message-text" class="control-label">Nouveau mot de passe:</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdp1">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message-text" class="control-label">Répéter le Nouveau mot de passe:</label>
+                                                <input type="password" class="form-control" id="recipient-name" name="mdp2">
+                                            </div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                                <button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+											</div>
+										</form>
                                     </div>
                                 </div>
                             </div> 
@@ -754,6 +838,35 @@ class FuncController extends Controller{
                     $("#myInput").focus()
                 })
             </script>';
+		return $html;
+	}
+	
+	public function getModalEnSavoirPlus(){
+		$html = '<p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
+        <!-- Modal -->
+        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Content à remplir</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Content à remplir ? Miaou miaou</p>
+                    </div>
+                </div>
+            </div>
+        </div>';
+		return $html;
+	}
+	
+	public function getJumbotron(){
+		$html = '
+			<div class="jumbotron">
+				<h1 class="shadow" style="color: #ffffff">On grimpe ?</h1>
+				<p class="shadow" style="color: #ffffff">Choisissez votre groupe, choisissez votre grimpe !</p>'
+				.$this->getModalEnSavoirPlus()
+			.'</div>';
 		return $html;
 	}
 	
@@ -2827,5 +2940,65 @@ echo '<div class="container">
     /*    $r = new reservation();
         return $r->getNbParticipants($idd);*/
     }
+	
+	public function getAllNiveaux() {
+		$l = new niveau();
+		return $l->getAllNiveaux();
+	}
+	
+	public function changerMdp() {
+		$idu = $_POST['idu'];
+
+		//Controles	
+		$u = $this->getUtilisateurId($idu);
+		$bool=true;
+        $res='';
+		
+        if (empty($_POST['mdpV'])) {
+            $res.='<div class="alert alert-danger" role="alert">Pour valider les changement vous devez rentrer votre mot de passe actuel.</div>';
+            $bool=false;
+        } else {
+            $mdpV = strip_tags(htmlentities($_POST['mdpV']));
+            if(!password_verify($mdpV, $u['mdp'])){
+                $res.='<div class="alert alert-danger" role="alert">Mot de passe incorrect.</div>';
+                $bool=false;
+            }
+        }
+		
+		if(empty($_POST['mdp1']) && empty($_POST['mdp2'])){
+			$res .='<div class="alart alert-danger" role="alert">Nouveau mot de passe non renseigné.</div>';
+			$bool=false;
+		} else {
+			$mdp1 = strip_tags(htmlentities($_POST['mdp1']));
+			$mdp2 = strip_tags(htmlentities($_POST['mdp2']));
+			if($mdp1 == $mdp2){
+				$mdp = password_hash($mdp1, PASSWORD_BCRYPT);				
+			} else {
+				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas. Pas de changement de mot de passe.</div>';
+				$bool=false;
+			}
+		}
+		
+		//Fonction d'update
+		if($bool){
+			if($this->updateUtilisateur($u['idu'], $u['email'], $mdp, $u['pseudo'], $u['addresse'], $u['codePost'], $u['ville'], $u['telephone'], $u['solde'], $u['acces'], $u['niveau'], $u['diplome'], $u['dateInscription'])){
+					$res.= '<div class="alert alert-success" role="alert">Modification de mot de passe effectuée avec succès !</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function updateUtilisateur($idu, $email, $mdp, $pseudo, $addresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription) {
+		$u = new utilisateur();
+		if($u->updateUtilisateur($idu, $email, $mdp, $pseudo, $addresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription) == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 ?>

@@ -63,7 +63,7 @@ class inscriptionAnnulee
 							WHERE idi = :idi");
 		$query->bindParam(':participant', $participant, PDO::PARAM_INT);
 		$query->bindParam(':event', $event, PDO::PARAM_INT);
-		$query->bindParam(':date', $date; PDO::PARAM_INT);
+		$query->bindParam(':date', $date, PDO::PARAM_INT);
 		$query->bindParam(':dateannul', $dateannul, PDO::PARAM_INT);
 		$query->bindParam(':idi', $idi, PDO::PARAM_INT);
 		$query->execute();

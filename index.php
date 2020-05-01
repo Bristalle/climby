@@ -43,25 +43,9 @@ $v = new menuBarre();
 echo $v->affichage($barre);
 ?>
 <div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">On grimpe ?</h1>
-        <p class="shadow" style="color: #ffffff">Choisissez votre groupe, choisissez votre grimpe !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Content à remplir ? Miaou miaou</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php
+	echo $f->getJumbotron();
+	?>
     <div class="bloc-2 row">
         <div class="page-header">
             <h2>Les Nouveautés</h2>

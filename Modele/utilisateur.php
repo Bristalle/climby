@@ -105,8 +105,8 @@ class utilisateur{
 		$mdp = password_hash($mdp, PASSWORD_BCRYPT);
 		$dateInscription = time();
         $c = Base::getConnection();
-        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, diplome, dateInscription)
-                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :diplome, :dateInscription)");
+        $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, diplome, dateInscription, acces)
+                              values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :diplome, :dateInscription, :acces)");
         $query->bindParam (':mail', $mail, PDO::PARAM_STR);
         $query->bindParam (':mdp',$mdp, PDO::PARAM_STR);
 		$query->bindParam (':pseudo',$pseudo, PDO::PARAM_STR);
@@ -118,6 +118,7 @@ class utilisateur{
 		$query->bindParam (':niveau', $niveau, PDO::PARAM_INT);
 		$query->bindParam (':diplome', $diplome, PDO::PARAM_STR);
 		$query->bindParam (':dateInscription', $dateInscription, PDO::PARAM_INT);
+		$query->bindParam (':acces', $acces, PDO::PARAM_INT);
         $query->execute();
 		return $c->lastInsertId('utilisateur');
 	}
@@ -139,7 +140,7 @@ class utilisateur{
 	}
 	
 	// Fonction permettant de modifier les informations de compte d'un abonne
-    public static function updateUtilisateur($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome){
+    public static function updateUtilisateur($id, $nEmail, $nMdp, $nPseudo, $nAdresse, $nCodep, $nVille, $nTel, $nSolde, $nAcces, $nNiveau, $nDiplome, $dateInscription){
         $c = Base::getConnection();
 		$req = $c->prepare("UPDATE utilisateur SET 
 									email = :newEmail, 
@@ -152,7 +153,8 @@ class utilisateur{
 									solde = :newSolde, 
 									acces = :newAcces, 
 									niveau = :newNiveau, 
-									diplome = :newDiplome 
+									diplome = :newDiplome,
+									dateInscription = :newDate
 									WHERE idu = :idu");  
 		$req->bindParam (':newEmail', $nEmail, PDO::PARAM_STR);
 		$req->bindParam (':newMdp',$nMdp, PDO::PARAM_STR);
@@ -165,6 +167,7 @@ class utilisateur{
 		$req->bindParam (':newAcces',$nAcces, PDO::PARAM_INT);
 		$req->bindParam (':newNiveau',$nNiveau, PDO::PARAM_INT);
 		$req->bindParam (':newDiplome', $nDiplome, PDO::PARAM_STR);
+		$req->bindParam (':newDate', $dateInscription, PDO::PARAM_INT);
 		$req->bindParam (':idu',$id, PDO::PARAM_INT); 
 		$req->execute();
         return $req->rowCount();
