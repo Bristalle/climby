@@ -846,17 +846,21 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalEnSavoirPlus(){
-		$html = '<p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
+		$nomBouton = "En savoir plus";
+		$titreContentBouton = "Content à remplir";
+		$contentBouton = "Content à remplir ? Miaou miaou";
+		
+		$html = '<p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">'.$nomBouton.'</a></p>
         <!-- Modal -->
         <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Content à remplir</h4>
+                        <h4 class="modal-title" id="exampleModalLabel">'.$titreContentBouton.'</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Content à remplir ? Miaou miaou</p>
+                        <p>'.$contentBouton.'</p>
                     </div>
                 </div>
             </div>
@@ -865,10 +869,13 @@ class FuncController extends Controller{
 	}
 	
 	public function getJumbotron(){
+		$titre = "On grimpe ?";
+		$sousTitre = "Choisissez votre groupe, choisissez votre grimpe !";
+		
 		$html = '
 			<div class="jumbotron">
-				<h1 class="shadow" style="color: #ffffff">On grimpe ?</h1>
-				<p class="shadow" style="color: #ffffff">Choisissez votre groupe, choisissez votre grimpe !</p>'
+				<h1 class="shadow" style="color: #ffffff">'.$titre.'</h1>
+				<p class="shadow" style="color: #ffffff">'.$sousTitre.'</p>'
 				.$this->getModalEnSavoirPlus()
 			.'</div>';
 		return $html;
