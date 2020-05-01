@@ -91,6 +91,7 @@ class FuncController extends Controller{
     //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
     //      "getCapacite" => "getCapacite",
+			"getAccesById" => "getAccesById",
 			"getAllNiveaux" => "getAllNiveaux",
 			"changerMdp" => "changerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
@@ -248,7 +249,7 @@ class FuncController extends Controller{
 							</div>
 						</div>
 						</li>';
-		return $html;
+		return '';//$html;
 	}
 	
 	public function getModalFormulaireConnexion($lnkInd) {
@@ -342,7 +343,7 @@ class FuncController extends Controller{
 								</div>
 							</div>
 						</div>';
-		return $html;
+		return '';//$html;
 	}
 	
 	public function getModalFormulaireContacterAdmin($lnkInd){
@@ -452,18 +453,18 @@ class FuncController extends Controller{
 									</div>
 								</div>
                             </div>';
-		return $html;
+		return '';//$html;
 	}
 	
 	public function getModalMonCompte($lnkInd, $idu) {
-		$u = $this->getUtilisateurId($idu);		
+		$u = $this->getUtilisateurId($idu);
 		$html = '			<li>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mon compte <span class="caret"></span></a>
 <!-- Menu déroulant d interface de gestion de compte -->
                                 <ul class="dropdown-menu">
                                     <li><a class="nav-link" data-toggle="modal" data-target="#compteModal" style="cursor:pointer">Mes infos</a></li>
-                                    <li><a href="'.$lnkInd.'Vue/mesDiners.php">Mes évenements</a></li>
-                                    <li><a href="'.$lnkInd.'Vue/mesResa.php">Mes inscriptions</a></li>
+                                    <!--<li><a href="'.$lnkInd.'Vue/mesDiners.php">Mes évenements</a></li>-->
+                                    <!--<li><a href="'.$lnkInd.'Vue/mesResa.php">Mes inscriptions</a></li>-->
                                 </ul>
                                 
                             <!-- Modal -->
@@ -507,11 +508,11 @@ class FuncController extends Controller{
                                                 <input type="number" class="form-control" id="recipient-name" name="solde" value="'.$u['solde'].'" disabled>
                                             </div>
 				<!-- Pas Encore implémenté -->
-											<!--
 											<div class="form-group">
-												<label for="message-text" class="control-label">Vos diplômes :</label>
-												
+												<label for="message-text" class="control-label">Vos diplômes :</label> Pas encore dispo
+												<!--<input type="text" class="form-control" id"recipient-nam" name="diplome" value="'.$u['diplome'].'" disabled>-->
 											</div>
+											<!--
                                             <div class="form-group">
                                                 <label for="message-text" class="control-label">Votre note moyenne d\'invité : '.'5'.' / 5</label>
                                             </div>
@@ -519,6 +520,9 @@ class FuncController extends Controller{
                                                 <label for="message-text" class="control-label">Votre note moyenne d\'hote : '.'5'.' / 5</label>
                                             </div>
 											-->
+											<div class="form-group">
+												<label for="message-text" class="control-label">Votre niveau d\'accès : '.$this->getAccesById($u['acces'])['nom'].'
+											</div>
                                             <div class="form-group">
 												<label for="message-text" class="control-label">Inscrit depuis le : '.date('d/m/Y', $u['dateInscription']).'</label>
 											</div>
@@ -587,13 +591,13 @@ class FuncController extends Controller{
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administration <span class="caret"></span></a>
 <!-- Menu Déroulant de l interface d administration -->
 								<ul class="dropdown-menu">
-									<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>
-									<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>
-									<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>
-									<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>
-									<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>
-									<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>
-									<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>
+									<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
+									<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
+									<!--<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>-->
+									<!--<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>-->
+									<!--<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>-->
+									<!--<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>-->
+									<!--<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>-->
 								</ul>
                             </li>';
 		return $html;
@@ -2940,6 +2944,11 @@ echo '<div class="container">
     /*    $r = new reservation();
         return $r->getNbParticipants($idd);*/
     }
+	
+	public function getAccesById($ida){
+		$a = new acces();
+		return $a->getAccesById($ida);
+	}
 	
 	public function getAllNiveaux() {
 		$l = new niveau();

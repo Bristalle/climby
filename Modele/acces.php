@@ -70,6 +70,7 @@ class acces
 		$c = Base::getConnection();
 		$query = $c->prepare("SELECT * FROM acces WHERE ida = :ida");
 		$query->bindParam(':ida', $ida, PDO::PARAM_STR);
+		$query->execute();
 		return $query->fetch();
 	}
 	
