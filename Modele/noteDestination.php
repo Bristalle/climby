@@ -54,6 +54,7 @@ class noteDestination
         $query->bindParam (':note',$note, PDO::PARAM_INT);
         $query->bindParam (':commentaire',$commentaire, PDO::PARAM_STR);
         $query->execute();
+		return $c->lastInsertId('notedestination');
 	}
 	
 	public function updateNoteDestination($idnd, $noteur, $destination, $note, $commentaire) {
@@ -65,6 +66,7 @@ class noteDestination
 		$query->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
 		$query->bindParam(':idnd', $idnd, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 	
 	public function getNoteDestinationById($idnd) {
@@ -87,6 +89,7 @@ class noteDestination
 		$query = $c->prepare("DELETE FROM notedestination WHERE idnd = :idnd");
 		$query->bindParam (':idnd', $idnd, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 
     // Fonction permettant d'obtenir la note (moyenne) d'un hote via son idu

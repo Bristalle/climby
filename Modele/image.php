@@ -58,6 +58,7 @@ class image
 		$query = $c->prepare("insert into image(path) values(:adresse)");
 		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
 		$query->execute();
+		return $c->lastInsertId('image');
     }
 	
 	private function insertImageWithId($idp, $path){
@@ -67,6 +68,7 @@ class image
 		$query->bindParam (':idp', $idp, PDO::PARAM_INT);
 		$query->bindParam (':adresse',$path, PDO::PARAM_STR);
 		$query->execute();
+		return $c->lastInsertId('image');
     }
 
 	public function getImage($idp) {
@@ -77,9 +79,17 @@ class image
 		return $query->fetch();
 	}
 	
+	public function getAllImages() {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM image");
+		$query->execute();
+		return $query->fetchAll();
+	}
+	
 	public function updateImage($idp, $path) {
 		$this->deleteImage($idp);
 		$this->insertImageWithId($idp, $path);
+		return $query->rowCount();
 	}
 	
 	public function deleteImage($idp) {
@@ -88,6 +98,7 @@ class image
 		$query = $c->prepare("DELETE FROM image WHERE idp = :idp");
 		$query->bindParam (':idp',$idp, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 
     // Fonction retournant l'adresse de l'image d'un diner donné

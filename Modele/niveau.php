@@ -45,6 +45,16 @@ class niveau {
 		$query = $c->prepare("insert into niveau (nom) values (:nom)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->execute();
+		return $c->lastInsertId('niveau');
+	}
+	
+	public function updateNiveau($idl, $nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE niveau SET nom = :nom WHERE idl = :idl");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->bindParam(':idl', $idl, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
 	}
 
 	public function getNiveauById($idl) {
@@ -67,5 +77,6 @@ class niveau {
 		$query = $c->prepare("DELETE FROM niveau WHERE idl = :idl");
 		$query->bindParam(':idl', $idl, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 }

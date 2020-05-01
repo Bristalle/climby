@@ -24,9 +24,9 @@ $i = new image();
 
 //$e->deleteEvent(2);
 //var_dump($e->getAllEvents());
-//$u->insertClient('banane@gmail.com', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', '500', 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf');
-
-
+//var_dump($u->insertUtilisateur('banane@gmail.com', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', '500', 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf'));
+//var_dump($u->deleteUtilisateur(4));
+//var_dump($u->updateUtilisateur(5, 'banane@gmail.fr', 'gniakgniakgniak', 'banane', '7 rue banane', '78960', 'Voisins de banane', '0123456789', 500, 4,1, 'je suis une banane qui rampe', './../doc/diplome.pdf'))
 //var_dump($f->getUtilisateurId(1));
 
 /*

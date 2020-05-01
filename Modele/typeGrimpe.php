@@ -45,6 +45,16 @@ class typeGrimpe {
 		$query = $c->prepare("insert into typegrimpe (nom) values (:nom)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->execute();
+		return $c->lestInsertId('typegrimpe');
+	}
+	
+	public function updateTypeGrimpe($idt, $nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE typegrimpe SET nom = :nom WHERE idt = :idt");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->bindParam(':idt', $idt, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
 	}
 
 	public function getTypeGrimpeById($idt) {
@@ -67,5 +77,6 @@ class typeGrimpe {
 		$query = $c->prepare("DELETE FROM typegrimpe WHERE idt = :idt");
 		$query->bindParam(':idt', $idt, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 }

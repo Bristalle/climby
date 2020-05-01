@@ -49,12 +49,43 @@ class acces
     	$emess = __CLASS__ . ": unknown member $attr_name (setAttr)";
     }
 	
+	public function insertAcces($nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("INSERT INTO acces (nom) VALUES (:nom)");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->execute();
+		return $c->lastInsertId('acces');
+	}
+	
+	public function updateAcces($ida, $nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE acces SET nom = :nom WHERE ida = :ida");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->bindParam(':ida', $ida, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
+	}
+	
+	public function getAccesById($ida) {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM acces WHERE ida = :ida");
+		$query->bindParam(':ida', $ida, PDO::PARAM_STR);
+		return $query->fetch();
+	}
+	
 	// Fonction qui retourne la listes des niveaux d'accès
 	public function getAllAcces(){
 		$c = Base::getConnection();
         $query = $c->prepare("select * from acces");
         $query->execute();
-        $query = $query->fetchAll();
-        return $query;
+        return $query->fetchAll();
+	}
+	
+	public function deleteAcces($ida) {
+		$c = Base::getConnection();
+		$query = $c->prepare("DELETE FROM acces WHERE ida = :ida");
+		$query->bindParam(':ida', $ida, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
 	}
 }

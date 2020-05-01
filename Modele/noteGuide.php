@@ -51,6 +51,7 @@ class noteInvite
         $query->bindParam (':note',$note, PDO::PARAM_INT);
         $query->bindParam (':commentaire',$commentaire, PDO::PARAM_STR);
         $query->execute();
+		return $c->lastInsertId('noteguide');
 	}
 	
 	public function updateNoteGuide($idng, $ciblenote, $noteur, $note, $commentaire) {

@@ -61,6 +61,7 @@ class event{
         $query->bindParam (':critere',$critere, PDO::PARAM_INT);
 		$query->bindParam (':date',$date, PDO::PARAM_INT);
         $query->execute();
+		return $c->lastInsertId('event');
     }
 	
 	public function updateEvent($ide, $destination, $createur, $hasLead, $nbPlace, $niveaux, $date) {
@@ -97,6 +98,7 @@ class event{
 		$query = $c->prepare("DELETE FROM event WHERE ide = :ide");
 		$query->bindParam (':ide', $ide, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 
     //Fonction retournant les 3 derniers events postés avec leurs images

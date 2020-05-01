@@ -56,6 +56,16 @@ class critere {
 		$query = $c->prepare("insert into critere (nom) values (:nom)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->execute();
+		return $c->lastInsertId('critere');
+	}
+	
+	public function updateCritere($idc, $nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE critere SET nom = :nom WHERE idc = :idc");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->bindParam(':idc', $idc, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
 	}
 
 	public function getCritereById($idc) {
@@ -78,5 +88,6 @@ class critere {
 		$query = $c->prepare("DELETE FROM critere WHERE idc = :idc");
 		$query->bindParam(':idc', $idc, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 }

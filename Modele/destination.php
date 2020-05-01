@@ -86,26 +86,55 @@ class destination {
 		$query->bindParam (':region',$region, PDO::PARAM_STR);
 		$query->bindParam (':photo', $photo, PDO::PARAM_INT);
 		$query->execute();
-		
-
+		return $c->lastInsertId('destination');
+	}
+	
+	public function updateDestination($idd, $nom, $descrition, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo) {
+		$c = Base::getConnection();
+		$query = $c->prepare("UPDATE destination
+							SET nom = :nom, 
+							description = :description, 
+							gps = :gps, 
+							critere = :critere,
+							typeDeGrimpe = :typeDeGrimpe,
+							hauteurDuSpot = :hauteurDuSpot,
+							nbVoies = :nbVoies, 
+							cotationMin = :cotationMin,
+							cotationMax = :cotationMax, 
+							pays = :pays,
+							region = :region,
+							photo = :photo
+							WHERE idd = :idd");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->bindParam(':description', $description, PDO::PARAM_STR);
+		$query->bindParam(':gps', $gps, PDO::PARAM_STR);
+		$query->bindParam(':critere', $critere, PDO::PARAM_INT);
+		$query->bindParam(':typeDeGrimpe', $typeDeGrimpe, PDO::PARAM_INT);
+		$query->bindParam(':hauteurDuSpot', $hauteurDuSpot, PDO::PARAM_INT);
+		$query->bindParam(':nbVoies', $nbVoies, PDO::PARAM_INT);
+		$query->bindParam(':cotationMin', $cotationMin, PDO::PARAM_STR);
+		$query->bindParam(':cotationMax', $cotationMax, PDO::PARAM_STR);
+		$query->bindParam(':pays', $pays, PDO::PARAM_STR);
+		$query->bindParam(':region', $region, PDO::PARAM_STR);
+		$query->bindParam(':photo', $photo, PDO::PARAM_STR);
+		$query->bindParam(':idd', $idd, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
+		//Gérer l'image avec un update ??
 	}
 
 	public function getDestinationById($idd) {
 		$c = Base::getConnection();
-        $d = new destination();
-        $reponse = $c->query('SELECT * FROM destination WHERE idd ='.$idd);
-        $donnees = $reponse->fetch();
-        return $donnees;
+        $query = $c->query('SELECT * FROM destination WHERE idd ='.$idd);
+        return $query->fetch();
 	}
 
 	// Fonction qui retourne la liste des destinations
     public function getAllDestinations(){
         $c=Base::getConnection();
         $query = $c->prepare("select * from destination");
-        $c = base::getConnection();
         $dbres = $query->execute();
-        $d = $query->fetchAll();
-        return $d;
+        return $query->fetchAll();
     }
 	
 	public function deleteDestination($idd) {
@@ -115,5 +144,6 @@ class destination {
 		$query = $c->prepare("DELETE FROM destination WHERE idd = :idd");
 		$query->bindParam(':idd', $idd, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 }
