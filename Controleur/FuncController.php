@@ -75,7 +75,6 @@ class FuncController extends Controller{
 	//		"getNoteMoyenneInviteByIdu" => "getNoteMoyenneInviteByIdu",
 	//		"getNoteInviteByIdd" => "getNoteInviteByIdd",
 	//		"dinerDejaNote" => "dinerDejaNote",
-	//		"modifCompteAbonne" => "modifCompteAbonne",
 	//		"modifCompteAdmin" => "modifCompteAdmin",
 	//		"modifSolde" => "modifSolde",
 	//		"modifierDiner" => "modifierDiner",
@@ -93,8 +92,9 @@ class FuncController extends Controller{
     //      "getCapacite" => "getCapacite",
 			"getAccesById" => "getAccesById",
 			"getAllNiveaux" => "getAllNiveaux",
-			"changerMdp" => "changerMdp",
+			"formulaireChangerMdp" => "formulaireChangerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
+			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
         );
     }
 	
@@ -476,7 +476,7 @@ class FuncController extends Controller{
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											<h4 class="modal-title" id="myModalLabel">Informations et modification du compte pour : '.$u['email'].'</h4>
 										</div>
-										<form method="post" action="'.$lnkInd.'Site.php?a=modifCompteAbonne">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireUpdateUtilisateur">
                                             <div class="modal-body">
                                                 Modifiez vos informations ici
 												<input type="hidden" name="idu" value="'.$idu.'">
@@ -532,7 +532,7 @@ class FuncController extends Controller{
                                             </div>
                                         </form>
 										</br></br>
-										<form method="post" action="'.$lnkInd.'Site.php?a=changerMdp">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireChangerMdp">
 											<input type="hidden" name="idu" value="'.$idu.'">
 											<div class="form-group">
                                                 <label for="message-text" class="control-label">Mot de passe actuel :</label>
@@ -1975,165 +1975,6 @@ class FuncController extends Controller{
 	/*	$nH = new noteHote();
 		return $nH->getAlreadyNoted($idd, $idu);*/		
 	}
- 
-	//Fonction qui permet à un abonné de modifier son compte
-    public function modifCompteAbonne(){   
-    // Chargement de la barre de navigation
-    /*session_start();
-    $barre = "barreVisiteur";
-    if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-    {
-        $grade=$_SESSION['acces'];
-        $id=$_SESSION['idu'];
-
-        switch($grade) {
-            case "Abonne":
-                $barre = "barreAbonne";
-                break;
-            case "Administrateur":
-                $barre = "barreAdmin";
-                break;
-        }
-    }else{
-        if(isset($grade))
-            unset($grade);
-    }
-
-        // Début des vérifications de tous les paramètres. 
-		$u = new utilisateur();
-		$bool=true;
-        $res='';
-		$idu = $_POST['idu'];
-		
-        if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-
-        if (empty($_POST['prenom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le prenom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $prenom = strip_tags(htmlentities($_POST['prenom']));
-        }
-
-        if (empty($_POST['addresse'])) {
-            $res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $addr = strip_tags(htmlentities($_POST['addresse']));
-        }
-
-        if (empty($_POST['codePostal'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $cp = strip_tags(htmlentities($_POST['codePostal']));
-        }
-
-        if (empty($_POST['ville'])) {
-            $res.='<div class="alert alert-danger" role="alert">La ville doit être renseignée.</div>';
-            $bool=false;
-        } else {
-            $ville = strip_tags(htmlentities($_POST['ville']));
-        }
-
-        if (empty($_POST['tel'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $tel = strip_tags(htmlentities($_POST['tel']));
-        }
-
-        if (empty($_POST['mdpV'])) {
-            $res.='<div class="alert alert-danger" role="alert">Pour valider les changement vous devez rentrer votre mot de passe actuel.</div>';
-            $bool=false;
-        } else {
-            $mdpV = strip_tags(htmlentities($_POST['mdpV']));
-            if(!$u->verifMdpClient($_SESSION['idu'], $mdpV)){
-                $res.='<div class="alert alert-danger" role="alert">Mot de passe incorrect.</div>';
-                $bool=false;
-            }
-        }
-
-        // Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Modification de compte effectuée avec succès !</div>';
-
-			$u->updateInfosClientNoMail($_SESSION['idu'], $nom, $prenom, $addr, $cp, $ville, $tel);
-            if (empty($_POST['mdp1'])) {
-                $res.='<div class="alert alert-danger" role="alert">Le mot de passe est inchangé.</div>';
-            } else {
-				if($_POST['mdp1'] == $_POST['mdp2']){
-					$mdp = strip_tags(htmlentities($_POST['mdp1']));
-					$u->updateMdpClient($_SESSION['idu'], $mdp);
-					$res.= '<div class="alert alert-success" role="alert">Modification de mot de passe effectuée avec succès !</div>';
-				}else{
-					$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas. Pas de changement de mot de passe.</div>';
-				}
-            }
-        }
-
-        // On affiche la page de retour
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-    <link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-$v = new menuBarre();
-echo $v->affichage($barre);
-
-echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-    '.$res.'
-    </div>';*/
-    }
     
 	// Fonction permettant à un administrateur de modifier un compte
 	public function modifCompteAdmin(){
@@ -2962,7 +2803,7 @@ echo '<div class="container">
 		return $l->getAllNiveaux();
 	}
 	
-	public function changerMdp() {
+	public function formulaireChangerMdp() {
 		$idu = $_POST['idu'];
 
 		//Controles	
@@ -3016,5 +2857,82 @@ echo '<div class="container">
 			return false;
 		}
 	}
+
+	public function formulaireUpdateUtilisateur(){
+		$idu = $_POST['idu'];
+		
+		//Controles
+		$u = $this->getUtilisateurId($idu);
+		$bool = true;
+		$res = '';
+		
+		if (empty($_POST['pseudo'])) {
+			$pseudo = $u['pseudo'];
+            //$res.='<div class="alert alert-danger" role="alert">Le pseudo doit être renseigné.</div>';
+            //$bool=false;
+        } else {
+            $pseudo = strip_tags(htmlentities($_POST['pseudo']));
+        }
+
+        if (empty($_POST['addresse'])) {
+			$addresse = $u['addresse'];
+            //$res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
+            //$bool=false;
+        } else {
+            $addresse = strip_tags(htmlentities($_POST['addresse']));
+        }
+
+        if (empty($_POST['codePostal'])) {
+			$codePost = $u['codePost'];
+            //$res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
+            //$bool=false;
+        } else {
+            $codePost = strip_tags(htmlentities($_POST['codePostal']));
+        }
+
+        if (empty($_POST['ville'])) {
+			$ville = $u['ville'];
+            //$res.='<div class="alert alert-danger" role="alert">La ville doit être renseignée.</div>';
+            //$bool=false;
+        } else {
+            $ville = strip_tags(htmlentities($_POST['ville']));
+        }
+
+        if (empty($_POST['tel'])) {
+            $telephone = $u['telephone'];
+			//$res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
+            //$bool=false;
+        } else {
+            $telephone = strip_tags(htmlentities($_POST['tel']));
+        }
+		
+		if(empty($_POST['niveau'])){
+			$niveau = $u['niveau'];
+			//$res.='<div class="alert alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
+			//$bool=false;
+		} else {
+			$niveau = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		if(empty($_POST['diplome'])) {
+			$diplome = $u['diplome'];
+		} else {
+			//A modifier pour gerer l'upload
+			$diplome = strip_tags(htmlentities($_POST['diplome']));
+		}
+		
+		//Fonction d'update
+		if($bool){
+			if($this->updateUtilisateur($u['idu'], $u['email'], $u['mdp'], $pseudo, $addresse, $codePost, $ville, $telephone, $u['solde'], $u['acces'], $niveau, $diplome, $u['dateInscription'])){
+					$res.= '<div class="alert alert-success" role="alert">Modifications des informations effectuées avec succès !</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
+
 }
 ?>
