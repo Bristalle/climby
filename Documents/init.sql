@@ -41,6 +41,9 @@ CREATE TABLE `niveau` (
   `nom` varchar(255)
 );
 
+INSERT INTO `niveau` (`idl`, `nom`) VALUES
+(1, 'Débutant');
+
 CREATE TABLE `inscription` (
   `idi` int PRIMARY KEY AUTO_INCREMENT,
   `participant` int,

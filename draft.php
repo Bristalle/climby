@@ -20,7 +20,7 @@ $l = new niveau();
 //var_dump($l->insertNiveau('Glandu'));
 //var_dump($l->insertNiveau("Trou d'balle"));
 
-
+//var_dump($f->getAccesByNom('Inscri'));
 
 //$i->insertImage("miaou");
 //$i->insertImageWithId(4, "miaou2");

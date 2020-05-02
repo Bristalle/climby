@@ -74,6 +74,14 @@ class acces
 		return $query->fetch();
 	}
 	
+	public function getAccesByNom($nom) {
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM acces WHERE nom = :nom");
+		$query->bindParam(':nom', $nom, PDO::PARAM_STR);
+		$query->execute();
+		return $query->fetch();
+	}
+	
 	// Fonction qui retourne la listes des niveaux d'accès
 	public function getAllAcces(){
 		$c = Base::getConnection();

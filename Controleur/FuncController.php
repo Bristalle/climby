@@ -52,7 +52,7 @@ class FuncController extends Controller{
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
-	//		"creerCompteClient" => "creerCompteClient",
+			"creerCompteUtilisateur" => "creerCompteUtilisateur",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
 	//		"creerDinerAdmin" => "creerDinerAdmin",
@@ -91,6 +91,7 @@ class FuncController extends Controller{
     //      "getResaEnCours" => "getResaEnCours",
     //      "getCapacite" => "getCapacite",
 			"getAccesById" => "getAccesById",
+			"getAccesByNom" => "getAccesByNom",
 			"getAllNiveaux" => "getAllNiveaux",
 			"formulaireChangerMdp" => "formulaireChangerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
@@ -209,9 +210,13 @@ class FuncController extends Controller{
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title" id="myModalLabel">Création d\'un compte client</h4>
 									</div>
-									<form method="post" action="'.$lnkInd.'Site.php?a=creerCompteClient">
+									<form method="post" action="'.$lnkInd.'Site.php?a=creerCompteUtilisateur">
 										<div class="modal-body">
 											Veuillez renseigner vos informations
+										<div class="form-group">
+											<label for="recipient-name" class="control-label">Email:</label>
+											<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
+										</div>
 										<div class="form-group">
 											<label for="message-text" class="control-label">Pseudo:</label>
 											<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
@@ -232,13 +237,20 @@ class FuncController extends Controller{
 											<label for="message-text" class="control-label">N° de téléphone:</label>
 											<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
 										</div>
-										<div class="form-group">
-											<label for="recipient-name" class="control-label">Email:</label>
-											<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
+										<div class="form-group">'
+											.$this->getSelectBoxInitializedNiveaux(0)
+										.'</div>
+										<div class="form-groupe">
+											<label for="message-text" class="control-label">Diplôme:</label>
+											<input type="text" class="form-control" id="recipient-name" name="diplome" value="Pas encore prêt." disabled>
 										</div>
 										<div class="form-group">
 											<label for="message-text" class="control-label">Mot de passe:</label>
 											<input type="password" class="form-control" id="recipient-name" name="mdp">
+										</div>
+										<div class="form-group">
+											<label for="message-text" class="control-label">Vérification du mot de passe:</label>
+											<input type="password" class="form-control" id="recipient-name" name="mdpv">
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
@@ -249,7 +261,7 @@ class FuncController extends Controller{
 							</div>
 						</div>
 						</li>';
-		return '';//$html;
+		return $html;
 	}
 	
 	public function getModalFormulaireConnexion($lnkInd) {
@@ -882,42 +894,63 @@ class FuncController extends Controller{
 	}
 	
 	//Fonction utilisée lors de la création d'un compte client depuis la page principale
-    public function creerCompteClient(){
-/*
-        // Chargement de la barre de navigation
-		$barre = getTheBarre();
-
-        // Début des vérifications de tous les paramètres.
-        $u = new utilisateur();
-        $utilisateur = $u->getAllEmail();
-        $bool=true;
-        $res='';
-        if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
+    public function creerCompteUtilisateur(){
+		
+		//Controles
+		$us = $this->getAllUtilisateurs();
+		$bool = true;
+		$res = '';
+		
+		if (empty($_POST['mail'])){
+			$res .='<div class="alert alert-danger" role="alert">L\'email doit être renseigné.</div>';
+			$bool=false;
+		} else {
+			$emailTMP = strip_tags(htmlentities($_POST['mail']));
+			$emailAlreadyexist = false;
+			foreach($us as $u){
+				if($u['email'] == $emailTMP){
+					$res .='<div class="alert alert-danger" role="alert">Cet email est déjà utilisé.</div>';
+					$bool = false;
+					$emailAlreadyexist = true;
+					break;
+				}
+			}
+			if(!$emailAlreadyexist){
+				$email = $emailTMP;
+			}
+		}
+		
+		if (empty($_POST['pseudo'])) {
+            $res.='<div class="alert alert-danger" role="alert">Le pseudo doit être renseigné.</div>';
             $bool=false;
         } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-
-        if (empty($_POST['prenom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le prenom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $prenom = strip_tags(htmlentities($_POST['prenom']));
+            $pseudoTMP = strip_tags(htmlentities($_POST['pseudo']));
+			$pseudoAlreadyexist = false;
+			foreach($us as $u){
+				if($u['pseudo'] == $pseudoTMP){
+					$res .='<div class="alert alert-danger" role="alert">Ce pseudo existe déjà.</div>';
+					$bool = false;
+					$pseudoAlreadyexist = true;
+					break;
+				}
+			}
+			if(!$pseudoAlreadyexist){
+				$pseudo = $pseudoTMP;
+			}
         }
 
         if (empty($_POST['addresse'])) {
             $res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
             $bool=false;
         } else {
-            $addr = strip_tags(htmlentities($_POST['addresse']));
+            $addresse = strip_tags(htmlentities($_POST['addresse']));
         }
 
         if (empty($_POST['codePostal'])) {
             $res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
             $bool=false;
         } else {
-            $cp = strip_tags(htmlentities($_POST['codePostal']));
+            $codePost = strip_tags(htmlentities($_POST['codePostal']));
         }
 
         if (empty($_POST['ville'])) {
@@ -928,264 +961,50 @@ class FuncController extends Controller{
         }
 
         if (empty($_POST['tel'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
+			$res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
             $bool=false;
         } else {
-            $tel = strip_tags(htmlentities($_POST['tel']));
+            $telephone = strip_tags(htmlentities($_POST['tel']));
         }
-
-        if (empty($_POST['mail'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le mail doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $mail = strip_tags(htmlentities($_POST['mail']));
-        }
-        if (empty($_POST['mdp'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $mdp = strip_tags(htmlentities($_POST['mdp']));
-        }
-
-        // On vérifie que l'Email n'est pas déjà utilisé par un autre compte
-        foreach($utilisateur as $t){
-            if($t['email']==$_POST['mail']){
-                $res.='<div class="alert alert-danger" role="alert">L\'adresse saisis exite déjà.</div>';
-                $bool=false;
-                break;
-            }
-        }
-
-        // Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Création effectuée avec succès !</div>';
-            $u->insertClient($nom,$prenom, $addr, $cp, $ville, $tel, $mail,$mdp);
-        }
-
-        // On affiche la page de retour
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-    <link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-    '.$res.'
-    </div>';*/
-    }
-
-	//Fonction utilisée lors de la création d'un compte client par un administrateur
-    public function creerCompteClientAdmin(){
-/*
-        // Chargement de la barre de navigation
-        session_start();
-        $barre = "barreVisiteur";
-
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-
-        // Début des vérifications de tous les paramètres.
-        $u = new utilisateur();
-        $utilisateur = $u->getAllEmail();
-        $bool=true;
-        $res='';
-        if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-
-        if (empty($_POST['prenom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le prenom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $prenom = strip_tags(htmlentities($_POST['prenom']));
-        }
-
-        if (empty($_POST['addresse'])) {
-            $res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $addr = strip_tags(htmlentities($_POST['addresse']));
-        }
-
-        if (empty($_POST['codePostal'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $cp = strip_tags(htmlentities($_POST['codePostal']));
-        }
-
-        if (empty($_POST['ville'])) {
-            $res.='<div class="alert alert-danger" role="alert">La ville doit être renseignée.</div>';
-            $bool=false;
-        } else {
-            $ville = strip_tags(htmlentities($_POST['ville']));
-        }
-
-        if (empty($_POST['tel'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $tel = strip_tags(htmlentities($_POST['tel']));
-        }
-
-        if (empty($_POST['mail'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le mail doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $mail = strip_tags(htmlentities($_POST['mail']));
-        }
-
-        if (empty($_POST['mdp'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $mdp = strip_tags(htmlentities($_POST['mdp']));
-        }
-
-        if (empty($_POST['droit'])){
-            $res .='<div class=alert alert-danger" role="alert">Les droits doivent être renseignés.</div>';
-            $bool=false;
-        } else {
-            $droit = strip_tags(htmlentities($_POST['droit']));
-        }
-
-        // On vérifie que l'Email n'est pas déjà utilisé par un autre compte
-        foreach($utilisateur as $t){
-            if($t['email']==$_POST['mail']){
-                $res.='<div class="alert alert-danger" role="alert">L\'adresse saisis exite déjà.</div>';
-                $bool=false;
-                break;
-            }
-        }
-
-        // Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Création effectuée avec succès !</div>';
-            $u->insertClientAdm($droit, $nom,$prenom, $addr, $cp, $ville, $tel, $mail,$mdp);
-        }
-
-        // On affiche la page de retour
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-    <link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-    '.$res.'
-    </div>';*/
+		
+		if(empty($_POST['niveau'])){
+			$res.='<div class="alert alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
+			$bool=false;
+		} else {
+			$niveau = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		if(empty($_POST['diplome'])) {
+			$diplome = '';
+		} else {
+			//A modifier pour gerer l'upload
+			$diplome = strip_tags(htmlentities($_POST['diplome']));
+		}
+		
+		if(empty($_POST['mdp']) && empty($_POST['mdpv'])){
+			$res .='<div class="alart alert-danger" role="alert">Le mot de passe n\'est pas renseigné.</div>';
+			$bool=false;
+		} else {
+			$mdp1 = strip_tags(htmlentities($_POST['mdp']));
+			$mdp2 = strip_tags(htmlentities($_POST['mdpv']));
+			if($mdp1 == $mdp2){
+				$mdp = password_hash($mdp1, PASSWORD_BCRYPT);				
+			} else {
+				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas.</div>';
+				$bool=false;
+			}
+		}
+		
+		
+		//Fonction d'insert
+		if($bool){
+			$u = new utilisateur();
+			$idu = $u->insertUtilisateur($email, $mdp, $pseudo, $addresse, $codePost, $ville, $telephone, 0, $this->getAccesByNom('Inscrit')['ida'], $niveau, $diplome, time());
+			$res.= '<div class="alert alert-success" role="alert">Création du compte effectuée avec succès !</br>Vous pouvez vous connecter dès maintenant.</div>';
+		}
+		
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
     }
 
 	//Fonction utilisée lors de la création d'un diner par le menu de navigation
@@ -2796,6 +2615,16 @@ echo '<div class="container">
 	public function getAccesById($ida){
 		$a = new acces();
 		return $a->getAccesById($ida);
+	}
+	
+	public function getAccesByNom($nom){
+		$a = new acces();
+		$acc = $a->getAccesByNom($nom);
+		if(!$acc){
+			return array('ida' => '1', 0 => '1', 'nom' => 'Inscrit', 1 => 'Inscrit');
+		} else {
+			return $acc;
+		}
 	}
 	
 	public function getAllNiveaux() {

@@ -101,9 +101,7 @@ class utilisateur{
     }
 
 	// Fonction permettant d'ajouter un compte Abonne dans la base de donnée
-    public function insertUtilisateur($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $diplome){
-		$mdp = password_hash($mdp, PASSWORD_BCRYPT);
-		$dateInscription = time();
+    public function insertUtilisateur($mail, $mdp, $pseudo,$add,$cp,$ville,$tel, $solde, $acces, $niveau, $diplome, $dateInscription){
         $c = Base::getConnection();
         $query = $c->prepare("insert into utilisateur(email, mdp, pseudo, addresse, codePost, ville, telephone, solde, niveau, diplome, dateInscription, acces)
                               values(:mail, :mdp, :pseudo,:add,:cp,:ville,:tel,:solde, :niveau, :diplome, :dateInscription, :acces)");
