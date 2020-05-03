@@ -42,7 +42,7 @@ CREATE TABLE `niveau` (
 );
 
 INSERT INTO `niveau` (`idl`, `nom`) VALUES
-(1, 'Débutant');
+(1, 'DÃ©butant');
 
 CREATE TABLE `inscription` (
   `idi` int PRIMARY KEY AUTO_INCREMENT,

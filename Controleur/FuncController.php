@@ -191,7 +191,8 @@ class FuncController extends Controller{
 			}
 		}
 				$html = '<label for="message-test" class="control-label">Niveau:</label>
-					<select name="niveau" class="form-control">'
+					<select name="niveau" class="form-control">
+						<option value="0">--Non renseigné--</option>'
 						.$niveaux
 					.'</select>';
 		return $html;
@@ -214,42 +215,42 @@ class FuncController extends Controller{
 										<div class="modal-body">
 											Veuillez renseigner vos informations
 										<div class="form-group">
-											<label for="recipient-name" class="control-label">Email:</label>
+											<label for="recipient-name" class="control-label">Email*:</label>
 											<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Pseudo:</label>
+											<label for="message-text" class="control-label">Pseudo*:</label>
 											<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Adresse:</label>
+											<label for="message-text" class="control-label">Adresse :</label>
 											<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Code Postal:</label>
+											<label for="message-text" class="control-label">Code Postal :</label>
 											<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Ville:</label>
+											<label for="message-text" class="control-label">Ville :</label>
 											<input type="text" class="form-control" id="recipient-name" name="ville">
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">N° de téléphone:</label>
+											<label for="message-text" class="control-label">N° de téléphone :</label>
 											<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
 										</div>
 										<div class="form-group">'
 											.$this->getSelectBoxInitializedNiveaux(0)
 										.'</div>
 										<div class="form-groupe">
-											<label for="message-text" class="control-label">Diplôme:</label>
+											<label for="message-text" class="control-label">Diplôme :</label>
 											<input type="text" class="form-control" id="recipient-name" name="diplome" value="Pas encore prêt." disabled>
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Mot de passe:</label>
+											<label for="message-text" class="control-label">Mot de passe*:</label>
 											<input type="password" class="form-control" id="recipient-name" name="mdp">
 										</div>
 										<div class="form-group">
-											<label for="message-text" class="control-label">Vérification du mot de passe:</label>
+											<label for="message-text" class="control-label">Vérification du mot de passe*:</label>
 											<input type="password" class="form-control" id="recipient-name" name="mdpv">
 										</div>
 										<div class="modal-footer">
@@ -940,36 +941,41 @@ class FuncController extends Controller{
         }
 
         if (empty($_POST['addresse'])) {
-            $res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
-            $bool=false;
-        } else {
+        //    $res.='<div class="alert alert-danger" role="alert">L\'addresse doit être renseigné.</div>';
+        //    $bool=false;
+			$addresse = '';
+		} else {
             $addresse = strip_tags(htmlentities($_POST['addresse']));
         }
 
         if (empty($_POST['codePostal'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
-            $bool=false;
+        //    $res.='<div class="alert alert-danger" role="alert">Le codePostal doit être renseigné.</div>';
+        //    $bool=false;
+			$codePost = '';
         } else {
             $codePost = strip_tags(htmlentities($_POST['codePostal']));
         }
 
         if (empty($_POST['ville'])) {
-            $res.='<div class="alert alert-danger" role="alert">La ville doit être renseignée.</div>';
-            $bool=false;
-        } else {
+        //    $res.='<div class="alert alert-danger" role="alert">La ville doit être renseignée.</div>';
+        //    $bool=false;
+			$ville = '';
+		} else {
             $ville = strip_tags(htmlentities($_POST['ville']));
         }
 
         if (empty($_POST['tel'])) {
-			$res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
-            $bool=false;
+		//	$res.='<div class="alert alert-danger" role="alert">Le téléphone doit être renseigné.</div>';
+        //    $bool=false;
+			$telephone = '';
         } else {
             $telephone = strip_tags(htmlentities($_POST['tel']));
         }
 		
 		if(empty($_POST['niveau'])){
-			$res.='<div class="alert alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
-			$bool=false;
+		//	$res.='<div class="alert alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
+		//	$bool=false;
+			$niveau = 0;
 		} else {
 			$niveau = strip_tags(htmlentities($_POST['niveau']));
 		}
