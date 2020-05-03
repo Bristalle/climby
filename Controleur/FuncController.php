@@ -49,6 +49,7 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationCritere" => "getModalFormulaireCreationCritere",
 			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
 			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
+			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
@@ -98,7 +99,8 @@ class FuncController extends Controller{
 			"formulaireChangerMdp" => "formulaireChangerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
-			"formulaireCreerCritere" => "formulaireCreerCritere",
+			"formulaireCreerCritereAdmin" => "formulaireCreerCritereAdmin",
+			"formulaireCreerTypeDeGrimpeAdmin" => "formulaireCreerTypeDeGrimpeAdmin",
         );
     }
 	
@@ -616,6 +618,12 @@ class FuncController extends Controller{
 						<li><a href="#">Modifier / Supprimer</a></li>
 					</ul>
 				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Type de grimpe</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#creerTypeDeGrimpeAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a href="#">Modifier / Supprimer</a></li>
+					</ul>
+				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Critère</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerCritereAdmin" style="cursor:pointer">Ajouter</a></li>
@@ -844,10 +852,10 @@ class FuncController extends Controller{
 	public function getModalFormulaireCreationCritereAdmin($lnkInd) {
 		$html = '<!-- Modal -->
 <!-- Formulaire de création d un critère par un admin -->
-							<div class="modal fade" id="creerCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal fade" id="creerCritereAdminAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
-										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCritere">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCritereAdmin">
 											<div class="modal-header">
 												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
 												<h4 class="modal-title" id="myModalLabel">Créer un critère</h4>
@@ -856,6 +864,34 @@ class FuncController extends Controller{
 												<div class="input-group">
                                                     <span class="input-group-addon">Nom</span>
                                                     <input name="nom" type="text" class="form-control" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+                                                </div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationTypeDeGrimpeAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de création d un critère par un admin -->
+							<div class="modal fade" id="creerTypeDeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerTypeDeGrimpeAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un type de grimpe</h4>
+											</div>
+											<div class="modal-body">
+												<div class="input-group">
+                                                    <span class="input-group-addon">Nom</span>
+                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du type de grimpe" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
                                                 </div>
 											</div>
 											<div class="modal-footer">
@@ -2858,7 +2894,7 @@ echo '<div class="container">
 		echo $this->getReturnedPage($res);
 	}
 
-	public function formulaireCreerCritere(){
+	public function formulaireCreerCritereAdmin(){
 		$bool = true;
 		$res = '';
 		
@@ -2867,6 +2903,7 @@ echo '<div class="container">
 			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
 			$bool = false;
 		} else {
+			//Controle sur une pré-existence ?
 			$nom = strip_tags(htmlentities($_POST['nom']));
 		}
 		
@@ -2875,6 +2912,28 @@ echo '<div class="container">
 			$c = new critere();
 			$idc = $c->insertCritere($nom);
 			$res .= '<div class="alert alert-success" role="alert">Création du critère réussie. ID du nouveau critère : '.$idc.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
+
+	public function formulaireCreerTypeDeGrimpeAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			//Controle sur une pré-existence
+			$nom = strip_tags(htmlentities($_POST['nom']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new critere();
+			$idc = $c->insertCritere($nom);
+			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idc.'</div>';
 		}
 		echo $this->getReturnedPage($res);
 	}
