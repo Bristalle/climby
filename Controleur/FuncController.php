@@ -2931,9 +2931,9 @@ echo '<div class="container">
 		
 		//Fonction d'insert
 		if($bool){
-			$c = new critere();
-			$idc = $c->insertCritere($nom);
-			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idc.'</div>';
+			$t = new typeGrimpe();
+			$idt = $c->insertTypeGrimpe($nom);
+			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idt.'</div>';
 		}
 		echo $this->getReturnedPage($res);
 	}
