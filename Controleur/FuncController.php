@@ -494,32 +494,35 @@ class FuncController extends Controller{
                                                 Modifiez vos informations ici
 												<input type="hidden" name="idu" value="'.$idu.'">
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">Pseudo:</label>
+                                                <label for="message-text" class="control-label">Pseudo*:</label>
                                                 <input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" value="'.$u['pseudo'].'" >
                                             </div>
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">Adresse:</label>
+                                                <label for="message-text" class="control-label">Adresse :</label>
                                                 <textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;">'.$u['addresse'].'</textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">Code Postal:</label>
+                                                <label for="message-text" class="control-label">Code Postal :</label>
                                                 <input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal" value="'.$u['codePost'].'">
                                             </div>
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">Ville:</label>
+                                                <label for="message-text" class="control-label">Ville :</label>
                                                 <input type="text" class="form-control" id="recipient-name" name="ville" value="'.$u['ville'].'">
                                             </div>
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">N° de téléphone:</label>
+                                                <label for="message-text" class="control-label">N° de téléphone :</label>
                                                 <input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel" value="'.$u['telephone'].'">
                                             </div>
 											<div class="form-group">'
 												.$this->getSelectBoxInitializedNiveaux($u['niveau'])
 											.'</div>
+				<!-- Pas encore utilisé -->
+											<!--
 											<div class="form-group">
-                                                <label for="message-text" class="control-label">Solde:</label>
+                                                <label for="message-text" class="control-label">Solde :</label>
                                                 <input type="number" class="form-control" id="recipient-name" name="solde" value="'.$u['solde'].'" disabled>
                                             </div>
+											-->
 				<!-- Pas Encore implémenté -->
 											<div class="form-group">
 												<label for="message-text" class="control-label">Vos diplômes :</label> Pas encore dispo
@@ -548,15 +551,15 @@ class FuncController extends Controller{
 										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireChangerMdp">
 											<input type="hidden" name="idu" value="'.$idu.'">
 											<div class="form-group">
-                                                <label for="message-text" class="control-label">Mot de passe actuel :</label>
+                                                <label for="message-text" class="control-label">Mot de passe actuel*:</label>
                                                 <input type="password" class="form-control" id="recipient-name" name="mdpV">
                                             </div>
 											<div class="form-group">
-                                                <label for="message-text" class="control-label">Nouveau mot de passe:</label>
+                                                <label for="message-text" class="control-label">Nouveau mot de passe*:</label>
                                                 <input type="password" class="form-control" id="recipient-name" name="mdp1">
                                             </div>
                                             <div class="form-group">
-                                                <label for="message-text" class="control-label">Répéter le Nouveau mot de passe:</label>
+                                                <label for="message-text" class="control-label">Répéter le Nouveau mot de passe*:</label>
                                                 <input type="password" class="form-control" id="recipient-name" name="mdp2">
                                             </div>
 											<div class="modal-footer">
