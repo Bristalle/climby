@@ -47,12 +47,14 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationCompteByAdmin" => "getModalFormulaireCreationCompteByAdmin",
 			"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
 			"getModalFormulaireCreationCritere" => "getModalFormulaireCreationCritere",
+			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
+			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
-			"creerCompteUtilisateur" => "creerCompteUtilisateur",
+			"formulaireCreerCompteUtilisateur" => "formulaireCreerCompteUtilisateur",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
 	//		"creerDinerAdmin" => "creerDinerAdmin",
@@ -96,6 +98,7 @@ class FuncController extends Controller{
 			"formulaireChangerMdp" => "formulaireChangerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
+			"formulaireCreerCritere" => "formulaireCreerCritere",
         );
     }
 	
@@ -211,7 +214,7 @@ class FuncController extends Controller{
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h4 class="modal-title" id="myModalLabel">Création d\'un compte client</h4>
 									</div>
-									<form method="post" action="'.$lnkInd.'Site.php?a=creerCompteUtilisateur">
+									<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCompteUtilisateur">
 										<div class="modal-body">
 											Veuillez renseigner vos informations
 										<div class="form-group">
@@ -603,19 +606,48 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalMenuAdministration($lnkInd) {
-		$html = '			<li class="nav-item">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administration <span class="caret"></span></a>
-<!-- Menu Déroulant de l interface d administration -->
-								<ul class="dropdown-menu">
-									<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
-									<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
-									<!--<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>-->
-									<!--<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>-->
-									<!--<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>-->
-									<!--<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>-->
-									<!--<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>-->
-								</ul>
-                            </li>';
+		$html = '
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration <b class="caret"></b> </a> 
+			<ul class="dropdown-menu">
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Destination</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#creerDestinationAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a href="#">Modifier / Supprimer</a></li>
+					</ul>
+				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Critère</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#creerCritereAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a href="#">Modifier / Supprimer</a></li>
+					</ul>
+				</li>
+				<li></li>
+				<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
+				<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
+				<!--<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>-->
+				<!--<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>-->
+				<!--<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>-->
+				<!--<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>-->
+				<!--<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>-->
+				<!--<li class="dropdown-submenu"><a tabindex="-1" href="#">Exemple objet</a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Ajouter</a></li>
+						<li><a href="#">Modifier / Supprimer</a></li>
+						<li class="dropdown-submenu"><a href="#">Sous-section</a>
+							<ul class="dropdown-menu">
+								<li><a href="#">Quatrième niveau</a></li>
+								<li class="dropdown-submenu"><a href="#">Sous-section</a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Cinquième niveau</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>-->
+			</ul>
+		</li>';
 		return $html;
 	}
 	
@@ -783,6 +815,60 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
+	public function getModalFormulaireCreationDestinationAdmin($lnkInd) {
+		//Besoin des criteres
+		//Besoin des type de grimpe
+		$html = '<!-- Modal -->
+<!-- Formulaire de création d une destination par un admin -->
+							<div class="modal fade" id="creerDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+											<form>
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Créer une destination</h4>
+										</div>
+										<div class="modal-body">
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+											<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+										</div>
+											</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireCreationCritereAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de création d un critère par un admin -->
+							<div class="modal fade" id="creerCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCritere">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un critère</h4>
+											</div>
+											<div class="modal-body">
+												<div class="input-group">
+                                                    <span class="input-group-addon">Nom</span>
+                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+                                                </div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
 		$html = '<!-- Modal -->
 <!-- Formulaire de suppression de compte -->
@@ -898,7 +984,7 @@ class FuncController extends Controller{
 	}
 	
 	//Fonction utilisée lors de la création d'un compte client depuis la page principale
-    public function creerCompteUtilisateur(){
+    public function formulaireCreerCompteUtilisateur(){
 		
 		//Controles
 		$us = $this->getAllUtilisateurs();
@@ -2769,6 +2855,27 @@ echo '<div class="container">
 		}
 		
 		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
+
+	public function formulaireCreerCritere(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$nom = strip_tags(htmlentities($_POST['nom']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new critere();
+			$idc = $c->insertCritere($nom);
+			$res .= '<div class="alert alert-success" role="alert">Création du critère réussie. ID du nouveau critère : '.$idc.'</div>';
+		}
 		echo $this->getReturnedPage($res);
 	}
 

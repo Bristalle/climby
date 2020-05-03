@@ -160,6 +160,9 @@ public function  barreAdmin() {
                             .$f->getModalFormulaireDeconnexion($linkIndex)
                         .'</ul>
                     </div>'
+					.$f->getModalFormulaireCreationDestinationAdmin($linkIndex)
+					.$f->getModalFormulaireCreationCritereAdmin($linkIndex)
+					
 					.$f->getModalFormulaireCreationCompteByAdmin($linkIndex, $acces)
 					.$f->getModalFormulaireCreationEventByAdmin ($linkIndex, $criteres, $options)
 					.$f->getModalFormulaireCreationCritere($linkIndex)
