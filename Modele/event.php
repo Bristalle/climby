@@ -22,6 +22,7 @@ class event{
 	private $hasLead;
 	private $nbPlace;
 	private $niveaux;
+	private $description;
 	private $date;
 
 	public function __construct() {
@@ -47,10 +48,10 @@ class event{
 
 
     // Fonction permettant d'ajouter un nouveau event dans la base
-    public function insertEvent($destination, $createur, $hasLead, $nbPlace, $niveaux, $date){
+    public function insertEvent($destination, $createur, $hasLead, $nbPlace, $niveaux, $description, $date){
         $c = Base::getConnection();
-        $query = $c->prepare("insert into event(destination, createur, hasLead, nbPlace, niveaux, date)
-                          values(:destination, :createur, :hasLead, :nbPlace, :niveaux, :date)");
+        $query = $c->prepare("insert into event(destination, createur, hasLead, nbPlace, niveaux, description, date)
+                          values(:destination, :createur, :hasLead, :nbPlace, :niveaux, :description, :date)");
         $query->bindParam (':destination',$destination, PDO::PARAM_INT);
         $query->bindParam (':createur',$createur, PDO::PARAM_STR);
         $query->bindParam (':lieu',$lieu, PDO::PARAM_STR);
@@ -59,19 +60,29 @@ class event{
         $query->bindParam (':date',$date, PDO::PARAM_STR);
         $query->bindParam (':capacite',$capacite, PDO::PARAM_INT);
         $query->bindParam (':critere',$critere, PDO::PARAM_INT);
+		$query->bindParam (':description', $description, PDO::PARAM_STR);
 		$query->bindParam (':date',$date, PDO::PARAM_INT);
         $query->execute();
 		return $c->lastInsertId('event');
     }
 	
-	public function updateEvent($ide, $destination, $createur, $hasLead, $nbPlace, $niveaux, $date) {
+	public function updateEvent($ide, $destination, $createur, $hasLead, $nbPlace, $niveaux, $description, $date) {
 		$c = Base::getConnection();
-		$req = $c->prepare("UPDATE event SET destination = :destination, createur = :createur, hasLead = :hasLead, nbPlace = :nbPlace, niveaux = :niveaux, date = :date WHERE ide = :ide");  
+		$req = $c->prepare("UPDATE event 
+						SET destination = :destination, 
+						createur = :createur, 
+						hasLead = :hasLead, 
+						nbPlace = :nbPlace, 
+						niveaux = :niveaux, 
+						description = :description,
+						date = :date 
+						WHERE ide = :ide");  
 		$req->bindParam (':destination', $destination, PDO::PARAM_INT);
 		$req->bindParam (':createur', $createur, PDO::PARAM_INT);
 		$req->bindParam (':hasLead', $hasLead, PDO::PARAM_BOOL);
 		$req->bindParam (':nbPlace', $nbPlace, PDO::PARAM_INT);
 		$req->bindParam (':niveaux', $niveaux, PDO::PARAM_STR);
+		$req->bindParam (':description', $description, PDO::PARAM_STR);
 		$req->bindParam (':date', $date, PDO::PARAM_INT);
 		$req->bindParam (':ide', $ide, PDO::PARAM_INT);
 		$req->execute();

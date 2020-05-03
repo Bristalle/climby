@@ -66,6 +66,7 @@ CREATE TABLE `event` (
   `hasLead` boolean,
   `nbPlace` int,
   `niveaux` varchar(255),
+  `description` varchar(500),
   `date` int
 );
 
@@ -85,7 +86,7 @@ CREATE TABLE `critere` (
 CREATE TABLE `destination` (
   `idd` int PRIMARY KEY AUTO_INCREMENT,
   `nom` varchar(255),
-  `description` varchar(255),
+  `description` varchar(500),
   `gps` varchar(255),
   `critere` int,
   `typeDeGrimpe` int,
