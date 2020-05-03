@@ -36,6 +36,9 @@ class FuncController extends Controller{
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getReturnedPage" => "getReturnedPage",
 			"getSelectBoxInitializedNiveaux" => "getSelectBoxInitializedNiveaux",
+			"getSelectBoxInitializedCritere" => "getSelectBoxInitializedCritere",
+			"getSelectBoxInitializedTypeGrimpe" => "getSelectBoxInitializedTypeGrimpe",
+			"getSelectBoxInitializedCotation" => "getSelectBoxInitializedCotation",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
@@ -56,6 +59,7 @@ class FuncController extends Controller{
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
 			"formulaireCreerCompteUtilisateur" => "formulaireCreerCompteUtilisateur",
+			"formulaireCreerDestinationAdmin" => "formulaireCreerDestinationAdmin",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
 	//		"creerDinerAdmin" => "creerDinerAdmin",
@@ -72,7 +76,6 @@ class FuncController extends Controller{
 	//		"getResaEnCoursByIdu" => "getResaEnCoursByIdu",
 	//		"getHistoResaByIdu" => "getHistoResaByIdu",
 	//		"getAllAcces" => "getAllAcces",
-	//		"getAllCritere" => "getAllCritere",
 	//		"getNoteMoyenneHoteByIdu" => "getNoteMoyenneHoteByIdu",
 	//		"getNoteMoyenneHoteByIdd" => "getNoteMoyenneHoteByIdd",
 	//		"getNoteMoyenneInviteByIdu" => "getNoteMoyenneInviteByIdu",
@@ -96,6 +99,9 @@ class FuncController extends Controller{
 			"getAccesById" => "getAccesById",
 			"getAccesByNom" => "getAccesByNom",
 			"getAllNiveaux" => "getAllNiveaux",
+			"getAllCriteres" => "getAllCriteres",
+			"getAllTypeDeGrimpe" => "getAllTypeDeGrimpe",
+			"getAllCotations" => "getAllCotations",
 			"formulaireChangerMdp" => "formulaireChangerMdp",
 			"updateUtilisateur" => "updateUtilisateur",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
@@ -183,10 +189,9 @@ class FuncController extends Controller{
 	return $html;
 	}
 	
-	public function getSelectBoxInitializedNiveaux($selectedIdl) {
+	public function getSelectBoxInitializedNiveaux($selectedIdl, $multi=false) {
 		// Chargement des niveaux et création de la selectbox
-		$l = new niveau();
-		$lvl = $l->getAllNiveaux();
+		$lvl = $this->getAllNiveaux();
 		$niveaux = '';
 		foreach($lvl as $lv){
 			if($lv['idl'] == $selectedIdl){
@@ -195,10 +200,87 @@ class FuncController extends Controller{
 				$niveaux = $niveaux . '<option value="'.$lv['idl'].'">'.$lv['nom'].'</option>';
 			}
 		}
-				$html = '<label for="message-test" class="control-label">Niveau:</label>
-					<select name="niveau" class="form-control">
+		
+		$html = '<label for="message-text" class="control-label">Niveau:</label>
+					<select name="niveau" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		$html .= '>
 						<option value="0">--Non renseigné--</option>'
 						.$niveaux
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedCritere($selectedIdc, $multi=false) {
+		$crit = $this->getAllCriteres();
+		$criteres = '';
+		foreach($crit as $cr){
+			if($cr['idc'] == $selectedIdc){
+				$criteres .= '<option value="'.$cr['idc'].'" selected>'.$cr['nom'].'</option>';
+			} else {
+				$criteres .= '<option value="'.$cr['idc'].'">'.$cr['nom'].'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Critère:</label>
+					<select name="critere" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		$html .= '>
+						<option value="0">--Non renseigné--</option>'
+						.$criteres
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedTypeGrimpe($selectedIdt, $multi=false) {
+		$types = $this->getAllTypeDeGrimpe();
+		$typesGrimpe = '';
+		foreach($types as $t){
+			if($t['idt'] == $selectedIdc){
+				$typesGrimpe .= '<option value="'.$t['idt'].'" selected>'.$t['nom'].'</option>';
+			} else {
+				$typesGrimpe .= '<option value="'.$t['idt'].'">'.$t['nom'].'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Type de grimpe:</label>
+					<select name="typeDeGrimpe" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		$html .= '>
+						<option value="0">--Non renseigné--</option>'
+						.$typesGrimpe
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedCotation($selectedId, $multi=false){
+		$cotation = $this->getAllCotations();
+		$cotations = '';
+		foreach($cotation as $c){
+			if($c['idcot'] == $selectedId){
+				$cotations .= '<option value="'.$c['idcot'].'" selected>'.$c['nom'].'</option>';
+			} else {
+				$cotations .= '<option value="'.$c['idcot'].'">'.$c['nom'].'</option>';
+			}
+		}
+		
+		$html = '';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		$html .= '>
+						<option value="0">--Non renseigné--</option>'
+						.$cotations
 					.'</select>';
 		return $html;
 	}
@@ -831,18 +913,66 @@ class FuncController extends Controller{
 							<div class="modal fade" id="creerDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
-											<form>
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Créer une destination</h4>
-										</div>
-										<div class="modal-body">
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-											<button id="bouton" class="btn btn-info" type="submit">Créer</button>
-										</div>
-											</form>
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerDestinationAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer une destination</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">
+													<label for="message-text" class="control-label">Nom</label>
+													<input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom de la destination*" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Description</label>
+                                                    <textarea name="description" type="text-area" class="form-control" id="recipient-name" placeholder="Description de la destination*" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Coordonnées GPS*</label>
+													<input name="gps" type="text" class="form-control" id="recipient-name" placeholder="Latitude/ Longitude au format 48.735846, 1.923482" aria-describedby="basic-addon1" pattern="^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedTypeGrimpe(0)
+												.'</div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Hauteur du spot*</label >
+                                                    <input name = "hauteurDuSpot" class="form-control" id="recipient-name" type = "number" min = "0" max = "1000" step = "1" placeholder = "En mètre." >
+                                                </div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Nombre de voies*</label >
+                                                    <input name = "nbVoies" class="form-control" id="recipient-name" type = "number" min = "0" max = "1000" step = "1" placeholder = "5" >
+                                                </div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Cotation Minimum*</label>
+													<select name="cotationMin" class="form-control"'
+													.$this->getSelectBoxInitializedCotation(0)
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Cotation Maximum*</label>
+													<select name="cotationMax" class="form-control"'
+													.$this->getSelectBoxInitializedCotation(0)
+												.'</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedCritere(0)
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Pays*</label>
+													<input name="pays" type="text" class="form-control" id="recipient-name" placeholder="Pays de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Région</label>
+													<input name="region" type="text" class="form-control" id="recipient-name" placeholder="Région de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Photo*</label>
+													<input name="photo" type="text" class="form-control" id="recipient-name" placeholder="Pas encore prêt" aria-describedby="basic-addon1" disabled>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>';
@@ -1138,6 +1268,129 @@ class FuncController extends Controller{
 		echo $this->getReturnedPage($res);
     }
 
+	public function formulaireCreerDestinationAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if(empty($_POST['nom'])){
+			$res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
+            $bool=false;
+		} else {
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			$d = new destination();
+			$dests = $d->getAllDestinations();
+			$alreadyExist = false;
+			foreach($dests as $dest){
+				if($dest['nom'] == $nomTMP){
+					$alreadyExist = true;
+					$bool=false;
+					$res.='<div class="alert alert-danger" role="alert">Ce nom est déjà utilisé.</div>';
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
+		}
+		
+		if(empty($_POST['description'])){
+			$res.='<div class="alert alert-danger" role="alert">La description doit être renseignée.</div>';
+            $bool=false;
+		} else {
+			$description = strip_tags(htmlentities($_POST['description']));
+		}
+		
+		if(empty($_POST['gps'])){
+			$res.='<div class="alert alert-danger" role="alert">Les coordonnées GPS doivent être renseignées.</div>';
+            $bool=false;
+		} else {
+			//REGEX à utilisé ^([-+]?)([\d]{1,2})(((\.)(\d+)(/)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$
+			$gps = strip_tags(htmlentities($_POST['gps']));
+		}
+		
+		if(empty($_POST['typeDeGrimpe'])){
+			$res.='<div class="alert alert-danger" role="alert">Un type de grimpe doit être choisi.</div>';
+            $bool=false;
+		} else {
+			$typeDeGrimpe = strip_tags(htmlentities($_POST['typeDeGrimpe']));
+		}
+		
+		if(empty($_POST['hauteurDuSpot'])){
+			$res.='<div class="alert alert-danger" role="alert">La hauteur du spot doit être renseignée.</div>';
+            $bool=false;
+		} else {
+			$hauteurDuSpot = strip_tags(htmlentities($_POST['hauteurDuSpot']));
+		}
+		
+		if(empty($_POST['nbVoies'])){
+			$res.='<div class="alert alert-danger" role="alert">Le nombre de voie doit être renseigné.</div>';
+            $bool=false;
+		} else {
+			$nbVoies = strip_tags(htmlentities($_POST['nbVoies']));
+		}
+		
+		if(empty($_POST['cotationMin'])){
+			$res.='<div class="alert alert-danger" role="alert">La cotation minimal doit être indiquée.</div>';
+            $bool=false;
+		} else {
+			$cotationMin = strip_tags(htmlentities($_POST['cotationMin']));
+		}
+		
+		if(empty($_POST['cotationMax'])){
+			$res.='<div class="alert alert-danger" role="alert">La cotation maximal doit être indiquée.</div>';
+            $bool=false;
+		} else {
+			$cotationMaxTMP = strip_tags(htmlentities($_POST['cotationMax']));
+			if(isset($cotationMin)){
+				if(intval($cotationMin)<=intval($cotationMaxTMP)){
+					$cotationMax = $cotationMaxTMP;
+				} else {
+					$res.='<div class="alert alert-danger" role="alert">La cotation maximal doit être supérieure ou égale à la minimal.</div>';
+					$bool=false;
+				}
+			}			
+		}
+		
+		if(empty($_POST['critere'])){
+			//$res.='<div class="alert alert-danger" role="alert">Un critère doit être choisi.</div>';
+			//$bool=false;
+			$critere = 0;
+		} else {
+			$critere = strip_tags(htmlentities($_POST['critere']));
+		}
+
+		if(empty($_POST['pays'])){
+			$res.='<div class="alert alert-danger" role="alert">Le pays doit être renseigné.</div>';
+            $bool=false;
+		} else {
+			$pays = strip_tags(htmlentities($_POST['pays']));
+		}
+		
+		if(empty($_POST['region'])){
+			//$res.='<div class="alert alert-danger" role="alert">La région doit être renseignée.</div>';
+            //$bool=false;
+			$region = '';
+		} else {
+			$region = strip_tags(htmlentities($_POST['region']));
+		}
+		
+		if(empty($_POST['photo'])){
+			//$res.='<div class="alert alert-danger" role="alert">Une photo du spot doit être fournie.</div>';
+            //$bool=false;
+			$photo = '';
+		} else {
+			$photo = strip_tags(htmlentities($_POST['photo']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$d = new destination();
+			$idd = $c->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
+			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idd.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
 	//Fonction utilisée lors de la création d'un diner par le menu de navigation
     //L'organisateur de ce diner sera le compte créateur
     public function creerDiner(){
@@ -1890,12 +2143,6 @@ class FuncController extends Controller{
 		return $a->getAllAcces();
 	}
 	
-	// Fonction permettant de récupérer la liste des critères
-    public function  getAllCritere(){
-	/*    $c = new critere();
-	    return $c->getAll();*/
-    }
-
 	// Fonction permettant de récupérer la note moyenne d'hote d'un compte donné
 	public function getNoteMoyenneHoteByIdu($id){
 	/*	$nh = new noteHote();
@@ -2761,6 +3008,38 @@ echo '<div class="container">
 	public function getAllNiveaux() {
 		$l = new niveau();
 		return $l->getAllNiveaux();
+	}
+	
+	public function getAllCriteres(){
+		$c = new critere();
+		return $c->getAllCriteres();
+	}
+	
+	public function getAllTypeDeGrimpe(){
+		$t = new typeGrimpe();
+		return $t->getAllTypeGrimpe();
+	}
+	
+	public function getAllCotations(){
+		$cotations = array( array('idcot' => 1, 'nom' => '4a'), 
+							array('idcot' => 2, 'nom' => '4b'), 
+							array('idcot' => 3, 'nom' => '4c'), 
+							array('idcot' => 4, 'nom' => '5a'), 
+							array('idcot' => 5, 'nom' => '5b'), 
+							array('idcot' => 6, 'nom' => '5c'), 
+							array('idcot' => 7, 'nom' => '6a'), 
+							array('idcot' => 8, 'nom' => '6b'), 
+							array('idcot' => 9, 'nom' => '6c'), 
+							array('idcot' => 10, 'nom' => '7a'), 
+							array('idcot' => 11, 'nom' => '7b'),
+							array('idcot' => 12, 'nom' => '7c'), 
+							array('idcot' => 13, 'nom' => '8a'), 
+							array('idcot' => 14, 'nom' => '8b'), 
+							array('idcot' => 15, 'nom' => '8c'), 
+							array('idcot' => 16, 'nom' => '9a'), 
+							array('idcot' => 17, 'nom' => '9b'), 
+							array('idcot' => 18, 'nom' => '9c'));
+		return $cotations;
 	}
 	
 	public function formulaireChangerMdp() {

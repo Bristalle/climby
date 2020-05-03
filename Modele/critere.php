@@ -78,8 +78,8 @@ class critere {
     public function getAllCriteres(){
         $c = Base::getConnection();
         $query = $c->prepare("select * from critere");
-        $query = $query->execute();
-        return $query->fetchAll();
+        $query->execute();
+		return $query->fetchAll();
     }
 	
 	public function deleteCritere($idc) {

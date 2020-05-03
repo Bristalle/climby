@@ -128,12 +128,9 @@ public function  barreAdmin() {
 	}
 	
 	//Chargement de la liste des critères pour être utilisé dans une select-bar
-	$critere = $f->getAllCritere();
+
 	$criteres = "";
-	/*foreach($critere as $t) {
-		$criteres .='<option value="'.$t->idc.'">'.$t->nom.'</option>';
-	} */
-	
+
 	//Chargement de la liste des acces pour être utilisé dans une select-bar
 	$accesList = $f->getAllAcces();
 	$acces = "";
