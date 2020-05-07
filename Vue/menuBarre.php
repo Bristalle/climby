@@ -140,6 +140,8 @@ public function  barreAdmin() {
                         .'</ul>
                     </div>'
 					.$f->getModalFormulaireCreationDestinationAdmin($linkIndex)
+					.$f->getModalFormulaireModificationDestinationAdmin($linkIndex)
+					.$f->getModalFormulaireSuppressionDestinationAdmin($linkIndex)
 					.$f->getModalFormulaireCreationCritereAdmin($linkIndex)
 					.$f->getModalFormulaireModificationCritereAdmin($linkIndex)
 					.$f->getModalFormulaireSuppressionCritereAdmin($linkIndex)

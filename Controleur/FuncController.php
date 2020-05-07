@@ -32,6 +32,7 @@ include_once $linkIndex.'Modele/typeGrimpe.php';
 class FuncController extends Controller{
     public  function __construct(){
         $this->tab=array(
+			"ajaxForUpdateDestination" => "ajaxForUpdateDestination",
 			"getTheBarre" => "getTheBarre",
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getReturnedPage" => "getReturnedPage",
@@ -64,6 +65,7 @@ class FuncController extends Controller{
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
 			"formulaireCreerCompteUtilisateur" => "formulaireCreerCompteUtilisateur",
 			"formulaireCreerDestinationAdmin" => "formulaireCreerDestinationAdmin",
+			"formulaireModifierDestinationAdmin" => "formulaireModifierDestinationAdmin",
 			"formulaireSupprimerDestinationAdmin" => "formulaireSupprimerDestination",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
@@ -101,6 +103,7 @@ class FuncController extends Controller{
     //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
     //      "getCapacite" => "getCapacite",
+			"getDestinationById" => "getDestinationById",
 			"getAccesById" => "getAccesById",
 			"getAccesByNom" => "getAccesByNom",
 			"getAllNiveaux" => "getAllNiveaux",
@@ -117,6 +120,14 @@ class FuncController extends Controller{
 			"formulaireSupprimerTypeDeGrimpeAdmin" => "formulaireSupprimerTypeDeGrimpeAdmin",
         );
     }
+	
+	public function ajaxForUpdateDestination() {
+		if(isset($_GET['b'])){
+			echo json_encode($this->getDestinationById(strip_tags(htmlentities($_GET['b']))));
+		} else {
+			echo "ERROR";
+		}
+	}
 	
 	public function getTheBarre() {
 		// Chargement de la barre de navigation
@@ -185,6 +196,8 @@ class FuncController extends Controller{
     <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
     <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
     <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
+	<script src="jquery-2.1.1.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
 </head>
 <body id="body">'
@@ -197,15 +210,15 @@ class FuncController extends Controller{
 	return $html;
 	}
 	
-	public function getSelectBoxInitializedDestination($selectedIdd, $multi=false) {
+	public function getSelectBoxInitializedDestination($selectedIdd, $multi=false, $id='') {
 		$d = new destination();
 		$destinations = $d->getAllDestinations();
 		$desti = "";
 		foreach($destinations as $dest){
 			if($dest['idd'] == $selectedIdd){
-				$desti .= '<option value"'.$dest['idd'].'" selected>'.$dest['nom'].'</option>';
+				$desti .= '<option value="'.$dest['idd'].'" selected>'.$dest['nom'].'</option>';
 			} else {
-				$desti .= '<option value"'.$dest['idd'].'">'.$dest['nom'].'</option>';
+				$desti .= '<option value="'.$dest['idd'].'">'.$dest['nom'].'</option>';
 			}
 		}
 		
@@ -215,6 +228,10 @@ class FuncController extends Controller{
 			$html .= ' multiple';
 		}
 		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
 		$html .= '>
 						<option value="0">--Non renseignée--</option>'
 						.$desti
@@ -222,7 +239,7 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedNiveaux($selectedIdl, $multi=false) {
+	public function getSelectBoxInitializedNiveaux($selectedIdl, $multi=false, $id='') {
 		// Chargement des niveaux et création de la selectbox
 		$lvl = $this->getAllNiveaux();
 		$niveaux = '';
@@ -240,6 +257,10 @@ class FuncController extends Controller{
 			$html .= ' multiple';
 		}
 		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}		
+		
 		$html .= '>
 						<option value="0">--Non renseigné--</option>'
 						.$niveaux
@@ -247,7 +268,7 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedCritere($selectedIdc, $multi=false) {
+	public function getSelectBoxInitializedCritere($selectedIdc, $multi=false, $id='') {
 		$crit = $this->getAllCriteres();
 		$criteres = '';
 		foreach($crit as $cr){
@@ -264,6 +285,10 @@ class FuncController extends Controller{
 			$html .= ' multiple';
 		}
 		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
 		$html .= '>
 						<option value="0">--Non renseigné--</option>'
 						.$criteres
@@ -271,7 +296,7 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedTypeGrimpe($selectedIdt, $multi=false) {
+	public function getSelectBoxInitializedTypeGrimpe($selectedIdt, $multi=false, $id='') {
 		$types = $this->getAllTypeDeGrimpe();
 		$typesGrimpe = '';
 		foreach($types as $t){
@@ -284,8 +309,13 @@ class FuncController extends Controller{
 		
 		$html = '<label for="message-text" class="control-label">Type de grimpe:</label>
 					<select name="typeDeGrimpe" class="form-control"';
+		
 		if($multi){
 			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
 		}
 		
 		$html .= '>
@@ -295,7 +325,7 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedCotation($selectedId, $multi=false){
+	public function getSelectBoxInitializedCotation($selectedId, $multi=false, $id=''){
 		$cotation = $this->getAllCotations();
 		$cotations = '';
 		foreach($cotation as $c){
@@ -309,6 +339,10 @@ class FuncController extends Controller{
 		$html = '';
 		if($multi){
 			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
 		}
 		
 		$html .= '>
@@ -730,7 +764,7 @@ class FuncController extends Controller{
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Destination</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerDestinationAdmin" style="cursor:pointer">Ajouter</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#modifierDestinationAdmin" style="cursor:pointer">Modifier</a></li>
 						<li><a data-toggle="modal" data-target="#supprimerDestinationAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
@@ -1007,8 +1041,6 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireCreationDestinationAdmin($lnkInd) {
-		//Besoin des criteres
-		//Besoin des type de grimpe
 		$html = '<!-- Modal -->
 <!-- Formulaire de création d une destination par un admin -->
 							<div class="modal fade" id="creerDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -1077,6 +1109,111 @@ class FuncController extends Controller{
 									</div>
 								</div>
 							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireModificationDestinationAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de création d une destination par un admin -->
+							<div class="modal fade" id="modifierDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierDestinationAdmin" id="formForModifierDestination">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Modifier une destination</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedDestination(0, false, 'destinationForModifierDestination')
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Nom</label>
+													<input name="nom" type="text" class="form-control" id="nomForModifierDestination" placeholder="Nom de la destination*" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Description</label>
+                                                    <textarea name="description" type="text-area" class="form-control" id="descriptionForModifierDestination" placeholder="Description de la destination*" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Coordonnées GPS*</label>
+													<input name="gps" type="text" class="form-control" id="gpsForModifierDestination" placeholder="Latitude/ Longitude au format 48.735846, 1.923482" aria-describedby="basic-addon1" pattern="^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedTypeGrimpe(0, false, 'typeGrimpeForModifierDestination')
+												.'</div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Hauteur du spot*</label >
+                                                    <input name = "hauteurDuSpot" class="form-control" id="hauteurSpotForModifierDestination" type = "number" min = "0" max = "1000" step = "1" placeholder = "En mètre." >
+                                                </div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Nombre de voies*</label >
+                                                    <input name = "nbVoies" class="form-control" id="nombreVoiesForModifierDestination" type = "number" min = "0" max = "1000" step = "1" placeholder = "5" >
+                                                </div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Cotation Minimum*</label>
+													<select name="cotationMin" class="form-control"'
+													.$this->getSelectBoxInitializedCotation(0, false, 'cotationMinForModifierDestination')
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Cotation Maximum*</label>
+													<select name="cotationMax" class="form-control"'
+													.$this->getSelectBoxInitializedCotation(0, false, 'cotationMaxForModifierDestination')
+												.'</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedCritere(0, false, 'critereForModifierDestination')
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Pays*</label>
+													<input name="pays" type="text" class="form-control" id="paysForModifierDestination" placeholder="Pays de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Région</label>
+													<input name="region" type="text" class="form-control" id="regionFormOdifierDestination" placeholder="Région de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Photo*</label>
+													<input name="photo" type="text" class="form-control" id="photoForModifierDestination" placeholder="Pas encore prêt" aria-describedby="basic-addon1" disabled>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<script>
+								document.getElementById("destinationForModifierDestination").setAttribute("onChange", "refreshForm()");
+								function refreshForm(){
+									var idd = document.getElementById("destinationForModifierDestination").value;
+									$.ajax({
+										url : "'.$lnkInd.'Site.php?a=ajaxForUpdateDestination",
+										type : "GET",
+										data : "b=" + idd,
+										dataType : "json",
+										success : function(dataFromDestination, statut){
+											if(dataFromDestination == "ERROR"){
+												document.getElementById("destinationForModifierDestination").value = "0";
+											} else {
+												document.getElementById("nomForModifierDestination").setAttribute("value", dataFromDestination["nom"]);
+												document.getElementById("descriptionForModifierDestination").setAttribute("value", dataFromDestination["description"]);
+												document.getElementById("gpsForModifierDestination").setAttribute("value", dataFromDestination["gps"]);
+												document.getElementById("typeGrimpeForModifierDestination").value = dataFromDestination["typeDeGrimpe"];
+												document.getElementById("hauteurSpotForModifierDestination").setAttribute("value", dataFromDestination["hauteurDuSpot"]);
+												document.getElementById("nombreVoiesForModifierDestination").setAttribute("value", dataFromDestination["nbVoies"]);
+												document.getElementById("cotationMinForModifierDestination").value = dataFromDestination["cotationMin"];
+												document.getElementById("cotationMaxForModifierDestination").value = dataFromDestination["cotationMax"];
+												document.getElementById("critereForModifierDestination").value = dataFromDestination["critere"];
+												document.getElementById("paysForModifierDestination").setAttribute("value", dataFromDestination["pays"]);
+												document.getElementById("regionFormOdifierDestination").setAttribute("value", dataFromDestination["region"]);
+												document.getElementById("photoForModifierDestination").setAttribute("value", dataFromDestination["photo"]);
+											}
+										}
+									});
+								}
+							</script>';
 		return $html;
 	}
 	
@@ -1550,8 +1687,141 @@ class FuncController extends Controller{
 		//Fonction d'insert
 		if($bool){
 			$d = new destination();
-			$idd = $c->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
-			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idd.'</div>';
+			$idd = $d->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
+			$res .= '<div class="alert alert-success" role="alert">Création de la destination réussie. ID de la nouvelle destination : '.$idd.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireModifierDestinationAdmin(){
+		$dest = new destination();
+		$bool = true;
+		$res = '';
+		
+		if($_POST['destination'] == 0){
+			$res .= '<div class="alert alert-danger" role="alert">La destination doit être choisi.</div>';
+			$bool=false;
+		} else {
+			$idd = strip_tags(htmlentities($_POST['destination']));
+			$d = $dest->getDestinationById($idd);
+		
+			//Controles
+			if(empty($_POST['nom'])){
+				//$res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
+				//$bool=false;
+				$nom = $d['nom'];
+			} else {
+				$nom = strip_tags(htmlentities($_POST['nom']));
+			}
+			
+			if(empty($_POST['description'])){
+				//$res.='<div class="alert alert-danger" role="alert">La description doit être renseignée.</div>';
+				//$bool=false;
+				$description = $d['description'];
+			} else {
+				$description = strip_tags(htmlentities($_POST['description']));
+			}
+			
+			if(empty($_POST['gps'])){
+				//$res.='<div class="alert alert-danger" role="alert">Les coordonnées GPS doivent être renseignées.</div>';
+				//$bool=false;
+				$gps = $d['gps'];
+			} else {
+				//REGEX à utilisé ^([-+]?)([\d]{1,2})(((\.)(\d+)(/)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$
+				$gps = strip_tags(htmlentities($_POST['gps']));
+			}
+			
+			if(empty($_POST['typeDeGrimpe'])){
+				//$res.='<div class="alert alert-danger" role="alert">Un type de grimpe doit être choisi.</div>';
+				//$bool=false;
+				$typeDeGrimpe = $d['typeDeGrimpe'];
+			} else {
+				$typeDeGrimpe = strip_tags(htmlentities($_POST['typeDeGrimpe']));
+			}
+			
+			if(empty($_POST['hauteurDuSpot'])){
+				//$res.='<div class="alert alert-danger" role="alert">La hauteur du spot doit être renseignée.</div>';
+				//$bool=false;
+				$hauteurDuSpot = $d['hauteurDuSpot'];
+			} else {
+				$hauteurDuSpot = strip_tags(htmlentities($_POST['hauteurDuSpot']));
+			}
+			
+			if(empty($_POST['nbVoies'])){
+				//$res.='<div class="alert alert-danger" role="alert">Le nombre de voie doit être renseigné.</div>';
+				//$bool=false;
+				$nbVoies = $d['nbVoies'];
+			} else {
+				$nbVoies = strip_tags(htmlentities($_POST['nbVoies']));
+			}
+			
+			if(empty($_POST['cotationMin'])){
+				//$res.='<div class="alert alert-danger" role="alert">La cotation minimal doit être indiquée.</div>';
+				//$bool=false;
+				$cotationMin = $d['cotationMin'];
+			} else {
+				$cotationMin = strip_tags(htmlentities($_POST['cotationMin']));
+			}
+			
+			if(empty($_POST['cotationMax'])){
+				//$res.='<div class="alert alert-danger" role="alert">La cotation maximal doit être indiquée.</div>';
+				//$bool=false;
+				$cotationMax = $d['cotationMax'];
+			} else {
+				$cotationMaxTMP = strip_tags(htmlentities($_POST['cotationMax']));
+				if(isset($cotationMin)){
+					if(intval($cotationMin)<=intval($cotationMaxTMP)){
+						$cotationMax = $cotationMaxTMP;
+					} else {
+						$res.='<div class="alert alert-danger" role="alert">La cotation maximal doit être supérieure ou égale à la minimal.</div>';
+						$bool=false;
+					}
+				}			
+			}
+			
+			if(empty($_POST['critere'])){
+				//$res.='<div class="alert alert-danger" role="alert">Un critère doit être choisi.</div>';
+				//$bool=false;
+				$critere = $d['critere'];
+			} else {
+				$critere = strip_tags(htmlentities($_POST['critere']));
+			}
+
+			if(empty($_POST['pays'])){
+				//$res.='<div class="alert alert-danger" role="alert">Le pays doit être renseigné.</div>';
+				//$bool=false;
+				$pays = $d['pays'];
+			} else {
+				$pays = strip_tags(htmlentities($_POST['pays']));
+			}
+			
+			if(empty($_POST['region'])){
+				//$res.='<div class="alert alert-danger" role="alert">La région doit être renseignée.</div>';
+				//$bool=false;
+				$region = $d['region'];
+			} else {
+				$region = strip_tags(htmlentities($_POST['region']));
+			}
+			
+			if(empty($_POST['photo'])){
+				//$res.='<div class="alert alert-danger" role="alert">Une photo du spot doit être fournie.</div>';
+				//$bool=false;
+				//$photo = $d['photo'];
+				$photo = '';
+			} else {
+				$photo = strip_tags(htmlentities($_POST['photo']));
+			}
+			
+			//Fonction d'update
+			if($bool){
+				$c = new destination();
+				$result = $c->updateDestination($idd, $nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
+				if($result == 1){
+					$res .= '<div class="alert alert-success" role="alert">Modification de la destination réussie.</div>';
+				} else {
+					$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+				}
+			}
 		}
 		echo $this->getReturnedPage($res);
 	}
@@ -3178,6 +3448,11 @@ echo '<div class="container">
     /*    $r = new reservation();
         return $r->getNbParticipants($idd);*/
     }
+	
+	public function getDestinationById($idd){
+		$d = new destination();
+		return $d->getDestinationById($idd);
+	}
 	
 	public function getAccesById($ida){
 		$a = new acces();

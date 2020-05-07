@@ -34,6 +34,9 @@ $barre = $f->getTheBarre();
     <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
     <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
     <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
+	<script src="jquery-2.1.1.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
 
 </head>
 

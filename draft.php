@@ -16,7 +16,14 @@ $e = new event();
 $i = new image();
 $l = new niveau();
 
-var_dump($f->getAllCotations());
+
+if(isset($_POST['a'])){
+	echo "miaou ". $_POST['a'];
+}
+
+
+
+//var_dump($f->getAllCotations());
 
 //var_dump($l->insertNiveau('Noob'));
 //var_dump($l->insertNiveau('Glandu'));

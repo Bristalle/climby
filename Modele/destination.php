@@ -68,7 +68,7 @@ class destination {
 		
 		//insertion de l'image
         $i = new image();
-        $i->insert($this->idd,$image);
+        //$i->insert($this->idd,$image);
 		//retourner l'idi dans $photo à voir comment ca se gere s't'histoire
 		
 		$query = $c->prepare("insert into destination (nom, description, gps, critere, typeDeGrimpe, hauteurDuSpot, nbVoies, cotationMin, cotationMax, pays, region, photo)
@@ -89,7 +89,7 @@ class destination {
 		return $c->lastInsertId('destination');
 	}
 	
-	public function updateDestination($idd, $nom, $descrition, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo) {
+	public function updateDestination($idd, $nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo) {
 		$c = Base::getConnection();
 		$query = $c->prepare("UPDATE destination
 							SET nom = :nom, 
