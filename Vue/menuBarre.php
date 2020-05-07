@@ -142,6 +142,7 @@ public function  barreAdmin() {
 					.$f->getModalFormulaireCreationDestinationAdmin($linkIndex)
 					.$f->getModalFormulaireCreationCritereAdmin($linkIndex)
 					.$f->getModalFormulaireModificationCritereAdmin($linkIndex)
+					.$f->getModalFormulaireSuppressionCritereAdmin($linkIndex)
 					.$f->getModalFormulaireCreationTypeDeGrimpeAdmin($linkIndex)
 					
 					

@@ -51,6 +51,7 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
 			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
 			"getModalFormulaireModificationCritereAdmin" => "getModalFormulaireModificationCritereAdmin",
+			"getModalFormulaireSuppressionCritereAdmin" => "getModalFormulaireSuppressionCritereAdmin",
 			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
 			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
@@ -107,6 +108,7 @@ class FuncController extends Controller{
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
 			"formulaireCreerCritereAdmin" => "formulaireCreerCritereAdmin",
 			"formulaireModifierCritereAdmin" => "formulaireModifierCritereAdmin",
+			"formulaireSupprimerCritereAdmin" => "formulaireSupprimerCritereAdmin",
 			"formulaireCreerTypeDeGrimpeAdmin" => "formulaireCreerTypeDeGrimpeAdmin",
         );
     }
@@ -934,6 +936,38 @@ class FuncController extends Controller{
 												<div class="modal-footer">
 													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
 													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireSuppressionCritereAdmin($lnkInd){
+		$c = new critere();
+		$allCriteres = $c->getAllCriteres();
+		
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de critère -->
+							<div class="modal fade" id="supprimerCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerCritereAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedCritere(0)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
 												</div>
 											</form>
 										</div>
@@ -3231,6 +3265,31 @@ echo '<div class="container">
 			$idc = $c->updateCritere($idc, $nom);
 			if($idc == 1){
 				$res .= '<div class="alert alert-success" role="alert">Création du critère réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireSupprimerCritereAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['critere'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un critère doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idc = strip_tags(htmlentities($_POST['critere']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new critere();
+			$idc = $c->deleteCritere($idc);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression du critère réussie.</div>';
 			} else {
 				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
 			}
