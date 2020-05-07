@@ -54,6 +54,8 @@ class FuncController extends Controller{
 			"getModalFormulaireSuppressionCritereAdmin" => "getModalFormulaireSuppressionCritereAdmin",
 			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
 			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
+			"getModalFormulaireModificationTypeDeGrimpeAdmin" => "getModalFormulaireModificationTypeDeGrimpeAdmin",
+			"getModalFormulaireSuppressionTypeDeGrimpeAdmin" => "getModalFormulaireSuppressionTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
@@ -104,12 +106,13 @@ class FuncController extends Controller{
 			"getAllTypeDeGrimpe" => "getAllTypeDeGrimpe",
 			"getAllCotations" => "getAllCotations",
 			"formulaireChangerMdp" => "formulaireChangerMdp",
-			"updateUtilisateur" => "updateUtilisateur",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
 			"formulaireCreerCritereAdmin" => "formulaireCreerCritereAdmin",
 			"formulaireModifierCritereAdmin" => "formulaireModifierCritereAdmin",
 			"formulaireSupprimerCritereAdmin" => "formulaireSupprimerCritereAdmin",
 			"formulaireCreerTypeDeGrimpeAdmin" => "formulaireCreerTypeDeGrimpeAdmin",
+			"formulaireModifierTypeDeGrimpeAdmin" => "formulaireModifierTypeDeGrimpeAdmin",
+			"formulaireSupprimerTypeDeGrimpeAdmin" => "formulaireSupprimerTypeDeGrimpeAdmin",
         );
     }
 	
@@ -245,7 +248,7 @@ class FuncController extends Controller{
 		$types = $this->getAllTypeDeGrimpe();
 		$typesGrimpe = '';
 		foreach($types as $t){
-			if($t['idt'] == $selectedIdc){
+			if($t['idt'] == $selectedIdt){
 				$typesGrimpe .= '<option value="'.$t['idt'].'" selected>'.$t['nom'].'</option>';
 			} else {
 				$typesGrimpe .= '<option value="'.$t['idt'].'">'.$t['nom'].'</option>';
@@ -706,7 +709,8 @@ class FuncController extends Controller{
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Type de grimpe</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerTypeDeGrimpeAdmin" style="cursor:pointer">Ajouter</a></li>
-						<li><a href="#">Modifier / Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#modifierTypeGrimpeAdmin" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerTypeGrimpeAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Critère</a>
@@ -910,9 +914,6 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireModificationCritereAdmin($lnkInd){
-		$c = new critere();
-		$allCriteres = $c->getAllCriteres();
-		
 		$html = '<!-- Modal -->
 <!-- Formulaire de modification de critère -->
 							<div class="modal fade" id="modifierCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -920,7 +921,7 @@ class FuncController extends Controller{
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
+											<h4 class="modal-title" id="myModalLabel">Modification d\'un critère</h4>
 										</div>		
 											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierCritereAdmin">
 												<div class="modal-body">
@@ -956,7 +957,7 @@ class FuncController extends Controller{
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'un critère</h4>
 										</div>		
 											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerCritereAdmin">
 												<div class="modal-body">
@@ -1063,9 +1064,9 @@ class FuncController extends Controller{
 												<h4 class="modal-title" id="myModalLabel">Créer un type de grimpe</h4>
 											</div>
 											<div class="modal-body">
-												<div class="input-group">
-                                                    <span class="input-group-addon">Nom</span>
-                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du type de grimpe" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+												<div class="form-group">
+													<label for="message-text" class="control-label">Nom</label>
+                                                    <input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du type de grimpe" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
                                                 </div>
 											</div>
 											<div class="modal-footer">
@@ -1077,6 +1078,68 @@ class FuncController extends Controller{
 								</div>
 							</div>';
 		return $html;
+	}
+	
+	public function getModalFormulaireModificationTypeDeGrimpeAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de critère -->
+							<div class="modal fade" id="modifierTypeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Modification d\'un type de grimpe</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierTypeDeGrimpeAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedTypeGrimpe(0)
+													.'</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Nouveau nom*</label>
+														<input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du type de grimpe" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireSuppressionTypeDeGrimpeAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de critère -->
+							<div class="modal fade" id="supprimerTypeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'un type de grimpe</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerTypeDeGrimpeAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedTypeGrimpe(0)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;		
 	}
 	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
@@ -3131,15 +3194,6 @@ echo '<div class="container">
 		//Affichage de la page de retour
 		echo $this->getReturnedPage($res);
 	}
-	
-	public function updateUtilisateur($idu, $email, $mdp, $pseudo, $addresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription) {
-		$u = new utilisateur();
-		if($u->updateUtilisateur($idu, $email, $mdp, $pseudo, $addresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription) == 1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public function formulaireUpdateUtilisateur(){
 		$idu = $_POST['idu'];
@@ -3206,8 +3260,10 @@ echo '<div class="container">
 		
 		//Fonction d'update
 		if($bool){
-			if($this->updateUtilisateur($u['idu'], $u['email'], $u['mdp'], $pseudo, $addresse, $codePost, $ville, $telephone, $u['solde'], $u['acces'], $niveau, $diplome, $u['dateInscription'])){
-					$res.= '<div class="alert alert-success" role="alert">Modifications des informations effectuées avec succès !</div>';
+			$u = new utilisateur();
+			$result = $u->updateUtilisateur($u['idu'], $u['email'], $u['mdp'], $pseudo, $addresse, $codePost, $ville, $telephone, $u['solde'], $u['acces'], $niveau, $diplome, $u['dateInscription']);
+			if($result == 1){
+				$res.= '<div class="alert alert-success" role="alert">Modifications des informations effectuées avec succès !</div>';
 			} else {
 				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
 			}
@@ -3313,11 +3369,68 @@ echo '<div class="container">
 		//Fonction d'insert
 		if($bool){
 			$t = new typeGrimpe();
-			$idt = $c->insertTypeGrimpe($nom);
+			$idt = $t->insertTypeGrimpe($nom);
 			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idt.'</div>';
 		}
 		echo $this->getReturnedPage($res);
 	}
 
+	public function formulaireModifierTypeDeGrimpeAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['typeDeGrimpe'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un type de grimpe doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['typeDeGrimpe']));
+		}
+		
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nouveau nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			//Controle sur une pré-existence ?
+			$nom = strip_tags(htmlentities($_POST['nom']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new typeGrimpe();
+			$idc = $c->updateTypeGrimpe($idt, $nom);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Modification du type de grimpe réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireSupprimerTypeDeGrimpeAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['typeDeGrimpe'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un type de grimpe doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['typeDeGrimpe']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new typeGrimpe();
+			$idc = $c->deleteTypeGrimpe($idt);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression du type de grimpe réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
 }
 ?>

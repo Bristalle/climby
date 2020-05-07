@@ -45,7 +45,7 @@ class typeGrimpe {
 		$query = $c->prepare("insert into typegrimpe (nom) values (:nom)");
 		$query->bindParam (':nom',$nom, PDO::PARAM_STR);
 		$query->execute();
-		return $c->lestInsertId('typegrimpe');
+		return $c->lastInsertId('typegrimpe');
 	}
 	
 	public function updateTypeGrimpe($idt, $nom) {
