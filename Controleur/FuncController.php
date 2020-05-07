@@ -53,6 +53,7 @@ class FuncController extends Controller{
 			"getModalFormulaireModificationCritereAdmin" => "getModalFormulaireModificationCritereAdmin",
 			"getModalFormulaireSuppressionCritereAdmin" => "getModalFormulaireSuppressionCritereAdmin",
 			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
+			"getModalFormulaireSuppressionDestinationAdmin" => "getModalFormulaireSuppressionDestinationAdmin",
 			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
 			"getModalFormulaireModificationTypeDeGrimpeAdmin" => "getModalFormulaireModificationTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionTypeDeGrimpeAdmin" => "getModalFormulaireSuppressionTypeDeGrimpeAdmin",
@@ -63,6 +64,7 @@ class FuncController extends Controller{
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
 			"formulaireCreerCompteUtilisateur" => "formulaireCreerCompteUtilisateur",
 			"formulaireCreerDestinationAdmin" => "formulaireCreerDestinationAdmin",
+			"formulaireSupprimerDestinationAdmin" => "formulaireSupprimerDestination",
 	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
 	//		"creerDiner" => "creerDiner",
 	//		"creerDinerAdmin" => "creerDinerAdmin",
@@ -193,6 +195,31 @@ class FuncController extends Controller{
     '.$content.'
     </div>';
 	return $html;
+	}
+	
+	public function getSelectBoxInitializedDestination($selectedIdd, $multi=false) {
+		$d = new destination();
+		$destinations = $d->getAllDestinations();
+		$desti = "";
+		foreach($destinations as $dest){
+			if($dest['idd'] == $selectedIdd){
+				$desti .= '<option value"'.$dest['idd'].'" selected>'.$dest['nom'].'</option>';
+			} else {
+				$desti .= '<option value"'.$dest['idd'].'">'.$dest['nom'].'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Destinations:</label>
+					<select name="destination" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		$html .= '>
+						<option value="0">--Non renseignée--</option>'
+						.$desti
+					.'</select>';
+		return $html;
 	}
 	
 	public function getSelectBoxInitializedNiveaux($selectedIdl, $multi=false) {
@@ -703,7 +730,8 @@ class FuncController extends Controller{
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Destination</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerDestinationAdmin" style="cursor:pointer">Ajouter</a></li>
-						<li><a href="#">Modifier / Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerDestinationAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Type de grimpe</a>
@@ -1046,6 +1074,35 @@ class FuncController extends Controller{
 												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
 											</div>
 										</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireSuppressionDestinationAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression de destination -->
+							<div class="modal fade" id="supprimerDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'une destination</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerDestinationAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedDestination(0)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
 									</div>
 								</div>
 							</div>';
@@ -1495,6 +1552,31 @@ class FuncController extends Controller{
 			$d = new destination();
 			$idd = $c->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
 			$res .= '<div class="alert alert-success" role="alert">Création du type de grimpe réussie. ID du nouveau type de grimpe : '.$idd.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireSupprimerDestinationAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['destination'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Une destination doit être sélectionnée.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['destination']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new destination();
+			$idc = $c->deleteDestination($idt);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression de la destination réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
 		}
 		echo $this->getReturnedPage($res);
 	}
