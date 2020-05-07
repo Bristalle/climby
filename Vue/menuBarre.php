@@ -44,7 +44,7 @@ public function barreVisiteur(){
 	$f = new FuncController();
 		
 	//Chargement des critères pour les utiliser dans une select-bar
-	$critere = $f->getAllCritere();
+	//$critere = $f->getAllCritere();
 	$criteres = "";
 	/*foreach($critere as $t) {
 		$criteres .='<option value="'.$t->idc.'">'.$t->nom.'</option>';
@@ -56,7 +56,7 @@ public function barreVisiteur(){
 				.$f->getBouttonAccueil($linkIndex)				
 				.'<div class="collapse navbar-collapse" id="navbarNav">
 					<ul class="nav navbar-nav">'
-						.$f->getModalFormulaireRecherche($linkIndex, $criteres)
+//						.$f->getModalFormulaireRecherche($linkIndex, $criteres)
 						.$f->getModalFormulaireContacterAdmin($linkIndex)
 					.'</ul>
 					<ul class="nav navbar-nav navbar-right">'
@@ -90,14 +90,14 @@ public function  barreAbonne() {
     $moyHote = $f->getNoteMoyenneHoteByIdu($_SESSION['idu']);
     $moyInvit = $f->getNoteMoyenneInviteByIdu($_SESSION['idu']);
 
-     $res='<nav class="navbar navbar-default">
+    $res='<nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->'
 					.$f->getBouttonAccueil($linkIndex)
 					.'<div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="nav navbar-nav">'
-							.$f->getModalFormulaireRecherche($linkIndex, $criteres)
-                            .$f->getModalFormulaireCreationEvent($linkIndex, $criteres)
+//							.$f->getModalFormulaireRecherche($linkIndex, $criteres)
+//                            .$f->getModalFormulaireCreationEvent($linkIndex, $criteres)
 							.$f->getModalFormulaireContacterAdmin($linkIndex)
                         .'</ul>
                          <ul class="nav navbar-nav navbar-right">'
@@ -120,24 +120,6 @@ public function  barreAdmin() {
 	 
 	$f = new FuncController();
 	
-	//Chargement de la liste des utilisateur pour être utilisé dans une select-bar
-	$users = $f->getAllUtilisateurs();
-	$options = "";
-	foreach ($users as $utilisateur){
-		$options .= '<option value="'.$utilisateur['idu'].'">'.$utilisateur['idu'].' - '.$utilisateur['pseudo'].' - '.$utilisateur['email'].'</option>';
-	}
-	
-	//Chargement de la liste des critères pour être utilisé dans une select-bar
-
-	$criteres = "";
-
-	//Chargement de la liste des acces pour être utilisé dans une select-bar
-	$accesList = $f->getAllAcces();
-	$acces = "";
-	/*foreach ($accesList as $acc){
-		$acces .= '<option value="'.$acc['ida'].'">'.$acc['nom'].'</option>';
-	}*/
-	
 	//Chargement d'autres variables
     $moyHote = $f->getNoteMoyenneHoteByIdu($_SESSION['idu']);
     $moyInvit = $f->getNoteMoyenneInviteByIdu($_SESSION['idu']);	
@@ -148,8 +130,8 @@ public function  barreAdmin() {
 					.$f->getBouttonAccueil($linkIndex)
 					.'<div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="nav navbar-nav">'
-							.$f->getModalFormulaireRecherche($linkIndex, $criteres)
-                            .$f->getModalFormulaireCreationEvent($linkIndex, $criteres)
+//							.$f->getModalFormulaireRecherche($linkIndex, $criteres)
+//                            .$f->getModalFormulaireCreationEvent($linkIndex, $criteres)
 							.$f->getModalMenuAdministration($linkIndex)
                         .'</ul>
                          <ul class="nav navbar-nav navbar-right">'
@@ -159,14 +141,15 @@ public function  barreAdmin() {
                     </div>'
 					.$f->getModalFormulaireCreationDestinationAdmin($linkIndex)
 					.$f->getModalFormulaireCreationCritereAdmin($linkIndex)
+					.$f->getModalFormulaireModificationCritereAdmin($linkIndex)
 					.$f->getModalFormulaireCreationTypeDeGrimpeAdmin($linkIndex)
 					
 					
-					.$f->getModalFormulaireCreationCompteByAdmin($linkIndex, $acces)
-					.$f->getModalFormulaireCreationEventByAdmin ($linkIndex, $criteres, $options)
-					.$f->getModalFormulaireCreationCritere($linkIndex)
-					.$f->getModalFormulaireSuppressionCompte($linkIndex, $options)
-					.$f->getModalFormulaireModifierSolde($linkIndex, $options)
+					
+//					.$f->getModalFormulaireCreationCompteByAdmin($linkIndex, $acces)
+//					.$f->getModalFormulaireCreationEventByAdmin ($linkIndex, $criteres, $options)
+//					.$f->getModalFormulaireSuppressionCompte($linkIndex, $options)
+//					.$f->getModalFormulaireModifierSolde($linkIndex, $options)
 				.'</div>
 			</nav>'
 			.$f->getModalScriptForMenuBarre();

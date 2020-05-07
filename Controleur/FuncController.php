@@ -49,9 +49,9 @@ class FuncController extends Controller{
 			"getModalMenuAdministration" => "getModalMenuAdministration",
 			"getModalFormulaireCreationCompteByAdmin" => "getModalFormulaireCreationCompteByAdmin",
 			"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
-			"getModalFormulaireCreationCritere" => "getModalFormulaireCreationCritere",
-			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
 			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
+			"getModalFormulaireModificationCritereAdmin" => "getModalFormulaireModificationCritereAdmin",
+			"getModalFormulaireCreationDestinationAdmin" => "getModalFormulaireCreationDestinationAdmin",
 			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
@@ -106,6 +106,7 @@ class FuncController extends Controller{
 			"updateUtilisateur" => "updateUtilisateur",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
 			"formulaireCreerCritereAdmin" => "formulaireCreerCritereAdmin",
+			"formulaireModifierCritereAdmin" => "formulaireModifierCritereAdmin",
 			"formulaireCreerTypeDeGrimpeAdmin" => "formulaireCreerTypeDeGrimpeAdmin",
         );
     }
@@ -709,7 +710,8 @@ class FuncController extends Controller{
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Critère</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerCritereAdmin" style="cursor:pointer">Ajouter</a></li>
-						<li><a href="#">Modifier / Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#modifierCritereAdmin" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerCritereAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li></li>
@@ -875,27 +877,63 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getModalFormulaireCreationCritere($lnkInd) {
+	public function getModalFormulaireCreationCritereAdmin($lnkInd) {
 		$html = '<!-- Modal -->
 <!-- Formulaire de création de critère -->
-							<div class="modal fade" id="creerCritere" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal fade" id="creerCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
 										</div>		
-											<form method="post" action="'.$lnkInd.'Site.php?a=creerCritere">
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCritereAdmin">
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">
-														<span class="input-group-addon">Nom</span>
-														<input name="nom" type="text" class="form-control" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+														<label for="message-text" class="control-label">Nom*</label>
+														<input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
 													</div>
 												</div>
 												<div class="modal-footer">
 													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
 													<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireModificationCritereAdmin($lnkInd){
+		$c = new critere();
+		$allCriteres = $c->getAllCriteres();
+		
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de critère -->
+							<div class="modal fade" id="modifierCritereAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Création d\'un critère</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierCritereAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedCritere(0)
+													.'</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Nouveau nom*</label>
+														<input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
 												</div>
 											</form>
 										</div>
@@ -967,34 +1005,6 @@ class FuncController extends Controller{
 													<label for="message-text" class="control-label">Photo*</label>
 													<input name="photo" type="text" class="form-control" id="recipient-name" placeholder="Pas encore prêt" aria-describedby="basic-addon1" disabled>
 												</div>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>';
-		return $html;
-	}
-	
-	public function getModalFormulaireCreationCritereAdmin($lnkInd) {
-		$html = '<!-- Modal -->
-<!-- Formulaire de création d un critère par un admin -->
-							<div class="modal fade" id="creerCritereAdminAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCritereAdmin">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
-												<h4 class="modal-title" id="myModalLabel">Créer un critère</h4>
-											</div>
-											<div class="modal-body">
-												<div class="input-group">
-                                                    <span class="input-group-addon">Nom</span>
-                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du critère" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
-                                                </div>
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
@@ -1267,7 +1277,7 @@ class FuncController extends Controller{
 		//Affichage de la page de retour
 		echo $this->getReturnedPage($res);
     }
-
+	
 	public function formulaireCreerDestinationAdmin(){
 		$bool = true;
 		$res = '';
@@ -3191,6 +3201,39 @@ echo '<div class="container">
 			$c = new critere();
 			$idc = $c->insertCritere($nom);
 			$res .= '<div class="alert alert-success" role="alert">Création du critère réussie. ID du nouveau critère : '.$idc.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
+
+	public function formulaireModifierCritereAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['critere'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un critère doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idc = strip_tags(htmlentities($_POST['critere']));
+		}
+		
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nouveau nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			//Controle sur une pré-existence ?
+			$nom = strip_tags(htmlentities($_POST['nom']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new critere();
+			$idc = $c->updateCritere($idc, $nom);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Création du critère réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
 		}
 		echo $this->getReturnedPage($res);
 	}
