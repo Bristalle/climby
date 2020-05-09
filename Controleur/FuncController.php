@@ -123,6 +123,7 @@ class FuncController extends Controller{
 			"formulaireSupprimerTypeDeGrimpeAdmin" => "formulaireSupprimerTypeDeGrimpeAdmin",
 			"formulaireCreerNiveauAdmin" => "formulaireCreerNiveauAdmin",
 			"formulaireModifierNiveauAdmin" => "formulaireModifierNiveauAdmin",
+			"formulaireSupprimerNiveauAdmin" => "formulaireSupprimerNiveauAdmin",
         );
     }
 	
@@ -786,6 +787,42 @@ class FuncController extends Controller{
 					</ul>
 				</li>
 				<li class="divider"></li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Trips</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Inscriptions</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Inscriptions Annulées</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Notes Destinations</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
+				<li class="divider"></li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Utilisateur</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Niveau</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerNiveauAdmin" style="cursor:pointer">Ajouter</a></li>
@@ -793,6 +830,16 @@ class FuncController extends Controller{
 						<li><a data-toggle="modal" data-target="#supprimerNiveauAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Notes Utilisateurs</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
+				
+				
+				
 				<li></li>
 				<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
 				<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
@@ -1320,7 +1367,7 @@ class FuncController extends Controller{
 	
 	public function getModalFormulaireSuppressionTypeDeGrimpeAdmin($lnkInd) {
 		$html = '<!-- Modal -->
-<!-- Formulaire de modification de critère -->
+<!-- Formulaire de suppression d un type de grimpe -->
 							<div class="modal fade" id="supprimerTypeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
@@ -1409,7 +1456,32 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireSuppressionNiveauAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression d un niveau -->
+							<div class="modal fade" id="supprimerNiveauAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'un niveau</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerNiveauAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedNiveaux(0)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
@@ -4017,6 +4089,31 @@ echo '<div class="container">
 			$idc = $c->updateNiveau($idt, $nom);
 			if($idc == 1){
 				$res .= '<div class="alert alert-success" role="alert">Modification du niveau réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireSupprimerNiveauAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['niveau'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new niveau();
+			$idc = $c->deleteNiveau($idt);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression du niveau réussie.</div>';
 			} else {
 				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
 			}
