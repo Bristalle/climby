@@ -58,6 +58,9 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationTypeDeGrimpeAdmin" => "getModalFormulaireCreationTypeDeGrimpeAdmin",
 			"getModalFormulaireModificationTypeDeGrimpeAdmin" => "getModalFormulaireModificationTypeDeGrimpeAdmin",
 			"getModalFormulaireSuppressionTypeDeGrimpeAdmin" => "getModalFormulaireSuppressionTypeDeGrimpeAdmin",
+			"getModalFormulaireCreationNiveauAdmin" => "getModalFormulaireCreationNiveauAdmin",
+			"getModalFormulaireModificationNiveauAdmin" => "getModalFormulaireModificationNiveauAdmin",
+			"getModalFormulaireSuppressionNiveauAdmin" => "getModalFormulaireSuppressionNiveauAdmin",
 			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
 			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
@@ -118,6 +121,7 @@ class FuncController extends Controller{
 			"formulaireCreerTypeDeGrimpeAdmin" => "formulaireCreerTypeDeGrimpeAdmin",
 			"formulaireModifierTypeDeGrimpeAdmin" => "formulaireModifierTypeDeGrimpeAdmin",
 			"formulaireSupprimerTypeDeGrimpeAdmin" => "formulaireSupprimerTypeDeGrimpeAdmin",
+			"formulaireCreerNiveauAdmin" => "formulaireCreerNiveauAdmin",
         );
     }
 	
@@ -176,15 +180,15 @@ class FuncController extends Controller{
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Dîner</title>
+    <title>Climby</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <!-- CSS -->
-    <link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
+    <link type="text/css" href="Css/menuBarre.css" rel="stylesheet" />
+    <link type="text/css" href="Css/index.css" rel="stylesheet" />
+    <link type="text/css" href="./bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link type="text/css" href="./bootstrap/datepicker/css/datepicker.css" rel="stylesheet"/>
+    <link type="text/css" href="./slider/css/slider.css" rel="stylesheet"/>
 
 
 
@@ -192,8 +196,6 @@ class FuncController extends Controller{
     <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
     <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
     <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
     <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
 	<script src="jquery-2.1.1.min.js"></script>
@@ -782,6 +784,14 @@ class FuncController extends Controller{
 						<li><a data-toggle="modal" data-target="#supprimerCritereAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
+				<li class="divider"></li>
+				<li class="dropdown-submenu"><a tabindex="-1" href="#">Niveau</a>
+					<ul class="dropdown-menu">
+						<li><a data-toggle="modal" data-target="#creerNiveauAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#modifierNiveauAdmin" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerNiveauAdmin" style="cursor:pointer">Supprimer</a></li>
+					</ul>
+				</li>
 				<li></li>
 				<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
 				<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
@@ -1248,7 +1258,7 @@ class FuncController extends Controller{
 	
 	public function getModalFormulaireCreationTypeDeGrimpeAdmin($lnkInd) {
 		$html = '<!-- Modal -->
-<!-- Formulaire de création d un critère par un admin -->
+<!-- Formulaire de creation de type de grimpe par un admin -->
 							<div class="modal fade" id="creerTypeDeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
@@ -1334,6 +1344,42 @@ class FuncController extends Controller{
 								</div>
 							</div>';
 		return $html;		
+	}
+	
+	public function getModalFormulaireCreationNiveauAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de creation de niveau par un admin -->
+							<div class="modal fade" id="creerNiveauAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerNiveauAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un niveau</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">
+													<label for="message-text" class="control-label">Nom</label>
+                                                    <input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du niveau" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+                                                </div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireModificationNiveauAdmin($lnkInd) {
+		
+	}
+	
+	public function getModalFormulaireSuppressionNiveauAdmin($lnkInd) {
+		
 	}
 	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
@@ -3639,8 +3685,21 @@ echo '<div class="container">
 			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
 			$bool = false;
 		} else {
-			//Controle sur une pré-existence ?
-			$nom = strip_tags(htmlentities($_POST['nom']));
+			$c = new critere();
+			$allCrit = $c->getAllCriteres();
+			$alreadyExist = false;
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			foreach($allCrit as $crit){
+				if($nomTMP == $crit['nom']){
+					$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
 		}
 		
 		//Fonction d'insert
@@ -3719,8 +3778,21 @@ echo '<div class="container">
 			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
 			$bool = false;
 		} else {
-			//Controle sur une pré-existence
-			$nom = strip_tags(htmlentities($_POST['nom']));
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			$alreadyExist = false;
+			$t = new typeGrimpe();
+			$types = $t->getAllTypesGrimpe();
+			foreach($types as $type){
+				if($nomTMP == $type['nom']){
+					$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
 		}
 		
 		//Fonction d'insert
@@ -3789,5 +3861,41 @@ echo '<div class="container">
 		}
 		echo $this->getReturnedPage($res);
 	}
+
+	public function formulaireCreerNiveauAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			$alreadyExist = false;
+			$n = new niveau();
+			$types = $n->getAllNiveaux();
+			foreach($types as $type){
+				if($nomTMP == $type['nom']){
+					$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$n = new niveau();
+			$idt = $n->insertNiveau($nom);
+			$res .= '<div class="alert alert-success" role="alert">Création du niveau réussie. ID du nouveau niveau : '.$idt.'</div>';
+		}
+		echo $this->getReturnedPage($res);
+	}
+
 }
 ?>

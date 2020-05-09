@@ -148,7 +148,9 @@ public function  barreAdmin() {
 					.$f->getModalFormulaireCreationTypeDeGrimpeAdmin($linkIndex)
 					.$f->getModalFormulaireModificationTypeDeGrimpeAdmin($linkIndex)
 					.$f->getModalFormulaireSuppressionTypeDeGrimpeAdmin($linkIndex)
-					
+					.$f->getModalFormulaireCreationNiveauAdmin($linkIndex)
+					.$f->getModalFormulaireModificationNiveauAdmin($linkIndex)
+					.$f->getModalFormulaireSuppressionNiveauAdmin($linkIndex)
 					
 					
 //					.$f->getModalFormulaireCreationCompteByAdmin($linkIndex, $acces)
