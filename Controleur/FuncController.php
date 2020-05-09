@@ -122,6 +122,7 @@ class FuncController extends Controller{
 			"formulaireModifierTypeDeGrimpeAdmin" => "formulaireModifierTypeDeGrimpeAdmin",
 			"formulaireSupprimerTypeDeGrimpeAdmin" => "formulaireSupprimerTypeDeGrimpeAdmin",
 			"formulaireCreerNiveauAdmin" => "formulaireCreerNiveauAdmin",
+			"formulaireModifierNiveauAdmin" => "formulaireModifierNiveauAdmin",
         );
     }
 	
@@ -1286,7 +1287,7 @@ class FuncController extends Controller{
 	
 	public function getModalFormulaireModificationTypeDeGrimpeAdmin($lnkInd) {
 		$html = '<!-- Modal -->
-<!-- Formulaire de modification de critère -->
+<!-- Formulaire de modification d un type de grimpe -->
 							<div class="modal fade" id="modifierTypeGrimpeAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
@@ -1375,7 +1376,36 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireModificationNiveauAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification d un niveau -->
+							<div class="modal fade" id="modifierNiveauAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Modification d\'un niveau</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierNiveauAdmin">
+												<div class="modal-body">
+													Veuillez renseigner les informations
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedNiveaux(0)
+													.'</div>
+													<div class="form-group">
+														<label for="message-text" class="control-label">Nouveau nom*</label>
+														<input name="nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du niveau" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 	
 	public function getModalFormulaireSuppressionNiveauAdmin($lnkInd) {
@@ -3611,7 +3641,23 @@ echo '<div class="container">
             //$res.='<div class="alert alert-danger" role="alert">Le pseudo doit être renseigné.</div>';
             //$bool=false;
         } else {
-            $pseudo = strip_tags(htmlentities($_POST['pseudo']));
+            $n = new utilisateur();
+			$niveaux = $n->getAllUtilisateurs();
+			$alreadyExist = false;
+			$pseudoTMP = strip_tags(htmlentities($_POST['pseudo']));
+			foreach($niveaux as $niveau){
+				if($niveau['pseudo'] == $pseudoTMP){
+					if($niveau['idu'] != $idu){
+						$res .= '<div class="alart alert-danger" role="alert">Ce pseudo existe déjà.</div>';
+						$bool = false;
+						$alreadyExist = true;
+						break;
+					}
+				}
+			}
+			if(!$alreadyExist){
+				$pseudo = $pseudoTMP;
+			}
         }
 
         if (empty($_POST['addresse'])) {
@@ -3663,8 +3709,8 @@ echo '<div class="container">
 		
 		//Fonction d'update
 		if($bool){
-			$u = new utilisateur();
-			$result = $u->updateUtilisateur($u['idu'], $u['email'], $u['mdp'], $pseudo, $addresse, $codePost, $ville, $telephone, $u['solde'], $u['acces'], $niveau, $diplome, $u['dateInscription']);
+			$ut = new utilisateur();
+			$result = $ut->updateUtilisateur($u['idu'], $u['email'], $u['mdp'], $pseudo, $addresse, $codePost, $ville, $telephone, $u['solde'], $u['acces'], $niveau, $diplome, $u['dateInscription']);
 			if($result == 1){
 				$res.= '<div class="alert alert-success" role="alert">Modifications des informations effectuées avec succès !</div>';
 			} else {
@@ -3719,6 +3765,7 @@ echo '<div class="container">
 		if($_POST['critere'] == 0){
 			$res .= '<div class="alart alert-danger" role="alert">Un critère doit être sélectionné.</div>';
 			$bool = false;
+			$idc = 0;
 		} else {
 			$idc = strip_tags(htmlentities($_POST['critere']));
 		}
@@ -3727,8 +3774,23 @@ echo '<div class="container">
 			$res .= '<div class="alart alert-danger" role="alert">Le nouveau nom doit être renseigné.</div>';
 			$bool = false;
 		} else {
-			//Controle sur une pré-existence ?
-			$nom = strip_tags(htmlentities($_POST['nom']));
+			$n = new critere();
+			$niveaux = $n->getAllCriteres();
+			$alreadyExist = false;
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			foreach($niveaux as $niveau){
+				if($niveau['nom'] == $nomTMP){
+					if($niveau['idl'] != $idc){
+						$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+						$bool = false;
+						$alreadyExist = true;
+						break;
+					}
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
 		}
 		
 		//Fonction d'insert
@@ -3812,6 +3874,7 @@ echo '<div class="container">
 		if($_POST['typeDeGrimpe'] == 0){
 			$res .= '<div class="alart alert-danger" role="alert">Un type de grimpe doit être sélectionné.</div>';
 			$bool = false;
+			$idt = 0;
 		} else {
 			$idt = strip_tags(htmlentities($_POST['typeDeGrimpe']));
 		}
@@ -3820,8 +3883,23 @@ echo '<div class="container">
 			$res .= '<div class="alart alert-danger" role="alert">Le nouveau nom doit être renseigné.</div>';
 			$bool = false;
 		} else {
-			//Controle sur une pré-existence ?
-			$nom = strip_tags(htmlentities($_POST['nom']));
+			$n = new typeGrimpe();
+			$niveaux = $n->getAllTypesGrimpe();
+			$alreadyExist = false;
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			foreach($niveaux as $niveau){
+				if($niveau['nom'] == $nomTMP){
+					if($niveau['idl'] != $idt){
+						$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+						$bool = false;
+						$alreadyExist = true;
+						break;
+					}
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
 		}
 		
 		//Fonction d'insert
@@ -3897,5 +3975,53 @@ echo '<div class="container">
 		echo $this->getReturnedPage($res);
 	}
 
+	public function formulaireModifierNiveauAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['niveau'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un niveau doit être sélectionné.</div>';
+			$idt = 0;
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		if(empty($_POST['nom'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le nouveau nom doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$n = new niveau();
+			$niveaux = $n->getAllNiveaux();
+			$alreadyExist = false;
+			$nomTMP = strip_tags(htmlentities($_POST['nom']));
+			foreach($niveaux as $niveau){
+				if($niveau['nom'] == $nomTMP){
+					if($niveau['idl'] != $idt){
+						$res .= '<div class="alart alert-danger" role="alert">Ce nom existe déjà.</div>';
+						$bool = false;
+						$alreadyExist = true;
+						break;
+					}
+				}
+			}
+			if(!$alreadyExist){
+				$nom = $nomTMP;
+			}
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new niveau();
+			$idc = $c->updateNiveau($idt, $nom);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Modification du niveau réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
 }
 ?>
