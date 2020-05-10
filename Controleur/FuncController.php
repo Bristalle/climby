@@ -946,7 +946,7 @@ class FuncController extends Controller{
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerUtilisateurAdmin" style="cursor:pointer">Ajouter</a></li>
 						<li><a data-toggle="modal" data-target="#modifierUtilisateurAdmin" style="cursor:pointer">Modifier</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerUtilisateurAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Niveau</a>
@@ -1812,7 +1812,31 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireSuppressionUtilisateurAdmin($lnkInd) {
-
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression d un utilisateur -->
+							<div class="modal fade" id="supprimerUtilisateurAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'un utilisateur</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerUtilisateurAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedUtilisateur(true)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
@@ -4737,7 +4761,28 @@ echo '<div class="container">
 	}
 
 	public function formulaireSupprimerUtilisateurAdmin(){
+		$bool = true;
+		$res = '';
 		
+		//Controles
+		if($_POST['utilisateur'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un utilisateur doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['utilisateur']));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$c = new utilisateur();
+			$idc = $c->deleteUtilisateur($idt);
+			if($idc == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression de l\'utilisateur réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
 	}
 	
 	
