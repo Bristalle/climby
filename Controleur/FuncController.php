@@ -40,6 +40,7 @@ class FuncController extends Controller{
 			"getSelectBoxInitializedCritere" => "getSelectBoxInitializedCritere",
 			"getSelectBoxInitializedTypeGrimpe" => "getSelectBoxInitializedTypeGrimpe",
 			"getSelectBoxInitializedCotation" => "getSelectBoxInitializedCotation",
+			"getSelectBoxInitializedAcces" => "getSelectBoxInitializedAcces",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
@@ -61,8 +62,11 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationNiveauAdmin" => "getModalFormulaireCreationNiveauAdmin",
 			"getModalFormulaireModificationNiveauAdmin" => "getModalFormulaireModificationNiveauAdmin",
 			"getModalFormulaireSuppressionNiveauAdmin" => "getModalFormulaireSuppressionNiveauAdmin",
-			"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
-			"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
+			"getModalFormulaireCreationUtilisateurAdmin" => "getModalFormulaireCreationUtilisateurAdmin",
+			"getModalFormulaireModificationUtilisateurAdmin" => "getModalFormulaireModificationUtilisateurAdmin",
+			"getModalFormulaireSuppressionUtilisateurAdmin" => "getModalFormulaireSuppressionUtilisateurAdmin",
+	//		"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
+	//		"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
@@ -124,6 +128,9 @@ class FuncController extends Controller{
 			"formulaireCreerNiveauAdmin" => "formulaireCreerNiveauAdmin",
 			"formulaireModifierNiveauAdmin" => "formulaireModifierNiveauAdmin",
 			"formulaireSupprimerNiveauAdmin" => "formulaireSupprimerNiveauAdmin",
+			"formulaireCreerUtilisateurAdmin" => "formulaireCreerUtilisateurAdmin",
+			"formulaireModifierUtilisateurAdmin" => "formulaireModifierUtilisateurAdmin",
+			"formulaireSupprimerUtilisateurAdmin" => "formulaireSupprimerUtilisateurAdmin",
         );
     }
 	
@@ -356,6 +363,36 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
+	public function getSelectBoxInitializedAcces($selectedId, $multi=false, $id=''){
+		$a = new acces();
+		$listeAcces = $a->getAllAcces();
+		$acces = '';
+		foreach($listeAcces as $c){
+			if($c['ida'] == $selectedId){
+				$acces .= '<option value="'.$c['ida'].'" selected>'.$c['nom'].'</option>';
+			} else {
+				$acces .= '<option value="'.$c['ida'].'">'.$c['nom'].'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Acces*:</label>
+					<select name="acces" class="form-control"';
+		
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
+		$html .= '>
+						<option value="0">--Non renseigné--</option>'
+						.$acces
+					.'</select>';
+		return $html;
+	}
+	
 	public function getModalFormulaireCreationCompte($lnkInd) {
 		$html = "";
 		$html = '		<li>
@@ -372,48 +409,49 @@ class FuncController extends Controller{
 									<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerCompteUtilisateur">
 										<div class="modal-body">
 											Veuillez renseigner vos informations
-										<div class="form-group">
-											<label for="recipient-name" class="control-label">Email*:</label>
-											<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Pseudo*:</label>
-											<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Adresse :</label>
-											<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Code Postal :</label>
-											<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Ville :</label>
-											<input type="text" class="form-control" id="recipient-name" name="ville">
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">N° de téléphone :</label>
-											<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
-										</div>
-										<div class="form-group">'
-											.$this->getSelectBoxInitializedNiveaux(0)
-										.'</div>
-										<div class="form-groupe">
-											<label for="message-text" class="control-label">Diplôme :</label>
-											<input type="text" class="form-control" id="recipient-name" name="diplome" value="Pas encore prêt." disabled>
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Mot de passe*:</label>
-											<input type="password" class="form-control" id="recipient-name" name="mdp">
-										</div>
-										<div class="form-group">
-											<label for="message-text" class="control-label">Vérification du mot de passe*:</label>
-											<input type="password" class="form-control" id="recipient-name" name="mdpv">
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-											<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											<div class="form-group">
+												<label for="recipient-name" class="control-label">Email*:</label>
+												<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Pseudo*:</label>
+												<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Adresse :</label>
+												<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Code Postal :</label>
+												<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Ville :</label>
+												<input type="text" class="form-control" id="recipient-name" name="ville">
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">N° de téléphone :</label>
+												<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
+											</div>
+											<div class="form-group">'
+												.$this->getSelectBoxInitializedNiveaux(0)
+											.'</div>
+											<div class="form-groupe">
+												<label for="message-text" class="control-label">Diplôme :</label>
+												<input type="text" class="form-control" id="recipient-name" name="diplome" value="Pas encore prêt." disabled>
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Mot de passe*:</label>
+												<input type="password" class="form-control" id="recipient-name" name="mdp">
+											</div>
+											<div class="form-group">
+												<label for="message-text" class="control-label">Vérification du mot de passe*:</label>
+												<input type="password" class="form-control" id="recipient-name" name="mdpv">
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
 										</div>
 									</form>
 								</div>
@@ -810,7 +848,7 @@ class FuncController extends Controller{
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Notes Destinations</a>
 					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<!--<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>-->
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
 					</ul>
@@ -818,7 +856,7 @@ class FuncController extends Controller{
 				<li class="divider"></li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Utilisateur</a>
 					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#creerUtilisateurAdmin" style="cursor:pointer">Ajouter</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
 					</ul>
@@ -832,15 +870,13 @@ class FuncController extends Controller{
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Notes Utilisateurs</a>
 					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
+						<!--<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>-->
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				
 				
-				
-				<li></li>
 				<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
 				<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
 				<!--<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>-->
@@ -1482,6 +1518,93 @@ class FuncController extends Controller{
 								</div>
 							</div>';
 		return $html;
+	}
+	
+	public function getModalFormulaireCreationUtilisateurAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de creation de utilisateur par un admin -->
+							<div class="modal fade" id="creerUtilisateurAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerUtilisateurAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un utilisateur</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">
+													<label for="recipient-name" class="control-label">Email*:</label>
+													<input type="email" class="form-control" name="email" id="recipient-name">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Pseudo*:</label>
+													<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedAcces(0)
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Mot de passe*:</label>
+													<input type="password" class="form-control" id="recipient-name" name="mdp">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Vérification du mot de passe*:</label>
+													<input type="password" class="form-control" id="recipient-name" name="mdpv">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Adresse :</label>
+													<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Code Postal :</label>
+													<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Ville :</label>
+													<input type="text" class="form-control" id="recipient-name" name="ville">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">N° de téléphone :</label>
+													<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedNiveaux(0)
+												.'</div>
+					<!-- Pas encore utilisé -->
+												<div class="form-group">
+													<label for="message-text" class="control-label">Solde :</label>
+													<input type="number" class="form-control" id="recipient-name" name="solde" value="0">
+												</div>
+					<!-- Pas Encore implémenté -->
+												<div class="form-group">
+													<label for="message-text" class="control-label">Vos diplômes :</label> Pas encore dispo
+													<input type="text" class="form-control" id"recipient-nam" name="diplome" disabled>
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Date d\'inscription :</label>
+													<div class="input-group date">
+														<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+														<input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}" min="'.date('m-d-Y').'" placeholder="Cliquer pour choisir" readonly>
+													</div>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalFormulaireModificationUtilisateurAdmin($lnkInd) {
+
+	}
+	
+	public function getModalFormulaireSuppressionUtilisateurAdmin($lnkInd) {
+
 	}
 	
 	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
@@ -4120,5 +4243,145 @@ echo '<div class="container">
 		}
 		echo $this->getReturnedPage($res);
 	}
+
+	public function formulaireCreerUtilisateurAdmin(){
+		$bool = true;
+		$res = '';
+		$u = new utilisateur();
+		$utilisateurs = $u->getAllUtilisateurs();
+		
+		//Controles
+		if(empty($_POST['email'])){
+			$res .= '<div class="alart alert-danger" role="alert">L\'email doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$emailTMP = strip_tags(htmlentities($_POST['email']));
+			$alreadyExist = false;
+			foreach($utilisateurs as $utilisateur){
+				if($utilisateur['email'] == $emailTMP){
+					$res .= '<div class="alart alert-danger" role="alert">Cet email est déjà utilisé.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$email = $emailTMP;
+			}
+		}
+		
+		if(empty($_POST['pseudo'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le pseudo doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$pseudoTMP = strip_tags(htmlentities($_POST['pseudo']));
+			$alreadyExist = false;
+			foreach($utilisateurs as $utilisateur){
+				if($utilisateur['pseudo'] == $pseudoTMP){
+					$res .= '<div class="alart alert-danger" role="alert">Ce pseudo est déjà utilisé.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$pseudo = $pseudoTMP;
+			}
+		}
+		
+		if(empty($_POST['acces'])){
+			$res .= '<div class="alart alert-danger" role="alert">Le niveau d\'acces doit être renseigné.</div>';
+			$bool = false;
+		} else {
+			$acces = strip_tags(htmlentities($_POST['acces']));
+			if($acces == 0){
+				$acces = 1;
+			}
+		}
+		
+		if(empty($_POST['mdp']) && empty($_POST['mdpv'])){
+			$res .='<div class="alart alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
+			$bool=false;
+		} else {
+			$mdp1 = strip_tags(htmlentities($_POST['mdp']));
+			$mdp2 = strip_tags(htmlentities($_POST['mdpv']));
+			if($mdp1 == $mdp2){
+				$mdp = password_hash($mdp1, PASSWORD_BCRYPT);				
+			} else {
+				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas.</div>';
+				$bool=false;
+			}
+		}
+		
+		if(empty($_POST['addresse'])){
+			$adresse = '';
+		} else {
+			$adresse = strip_tags(htmlentities($_POST['addresse']));
+		}
+		
+		if(empty($_POST['codePostal'])){
+			$codePost = '';
+		} else {
+			$codePost = strip_tags(htmlentities($_POST['codePostal']));
+		}
+		
+		if(empty($_POST['ville'])){
+			$ville = '';
+		} else {
+			$ville = strip_tags(htmlentities($_POST['ville']));
+		}
+		
+		if(empty($_POST['tel'])){
+			$telephone = '';
+		} else {
+			$telephone = strip_tags(htmlentities($_POST['tel']));
+		}
+		
+		if(empty($_POST['niveau'])){
+			$niveau = 0;
+		} else {
+			$niveau = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		if(empty($_POST['solde'])){
+			$solde = 0;
+		} else {
+			$solde = strip_tags(htmlentities($_POST['solde']));
+		}
+		
+		if(empty($_POST['diplome'])){
+			$diplome = '';
+		} else {
+			$diplome = strip_tags(htmlentities($_POST['diplome']));
+		}
+		
+		if(empty($_POST['date'])){
+			$dateInscription = time();
+		} else {
+			$dateInscription = strtotime(strip_tags(htmlentities($_POST['date'])));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$idu = $u->insertUtilisateur($email, $mdp, $pseudo, $adresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription);
+			$res.= '<div class="alert alert-success" role="alert">Création du compte effectué avec succès. Id du nouvel utilisateur : '.$idu.'</div>';
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireModifierUtilisateurAdmin(){
+		
+	}
+
+	public function formulaireSupprimerUtilisateurAdmin(){
+		
+	}
+	
+	
+	
+	
+
 }
 ?>

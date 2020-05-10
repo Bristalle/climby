@@ -151,6 +151,9 @@ public function  barreAdmin() {
 					.$f->getModalFormulaireCreationNiveauAdmin($linkIndex)
 					.$f->getModalFormulaireModificationNiveauAdmin($linkIndex)
 					.$f->getModalFormulaireSuppressionNiveauAdmin($linkIndex)
+					.$f->getModalFormulaireCreationUtilisateurAdmin($linkIndex)
+					.$f->getModalFormulaireModificationUtilisateurAdmin($linkIndex)
+					.$f->getModalFormulaireSuppressionUtilisateurAdmin($linkIndex)
 					
 					
 //					.$f->getModalFormulaireCreationCompteByAdmin($linkIndex, $acces)
