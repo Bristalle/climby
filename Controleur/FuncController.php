@@ -33,9 +33,11 @@ class FuncController extends Controller{
     public  function __construct(){
         $this->tab=array(
 			"ajaxForUpdateDestination" => "ajaxForUpdateDestination",
+			"ajaxForUpdateUtilisateur" => "ajaxForUpdateUtilisateur",
 			"getTheBarre" => "getTheBarre",
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getReturnedPage" => "getReturnedPage",
+			"getSelectBoxInitializedDestination" => "getSelectBoxInitializedDestination",
 			"getSelectBoxInitializedNiveaux" => "getSelectBoxInitializedNiveaux",
 			"getSelectBoxInitializedCritere" => "getSelectBoxInitializedCritere",
 			"getSelectBoxInitializedTypeGrimpe" => "getSelectBoxInitializedTypeGrimpe",
@@ -110,7 +112,6 @@ class FuncController extends Controller{
     //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
     //      "getCapacite" => "getCapacite",
-			"getDestinationById" => "getDestinationById",
 			"getAccesById" => "getAccesById",
 			"getAccesByNom" => "getAccesByNom",
 			"getAllNiveaux" => "getAllNiveaux",
@@ -118,6 +119,7 @@ class FuncController extends Controller{
 			"getAllTypeDeGrimpe" => "getAllTypeDeGrimpe",
 			"getAllCotations" => "getAllCotations",
 			"formulaireChangerMdp" => "formulaireChangerMdp",
+			"formulaireChangerMdpAdmin" => "formulaireChangerMdpAdmin",
 			"formulaireUpdateUtilisateur" => "formulaireUpdateUtilisateur",
 			"formulaireCreerCritereAdmin" => "formulaireCreerCritereAdmin",
 			"formulaireModifierCritereAdmin" => "formulaireModifierCritereAdmin",
@@ -136,9 +138,17 @@ class FuncController extends Controller{
 	
 	public function ajaxForUpdateDestination() {
 		if(isset($_GET['b'])){
-			echo json_encode($this->getDestinationById(strip_tags(htmlentities($_GET['b']))));
+			$d = new destination();
+			echo json_encode($d->getDestinationById(strip_tags(htmlentities($_GET['b']))));
 		} else {
 			echo "ERROR";
+		}
+	}
+	
+	public function ajaxForUpdateUtilisateur() {
+		if(isset($_GET['b'])){
+			$u = new utilisateur();
+			echo json_encode($u->getUtilisateurById(strip_tags(htmlentities($_GET['b']))));
 		}
 	}
 	
@@ -221,12 +231,49 @@ class FuncController extends Controller{
 	return $html;
 	}
 	
-	public function getSelectBoxInitializedDestination($selectedIdd, $multi=false, $id='') {
+	public function getSelectBoxInitializedUtilisateur($disableZero=false, $selectedId=0, $id='', $multi=false) {
+		$u = new utilisateur();
+		$utilisateurs = $u->getAllUtilisateurs();
+		$utis = "";
+		
+		foreach($utilisateurs as $uti){
+			if($uti['idu'] == $selectedId){
+				$utis .= '<option value="'.$uti['idu'].'" selected>'.$util['email'].' - '.$util['pseudo'].'</option>';
+			} else {
+				$utis .= '<option value="'.$uti['idu'].'">'.$uti['email'].' - '.$uti['pseudo'].'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Utilisateurs:</label>
+					<select name="utilisateur" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
+		$html .= '>
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseigné--</option>'
+						.$utis
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedDestination($disableZero=false, $selectedId=0, $id='', $multi=false) {
 		$d = new destination();
 		$destinations = $d->getAllDestinations();
 		$desti = "";
+		
 		foreach($destinations as $dest){
-			if($dest['idd'] == $selectedIdd){
+			if($dest['idd'] == $selectedId){
 				$desti .= '<option value="'.$dest['idd'].'" selected>'.$dest['nom'].'</option>';
 			} else {
 				$desti .= '<option value="'.$dest['idd'].'">'.$dest['nom'].'</option>';
@@ -244,18 +291,25 @@ class FuncController extends Controller{
 		}
 		
 		$html .= '>
-						<option value="0">--Non renseignée--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$desti
 					.'</select>';
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedNiveaux($selectedIdl, $multi=false, $id='') {
+	public function getSelectBoxInitializedNiveaux($disableZero=false, $selectedId=0, $id='', $multi=false) {
 		// Chargement des niveaux et création de la selectbox
 		$lvl = $this->getAllNiveaux();
 		$niveaux = '';
+
 		foreach($lvl as $lv){
-			if($lv['idl'] == $selectedIdl){
+			if($lv['idl'] == $selectedId){
 				$niveaux = $niveaux . '<option value="'.$lv['idl'].'" selected>'.$lv['nom'].'</option>';
 			} else {
 				$niveaux = $niveaux . '<option value="'.$lv['idl'].'">'.$lv['nom'].'</option>';
@@ -273,17 +327,24 @@ class FuncController extends Controller{
 		}		
 		
 		$html .= '>
-						<option value="0">--Non renseigné--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$niveaux
 					.'</select>';
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedCritere($selectedIdc, $multi=false, $id='') {
+	public function getSelectBoxInitializedCritere($disableZero=false, $selectedId=0, $id='', $multi=false) {
 		$crit = $this->getAllCriteres();
 		$criteres = '';
+	
 		foreach($crit as $cr){
-			if($cr['idc'] == $selectedIdc){
+			if($cr['idc'] == $selectedId){
 				$criteres .= '<option value="'.$cr['idc'].'" selected>'.$cr['nom'].'</option>';
 			} else {
 				$criteres .= '<option value="'.$cr['idc'].'">'.$cr['nom'].'</option>';
@@ -301,17 +362,24 @@ class FuncController extends Controller{
 		}
 		
 		$html .= '>
-						<option value="0">--Non renseigné--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$criteres
 					.'</select>';
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedTypeGrimpe($selectedIdt, $multi=false, $id='') {
+	public function getSelectBoxInitializedTypeGrimpe($disableZero=false, $selectedId=0, $id='', $multi=false) {
 		$types = $this->getAllTypeDeGrimpe();
 		$typesGrimpe = '';
+		
 		foreach($types as $t){
-			if($t['idt'] == $selectedIdt){
+			if($t['idt'] == $selectedId){
 				$typesGrimpe .= '<option value="'.$t['idt'].'" selected>'.$t['nom'].'</option>';
 			} else {
 				$typesGrimpe .= '<option value="'.$t['idt'].'">'.$t['nom'].'</option>';
@@ -330,15 +398,22 @@ class FuncController extends Controller{
 		}
 		
 		$html .= '>
-						<option value="0">--Non renseigné--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$typesGrimpe
 					.'</select>';
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedCotation($selectedId, $multi=false, $id=''){
+	public function getSelectBoxInitializedCotation($disableZero=false, $selectedId=0, $id='', $multi=false){
 		$cotation = $this->getAllCotations();
 		$cotations = '';
+
 		foreach($cotation as $c){
 			if($c['idcot'] == $selectedId){
 				$cotations .= '<option value="'.$c['idcot'].'" selected>'.$c['nom'].'</option>';
@@ -357,16 +432,23 @@ class FuncController extends Controller{
 		}
 		
 		$html .= '>
-						<option value="0">--Non renseigné--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$cotations
 					.'</select>';
 		return $html;
 	}
 	
-	public function getSelectBoxInitializedAcces($selectedId, $multi=false, $id=''){
+	public function getSelectBoxInitializedAcces($disableZero=false, $selectedId=0, $id='', $multi=false){
 		$a = new acces();
 		$listeAcces = $a->getAllAcces();
 		$acces = '';
+
 		foreach($listeAcces as $c){
 			if($c['ida'] == $selectedId){
 				$acces .= '<option value="'.$c['ida'].'" selected>'.$c['nom'].'</option>';
@@ -387,7 +469,13 @@ class FuncController extends Controller{
 		}
 		
 		$html .= '>
-						<option value="0">--Non renseigné--</option>'
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
 						.$acces
 					.'</select>';
 		return $html;
@@ -434,7 +522,7 @@ class FuncController extends Controller{
 												<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
 											</div>
 											<div class="form-group">'
-												.$this->getSelectBoxInitializedNiveaux(0)
+												.$this->getSelectBoxInitializedNiveaux()
 											.'</div>
 											<div class="form-groupe">
 												<label for="message-text" class="control-label">Diplôme :</label>
@@ -710,7 +798,7 @@ class FuncController extends Controller{
                                                 <input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel" value="'.$u['telephone'].'">
                                             </div>
 											<div class="form-group">'
-												.$this->getSelectBoxInitializedNiveaux($u['niveau'])
+												.$this->getSelectBoxInitializedNiveaux(false, $u['niveau'])
 											.'</div>
 				<!-- Pas encore utilisé -->
 											<!--
@@ -857,7 +945,7 @@ class FuncController extends Controller{
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Utilisateur</a>
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerUtilisateurAdmin" style="cursor:pointer">Ajouter</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#modifierUtilisateurAdmin" style="cursor:pointer">Modifier</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
@@ -1083,7 +1171,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedCritere(0)
+														.$this->getSelectBoxInitializedCritere()
 													.'</div>
 													<div class="form-group">
 														<label for="message-text" class="control-label">Nouveau nom*</label>
@@ -1119,7 +1207,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedCritere(0)
+														.$this->getSelectBoxInitializedCritere(true)
 													.'</div>
 												</div>
 												<div class="modal-footer">
@@ -1159,7 +1247,7 @@ class FuncController extends Controller{
 													<input name="gps" type="text" class="form-control" id="recipient-name" placeholder="Latitude/ Longitude au format 48.735846, 1.923482" aria-describedby="basic-addon1" pattern="^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$">
 												</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedTypeGrimpe(0)
+													.$this->getSelectBoxInitializedTypeGrimpe()
 												.'</div>
 												<div class="form-group">
                                                     <label for="message-text" class="control-label">Hauteur du spot*</label >
@@ -1172,15 +1260,15 @@ class FuncController extends Controller{
 												<div class="form-group">
 													<label for="message-text" class="control-label">Cotation Minimum*</label>
 													<select name="cotationMin" class="form-control"'
-													.$this->getSelectBoxInitializedCotation(0)
+													.$this->getSelectBoxInitializedCotation(true)
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Cotation Maximum*</label>
 													<select name="cotationMax" class="form-control"'
-													.$this->getSelectBoxInitializedCotation(0)
+													.$this->getSelectBoxInitializedCotation(true)
 												.'</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedCritere(0)
+													.$this->getSelectBoxInitializedCritere()
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Pays*</label>
@@ -1208,7 +1296,7 @@ class FuncController extends Controller{
 	
 	public function getModalFormulaireModificationDestinationAdmin($lnkInd) {
 		$html = '<!-- Modal -->
-<!-- Formulaire de création d une destination par un admin -->
+<!-- Formulaire de modification d une destination par un admin -->
 							<div class="modal fade" id="modifierDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
@@ -1219,7 +1307,7 @@ class FuncController extends Controller{
 											</div>
 											<div class="modal-body">
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedDestination(0, false, 'destinationForModifierDestination')
+													.$this->getSelectBoxInitializedDestination(false, 0, 'destinationForModifierDestination')
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Nom</label>
@@ -1234,7 +1322,7 @@ class FuncController extends Controller{
 													<input name="gps" type="text" class="form-control" id="gpsForModifierDestination" placeholder="Latitude/ Longitude au format 48.735846, 1.923482" aria-describedby="basic-addon1" pattern="^([-+]?)([\d]{1,2})(((\.)(\d+)(,)))(\s*)(([-+]?)([\d]{1,3})((\.)(\d+))?)$">
 												</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedTypeGrimpe(0, false, 'typeGrimpeForModifierDestination')
+													.$this->getSelectBoxInitializedTypeGrimpe(true, 0, 'typeGrimpeForModifierDestination')
 												.'</div>
 												<div class="form-group">
                                                     <label for="message-text" class="control-label">Hauteur du spot*</label >
@@ -1247,15 +1335,15 @@ class FuncController extends Controller{
 												<div class="form-group">
 													<label for="message-text" class="control-label">Cotation Minimum*</label>
 													<select name="cotationMin" class="form-control"'
-													.$this->getSelectBoxInitializedCotation(0, false, 'cotationMinForModifierDestination')
+													.$this->getSelectBoxInitializedCotation(true, 0,'cotationMinForModifierDestination')
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Cotation Maximum*</label>
 													<select name="cotationMax" class="form-control"'
-													.$this->getSelectBoxInitializedCotation(0, false, 'cotationMaxForModifierDestination')
+													.$this->getSelectBoxInitializedCotation(true, 0, 'cotationMaxForModifierDestination')
 												.'</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedCritere(0, false, 'critereForModifierDestination')
+													.$this->getSelectBoxInitializedCritere(false, 0, 'critereForModifierDestination')
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Pays*</label>
@@ -1279,8 +1367,8 @@ class FuncController extends Controller{
 								</div>
 							</div>
 							<script>
-								document.getElementById("destinationForModifierDestination").setAttribute("onChange", "refreshForm()");
-								function refreshForm(){
+								document.getElementById("destinationForModifierDestination").setAttribute("onChange", "refreshFormDestination()");
+								function refreshFormDestination(){
 									var idd = document.getElementById("destinationForModifierDestination").value;
 									$.ajax({
 										url : "'.$lnkInd.'Site.php?a=ajaxForUpdateDestination",
@@ -1325,7 +1413,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedDestination(0)
+														.$this->getSelectBoxInitializedDestination(true)
 													.'</div>
 												</div>
 												<div class="modal-footer">
@@ -1382,7 +1470,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedTypeGrimpe(0)
+														.$this->getSelectBoxInitializedTypeGrimpe(true)
 													.'</div>
 													<div class="form-group">
 														<label for="message-text" class="control-label">Nouveau nom*</label>
@@ -1472,7 +1560,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedNiveaux(0)
+														.$this->getSelectBoxInitializedNiveaux()
 													.'</div>
 													<div class="form-group">
 														<label for="message-text" class="control-label">Nouveau nom*</label>
@@ -1505,7 +1593,7 @@ class FuncController extends Controller{
 												<div class="modal-body">
 													Veuillez renseigner les informations
 													<div class="form-group">'
-														.$this->getSelectBoxInitializedNiveaux(0)
+														.$this->getSelectBoxInitializedNiveaux(true)
 													.'</div>
 												</div>
 												<div class="modal-footer">
@@ -1541,7 +1629,7 @@ class FuncController extends Controller{
 													<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo">
 												</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedAcces(0)
+													.$this->getSelectBoxInitializedAcces(true)
 												.'</div>
 												<div class="form-group">
 													<label for="message-text" class="control-label">Mot de passe*:</label>
@@ -1568,7 +1656,7 @@ class FuncController extends Controller{
 													<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
 												</div>
 												<div class="form-group">'
-													.$this->getSelectBoxInitializedNiveaux(0)
+													.$this->getSelectBoxInitializedNiveaux()
 												.'</div>
 					<!-- Pas encore utilisé -->
 												<div class="form-group">
@@ -1600,7 +1688,127 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireModificationUtilisateurAdmin($lnkInd) {
-
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification de utilisateur par un admin -->
+							<div class="modal fade" id="modifierUtilisateurAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierUtilisateurAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Modifier un utilisateur</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedUtilisateur(false, 0, 'utilisateurForModifierUtilisateur')
+												.'</div>
+												<div class="form-group">
+													<label for="recipient-name" class="control-label">Email*:</label>
+													<input type="email" class="form-control" name="email" id="emailForModifierUtilisateur">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Pseudo*:</label>
+													<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="pseudoForModifierUtilisateur" name="pseudo">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedAcces(true, 0, 'accesForModifierUtilisateur')
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Adresse :</label>
+													<textarea class="form-control" id="addresseForModifierUtilisateur" name="addresse" style="resize: vertical;"></textarea>
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Code Postal :</label>
+													<input type="text" pattern="[0-9]{5}" class="form-control" id="codePostalForModifierUtilisateur" name="codePostal">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Ville :</label>
+													<input type="text" class="form-control" id="villeForModifierUtilisateur" name="ville">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">N° de téléphone :</label>
+													<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="telForModifierUtilisateur" name="tel">
+												</div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedNiveaux(false, 0, 'niveauForModifierUtilisateur')
+												.'</div>
+					<!-- Pas encore utilisé -->
+												<div class="form-group">
+													<label for="message-text" class="control-label">Solde :</label>
+													<input type="number" class="form-control" id="soldeForModifierUtilisateur" name="solde" value="0">
+												</div>
+					<!-- Pas Encore implémenté -->
+												<div class="form-group">
+													<label for="message-text" class="control-label">Vos diplômes :</label> Pas encore dispo
+													<input type="text" class="form-control" id"diplomeForModifierUtilisateur" name="diplome" disabled>
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Date d\'inscription :</label>
+													<div class="input-group date">
+														<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+														<input id="dateForModifierUtilisateur" name="date" type="text" class="form-control" data-provide="datepicker" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}" min="'.date('m-d-Y').'" placeholder="Cliquer pour choisir" readonly>
+													</div>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+											</div>
+										</form>
+										</br></br>
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireChangerMdpAdmin">
+											<div class="modal-body">
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedUtilisateur()
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Nouveau mot de passe*:</label>
+													<input type="password" class="form-control" id="recipient-name" name="mdp">
+												</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Vérification du mot de passe*:</label>
+													<input type="password" class="form-control" id="recipient-name" name="mdpv">
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                                                <button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<script>
+								document.getElementById("utilisateurForModifierUtilisateur").setAttribute("onChange", "refreshFormUtilisateur()");
+								function refreshFormUtilisateur(){
+									var id = document.getElementById("utilisateurForModifierUtilisateur").value;
+									$.ajax({
+										url : "'.$lnkInd.'Site.php?a=ajaxForUpdateUtilisateur",
+										type : "GET",
+										data : "b=" + id,
+										dataType : "json",
+										success : function(data, statut){
+											console.log(data);
+											if(data == "ERROR"){
+												document.getElementById("destinationForModifierDestination").value = "0";
+											} else {
+												document.getElementById("emailForModifierUtilisateur").setAttribute("value", data["email"]);
+												document.getElementById("pseudoForModifierUtilisateur").setAttribute("value", data["pseudo"]);
+												document.getElementById("accesForModifierUtilisateur").value = data["acces"];
+												document.getElementById("addresseForModifierUtilisateur").setAttribute("value", data["addresse"]);
+												document.getElementById("codePostalForModifierUtilisateur").value = data["codePost"];
+												document.getElementById("villeForModifierUtilisateur").setAttribute("value", data["ville"]);
+												document.getElementById("telForModifierUtilisateur").setAttribute("value", data["telephone"]);
+												document.getElementById("niveauForModifierUtilisateur").value = data["niveau"];
+												document.getElementById("soldeForModifierUtilisateur").value = data["solde"];
+												document.getElementById("diplomeForModifierUtilisateur").value = data["diplome"];
+												document.getElementById("dateForModifierUtilisateur").setAttribute("value", data["dateInscription"]);
+											}
+										}
+									});
+								}
+							</script>';
+		return $html;
 	}
 	
 	public function getModalFormulaireSuppressionUtilisateurAdmin($lnkInd) {
@@ -1814,10 +2022,7 @@ class FuncController extends Controller{
 			$diplome = strip_tags(htmlentities($_POST['diplome']));
 		}
 		
-		if(empty($_POST['mdp']) && empty($_POST['mdpv'])){
-			$res .='<div class="alart alert-danger" role="alert">Le mot de passe n\'est pas renseigné.</div>';
-			$bool=false;
-		} else {
+		if(!empty($_POST['mdp']) && !empty($_POST['mdpv'])){
 			$mdp1 = strip_tags(htmlentities($_POST['mdp']));
 			$mdp2 = strip_tags(htmlentities($_POST['mdpv']));
 			if($mdp1 == $mdp2){
@@ -1826,6 +2031,9 @@ class FuncController extends Controller{
 				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas.</div>';
 				$bool=false;
 			}
+		} else {
+			$res .='<div class="alart alert-danger" role="alert">Le mot de passe n\'est pas renseigné.</div>';
+			$bool=false;
 		}
 		
 		
@@ -3720,11 +3928,6 @@ echo '<div class="container">
         return $r->getNbParticipants($idd);*/
     }
 	
-	public function getDestinationById($idd){
-		$d = new destination();
-		return $d->getDestinationById($idd);
-	}
-	
 	public function getAccesById($ida){
 		$a = new acces();
 		return $a->getAccesById($ida);
@@ -3796,10 +3999,7 @@ echo '<div class="container">
             }
         }
 		
-		if(empty($_POST['mdp1']) && empty($_POST['mdp2'])){
-			$res .='<div class="alart alert-danger" role="alert">Nouveau mot de passe non renseigné.</div>';
-			$bool=false;
-		} else {
+		if(!empty($_POST['mdp1']) && !empty($_POST['mdp2'])){
 			$mdp1 = strip_tags(htmlentities($_POST['mdp1']));
 			$mdp2 = strip_tags(htmlentities($_POST['mdp2']));
 			if($mdp1 == $mdp2){
@@ -3808,6 +4008,42 @@ echo '<div class="container">
 				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas. Pas de changement de mot de passe.</div>';
 				$bool=false;
 			}
+		} else {
+			$res .='<div class="alart alert-danger" role="alert">Nouveau mot de passe non renseigné.</div>';
+			$bool=false;
+		}
+		
+		//Fonction d'update
+		if($bool){
+			if($this->updateUtilisateur($u['idu'], $u['email'], $mdp, $u['pseudo'], $u['addresse'], $u['codePost'], $u['ville'], $u['telephone'], $u['solde'], $u['acces'], $u['niveau'], $u['diplome'], $u['dateInscription'])){
+					$res.= '<div class="alert alert-success" role="alert">Modification de mot de passe effectuée avec succès !</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
+
+	public function formulaireChangerMdpAdmin() {
+		$uti = new utilisateur();
+		$u = $uti->getUtilisateurById(strip_tags(htmlentities($_POST['utilisateur'])));
+		$idu = $uti['idu'];
+		
+		//Controles
+		if(!empty($_POST['mdp']) && !empty($_POST['mdpv'])){
+			$mdp1 = strip_tags(htmlentities($_POST['mdp']));
+			$mdp2 = strip_tags(htmlentities($_POST['mdpv']));
+			if($mdp1 == $mdp2){
+				$mdp = password_hash($mdp1, PASSWORD_BCRYPT);				
+			} else {
+				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas.</div>';
+				$bool=false;
+			}
+		} else {
+			$res .='<div class="alart alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
+			$bool=false;
 		}
 		
 		//Fonction d'update
@@ -4299,10 +4535,7 @@ echo '<div class="container">
 			}
 		}
 		
-		if(empty($_POST['mdp']) && empty($_POST['mdpv'])){
-			$res .='<div class="alart alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
-			$bool=false;
-		} else {
+		if(!empty($_POST['mdp']) && !empty($_POST['mdpv'])){
 			$mdp1 = strip_tags(htmlentities($_POST['mdp']));
 			$mdp2 = strip_tags(htmlentities($_POST['mdpv']));
 			if($mdp1 == $mdp2){
@@ -4311,6 +4544,9 @@ echo '<div class="container">
 				$res.='<div class="alert alert-danger" role="alert">Les deux mots de passes ne correspondent pas.</div>';
 				$bool=false;
 			}
+		} else {
+			$res .='<div class="alart alert-danger" role="alert">Le mot de passe doit être renseigné.</div>';
+			$bool=false;
 		}
 		
 		if(empty($_POST['addresse'])){
@@ -4372,7 +4608,132 @@ echo '<div class="container">
 	}
 	
 	public function formulaireModifierUtilisateurAdmin(){
+		$bool = true;
+		$res = '';
+		$u = new utilisateur();
+		$uti = $u->getUtilisateurById(strip_tags(htmlentities($_POST['utilisateur'])));
+		$utilisateurs = $u->getAllUtilisateurs();
 		
+		//Controles
+		if(empty($_POST['email'])){
+			//$res .= '<div class="alart alert-danger" role="alert">L\'email doit être renseigné.</div>';
+			//$bool = false;
+			$email = $uti['email'];
+		} else {
+			$emailTMP = strip_tags(htmlentities($_POST['email']));
+			$alreadyExist = false;
+			foreach($utilisateurs as $utilisateur){
+				if($utilisateur['email'] == $emailTMP){
+					$res .= '<div class="alart alert-danger" role="alert">Cet email est déjà utilisé.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$email = $emailTMP;
+			}
+		}
+		
+		if(empty($_POST['pseudo'])){
+			//$res .= '<div class="alart alert-danger" role="alert">Le pseudo doit être renseigné.</div>';
+			//$bool = false;
+			$pseudo = $uti['pseudo'];
+		} else {
+			$pseudoTMP = strip_tags(htmlentities($_POST['pseudo']));
+			$alreadyExist = false;
+			foreach($utilisateurs as $utilisateur){
+				if($utilisateur['pseudo'] == $pseudoTMP){
+					$res .= '<div class="alart alert-danger" role="alert">Ce pseudo est déjà utilisé.</div>';
+					$bool = false;
+					$alreadyExist = true;
+					break;
+				}
+			}
+			if(!$alreadyExist){
+				$pseudo = $pseudoTMP;
+			}
+		}
+		
+		if(empty($_POST['acces'])){
+			//$res .= '<div class="alart alert-danger" role="alert">Le niveau d\'acces doit être renseigné.</div>';
+			//$bool = false;
+			$acces = $uti['acces'];
+		} else {
+			$acces = strip_tags(htmlentities($_POST['acces']));
+			if($acces == 0){
+				$acces = 1;
+			}
+		}
+		
+		if(empty($_POST['addresse'])){
+			//$adresse = '';
+			$adresse = $uti['addresse'];
+		} else {
+			$adresse = strip_tags(htmlentities($_POST['addresse']));
+		}
+		
+		if(empty($_POST['codePostal'])){
+			//$codePost = '';
+			$codePost = $uti['codePost'];
+		} else {
+			$codePost = strip_tags(htmlentities($_POST['codePostal']));
+		}
+		
+		if(empty($_POST['ville'])){
+			//$ville = '';
+			$ville = $uti['ville'];
+		} else {
+			$ville = strip_tags(htmlentities($_POST['ville']));
+		}
+		
+		if(empty($_POST['tel'])){
+			//$telephone = '';
+			$telephone = $uti['telephone'];
+		} else {
+			$telephone = strip_tags(htmlentities($_POST['tel']));
+		}
+		
+		if(empty($_POST['niveau'])){
+			//$niveau = 0;
+			$niveau = $uti['niveau'];
+		} else {
+			$niveau = strip_tags(htmlentities($_POST['niveau']));
+		}
+		
+		if(empty($_POST['solde'])){
+			//$solde = 0;
+			$solde = $uti['solde'];
+		} else {
+			$solde = strip_tags(htmlentities($_POST['solde']));
+		}
+		
+		if(empty($_POST['diplome'])){
+			//$diplome = '';
+			$diplome = $uti['diplome'];
+		} else {
+			$diplome = strip_tags(htmlentities($_POST['diplome']));
+		}
+		
+		if(empty($_POST['date'])){
+			//$dateInscription = time();
+			$dateInscription = $uti['dateInscription'];
+		} else {
+			$dateInscription = strtotime(strip_tags(htmlentities($_POST['date'])));
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$query = $u->updateUtilisateur($uti['idu'], $email, $uti['mdp'], $pseudo, $adresse, $codePost, $ville, $telephone, $solde, $acces, $niveau, $diplome, $dateInscription);
+			if($query == 1){
+				$res.= '<div class="alert alert-success" role="alert">Modification de l\utilisateur réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
 	}
 
 	public function formulaireSupprimerUtilisateurAdmin(){
