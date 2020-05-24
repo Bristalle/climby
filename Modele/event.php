@@ -53,14 +53,11 @@ class event{
         $query = $c->prepare("insert into event(destination, createur, hasLead, nbPlace, niveaux, description, date)
                           values(:destination, :createur, :hasLead, :nbPlace, :niveaux, :description, :date)");
         $query->bindParam (':destination',$destination, PDO::PARAM_INT);
-        $query->bindParam (':createur',$createur, PDO::PARAM_STR);
-        $query->bindParam (':lieu',$lieu, PDO::PARAM_STR);
-        $query->bindParam (':description',$description, PDO::PARAM_STR);
-        $query->bindParam (':prix',$prix, PDO::PARAM_INT);
-        $query->bindParam (':date',$date, PDO::PARAM_STR);
-        $query->bindParam (':capacite',$capacite, PDO::PARAM_INT);
-        $query->bindParam (':critere',$critere, PDO::PARAM_INT);
-		$query->bindParam (':description', $description, PDO::PARAM_STR);
+        $query->bindParam (':createur',$createur, PDO::PARAM_INT);
+        $query->bindParam (':hasLead',$hasLead, PDO::PARAM_INT);
+        $query->bindParam (':nbPlace',$nbPlace, PDO::PARAM_INT);
+        $query->bindParam (':niveaux',$niveaux, PDO::PARAM_STR);
+		$query->bindParam (':description',$description, PDO::PARAM_STR);
 		$query->bindParam (':date',$date, PDO::PARAM_INT);
         $query->execute();
 		return $c->lastInsertId('event');

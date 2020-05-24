@@ -34,6 +34,7 @@ class FuncController extends Controller{
         $this->tab=array(
 			"ajaxForUpdateDestination" => "ajaxForUpdateDestination",
 			"ajaxForUpdateUtilisateur" => "ajaxForUpdateUtilisateur",
+			"ajaxForUpdateEvent" => "ajaxForUpdateEvent",
 			"getTheBarre" => "getTheBarre",
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getReturnedPage" => "getReturnedPage",
@@ -47,12 +48,11 @@ class FuncController extends Controller{
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
 			"getModalFormulaireContacterAdmin" => "getModalFormulaireContacterAdmin",
-			"getModalFormulaireCreationEvent" => "getModalFormulaireCreationEvent",
+			//"getModalFormulaireCreationEvent" => "getModalFormulaireCreationEvent",
 			"getModalMonCompte" => "getModalMonCompte", 
 			"getModalFormulaireDeconnexion" => "getModalFormulaireDeconnexion",
 			"getModalMenuAdministration" => "getModalMenuAdministration",
-			"getModalFormulaireCreationCompteByAdmin" => "getModalFormulaireCreationCompteByAdmin",
-			"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
+			//"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
 			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
 			"getModalFormulaireModificationCritereAdmin" => "getModalFormulaireModificationCritereAdmin",
 			"getModalFormulaireSuppressionCritereAdmin" => "getModalFormulaireSuppressionCritereAdmin",
@@ -67,19 +67,17 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationUtilisateurAdmin" => "getModalFormulaireCreationUtilisateurAdmin",
 			"getModalFormulaireModificationUtilisateurAdmin" => "getModalFormulaireModificationUtilisateurAdmin",
 			"getModalFormulaireSuppressionUtilisateurAdmin" => "getModalFormulaireSuppressionUtilisateurAdmin",
-	//		"getModalFormulaireSuppressionCompte" => "getModalFormulaireSuppressionCompte",
-	//		"getModalFormulaireModifierSolde" => "getModalFormulaireModifierSolde",
+			"getModalFormulaireCreationEventAdmin" => "getModalFormulaireCreationEventAdmin",
+			"getModalFormulaireModificationEventAdmin" => "getModalFormulaireModificationEventAdmin", 
+			"getModalFormulaireSuppressionEventAdmin" => "getModalFormulaireSuppressionEventAdmin",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
 			"formulaireCreerCompteUtilisateur" => "formulaireCreerCompteUtilisateur",
 			"formulaireCreerDestinationAdmin" => "formulaireCreerDestinationAdmin",
 			"formulaireModifierDestinationAdmin" => "formulaireModifierDestinationAdmin",
-			"formulaireSupprimerDestinationAdmin" => "formulaireSupprimerDestination",
-	//		"creerCompteClientAdmin" => "creerCompteClientAdmin",
-	//		"creerDiner" => "creerDiner",
+			"formulaireSupprimerDestinationAdmin" => "formulaireSupprimerDestinationAdmin",
 	//		"creerDinerAdmin" => "creerDinerAdmin",
-	//		"creerCritere" => "creerCritere",
 	//		"participer" => "participer",
 	//		"noterDiner" => "noterDiner",
 			"getAllUtilisateurs" => "getAllUsers",
@@ -91,7 +89,6 @@ class FuncController extends Controller{
 	//		"getNbParticipantsByIdd" => "getNbParticipantsByIdd",
 	//		"getResaEnCoursByIdu" => "getResaEnCoursByIdu",
 	//		"getHistoResaByIdu" => "getHistoResaByIdu",
-	//		"getAllAcces" => "getAllAcces",
 	//		"getNoteMoyenneHoteByIdu" => "getNoteMoyenneHoteByIdu",
 	//		"getNoteMoyenneHoteByIdd" => "getNoteMoyenneHoteByIdd",
 	//		"getNoteMoyenneInviteByIdu" => "getNoteMoyenneInviteByIdu",
@@ -111,7 +108,6 @@ class FuncController extends Controller{
     //      "retirerSolde" => "retirerSolde",
     //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
-    //      "getCapacite" => "getCapacite",
 			"getAccesById" => "getAccesById",
 			"getAccesByNom" => "getAccesByNom",
 			"getAllNiveaux" => "getAllNiveaux",
@@ -133,6 +129,9 @@ class FuncController extends Controller{
 			"formulaireCreerUtilisateurAdmin" => "formulaireCreerUtilisateurAdmin",
 			"formulaireModifierUtilisateurAdmin" => "formulaireModifierUtilisateurAdmin",
 			"formulaireSupprimerUtilisateurAdmin" => "formulaireSupprimerUtilisateurAdmin",
+			"formulaireCreerEventAdmin" => "formulaireCreerEventAdmin",
+			"formulaireModifierEventAdmin" => "formulaireModifierEventAdmin",
+			"formulaireSupprimerEventAdmin" => "formulaireSupprimerEventAdmin",
         );
     }
 	
@@ -149,6 +148,13 @@ class FuncController extends Controller{
 		if(isset($_GET['b'])){
 			$u = new utilisateur();
 			echo json_encode($u->getUtilisateurById(strip_tags(htmlentities($_GET['b']))));
+		}
+	}
+	
+	public function ajaxForUpdateEvent() {
+		if(isset($_GET['b'])){
+			$e = new event();
+			echo json_encode($e->getEventById(strip_tags(htmlentities($_GET['b']))));
 		}
 	}
 	
@@ -238,16 +244,18 @@ class FuncController extends Controller{
 		
 		foreach($utilisateurs as $uti){
 			if($uti['idu'] == $selectedId){
-				$utis .= '<option value="'.$uti['idu'].'" selected>'.$util['email'].' - '.$util['pseudo'].'</option>';
+				$utis .= '<option value="'.$uti['idu'].'" selected>'.$uti['email'].' - '.$uti['pseudo'].'</option>';
 			} else {
 				$utis .= '<option value="'.$uti['idu'].'">'.$uti['email'].' - '.$uti['pseudo'].'</option>';
 			}
 		}
 		
 		$html = '<label for="message-text" class="control-label">Utilisateurs:</label>
-					<select name="utilisateur" class="form-control"';
+					<select class="form-control" name="utilisateur';
 		if($multi){
-			$html .= ' multiple';
+			$html .= '[]" multiple';
+		} else {
+			$html .= '"';
 		}
 		
 		if($id != ''){
@@ -317,9 +325,11 @@ class FuncController extends Controller{
 		}
 		
 		$html = '<label for="message-text" class="control-label">Niveau:</label>
-					<select name="niveau" class="form-control"';
+					<select class="form-control" name="niveau';
 		if($multi){
-			$html .= ' multiple';
+			$html .= '[]" multiple';
+		} else {
+			$html.='"';
 		}
 		
 		if($id != ''){
@@ -352,9 +362,11 @@ class FuncController extends Controller{
 		}
 		
 		$html = '<label for="message-text" class="control-label">Critère:</label>
-					<select name="critere" class="form-control"';
+					<select class="form-control" name="critere';
 		if($multi){
-			$html .= ' multiple';
+			$html .= '[]" multiple';
+		} else {
+			$html .= '"';
 		}
 		
 		if($id != ''){
@@ -387,10 +399,12 @@ class FuncController extends Controller{
 		}
 		
 		$html = '<label for="message-text" class="control-label">Type de grimpe:</label>
-					<select name="typeDeGrimpe" class="form-control"';
+					<select class="form-control" name="typeDeGrimpe';
 		
 		if($multi){
-			$html .= ' multiple';
+			$html .= '[]" multiple';
+		} else {
+			$html .= '"';
 		}
 		
 		if($id != ''){
@@ -915,9 +929,9 @@ class FuncController extends Controller{
 				<li class="divider"></li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Trips</a>
 					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#creerEventAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#modifierEventAdmin" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerEventAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Inscriptions</a>
@@ -993,66 +1007,7 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getModalFormulaireCreationCompteByAdmin($lnkInd, $acces) {
-		$html = '<!-- Modal -->
-<!-- Formulaire de creation de compte via Admin -->
-							<div class="modal fade" id="creerCompteAdm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Création d\'un compte client</h4>
-										</div>		
-											<form method="post" action="'.$lnkInd.'Site.php?a=creerCompteClientAdmin">
-												<div class="modal-body">
-													Veuillez renseigner vos informations
-													<div class="form-group">
-														<label for="message-text" class="control-label">Pseudo:</label>
-														<input type="text" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+" class="form-control" id="recipient-name" name="pseudo" >
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">Adresse:</label>
-														<textarea class="form-control" id="recipient-name" name="addresse" style="resize: vertical;"></textarea>
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">Code Postal:</label>
-														<input type="text" pattern="[0-9]{5}" class="form-control" id="recipient-name" name="codePostal">
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">Ville:</label>
-														<input type="text" class="form-control" id="recipient-name" name="ville">
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">N° de téléphone:</label>
-														<input type="tel" pattern="^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,5})|(\(?\d{2,6}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$" class="form-control" id="recipient-name" name="tel">
-													</div>
-													<div class="form-group">
-														<label for="recipient-name" class="control-label">Email:</label>
-														<input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control" id="recipient-name" name="mail">
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">Mot de passe:</label>
-														<input type="password" class="form-control" id="recipient-name" name="mdp">
-													</div>
-													<div class="form-group">
-														<label for="message-text" class="control-label">Droits:</label>
-														<select class="form-control" id="recipient-name" name="droit">'.
-															$acces
-														.'</select>
-													</div>
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-													<button id="bouton" class="btn btn-info" type="submit">Créer</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-							</div>';
-		return $html;
-	}
-	
+	//Pour hebergement de la photo
 	public function getModalFormulaireCreationEventByAdmin($lnkInd, $crit, $options) {
 		$html = '<!-- Modal -->
 <!-- Formulaire de creation de diner via admin -->
@@ -1839,72 +1794,70 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getModalFormulaireSuppressionCompte($lnkInd, $options) {
+	public function getModalFormulaireCreationEventAdmin($lnkInd){
 		$html = '<!-- Modal -->
-<!-- Formulaire de suppression de compte -->
-							<div class="modal fade" id="supprimerCompteAdm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- Formulaire de création d un event par un admin -->
+							<div class="modal fade" id="creerEventAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Supprimer un compte</h4>
-										</div>		
-											<form method="post" action="'.$lnkInd.'Site.php?a=supprimerUtilisateurAdm">
-												<div class="modal-body">
-													<div class="input-group">
-														<span class="input-group-addon">Compte:</span>
-														<select class="form-control" name="orga">'.
-															$options
-														.'</select>
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerEventAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un trip</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-group" id="divDestinationForCreerEventAdmin">'
+													.$this->getSelectBoxInitializedDestination()
+												.'</div>
+												<div class="form-group" id="divCreateurForCreerEventAdmin">'
+													.$this->getSelectBoxInitializedUtilisateur(false, $_SESSION['idu'])
+												.'</div>
+												<div class="form-group">
+													<label for="message-text" class="control-label">Date*:</label>
+													<div class="input-group date" id="datepickerForCreerEventAdmin">
+														<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+														<input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}" min="'.date('m-d-Y').'" placeholder="Cliquer pour choisir" readonly>
 													</div>
 												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-													<button id="bouton" class="btn btn-info" type="submit">Supprimer</button>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Nombre de place*</label >
+                                                    <input name = "nbPlace" class="form-control" id="recipient-name" type = "number" min = "0" max = "1000" step = "1">
+                                                </div>
+												<div class="form-group">'
+													.$this->getSelectBoxInitializedNiveaux(true, 0, 'niveauForCreerEvent', true)
+													.'(Maintenez CTRL pour sélectionner plusieurs niveaux)
 												</div>
-											</form>
-										</div>
+												<div class="form-group">
+                                                    <label for="message-text" class="control-label">Description</label>
+                                                    <textarea name="description" type="text-area" class="form-control" id="recipient-name" placeholder="Description de la destination" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+												<div class="form-group">
+													<input type="checkbox" name="hasLead" id="recipient-name">
+													<label for="message-text" class="control-label">Trip guidé</label>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+											</div>
+										</form>
 									</div>
 								</div>
-							</div>';
+							</div>
+							<script type="text/javascript">
+								document.getElementById("divCreateurForCreerEventAdmin").firstElementChild.innerHTML = "Créateur*:";
+								document.getElementById("divDestinationForCreerEventAdmin").firstElementChild.innerHTML = "Destination*:";
+								//$("#datepickerForCreerEventAdmin").data("DateTimePicker").minDate('.date('m-d-Y').');   //Marche pas
+							</script>';
 		return $html;
 	}
 	
-	public function getModalFormulaireModifierSolde($lnkInd, $options) {
-		$html = '<!-- Modal -->
-<!-- Formulaire de modification de solde -->
-							<div class="modal fade" id="modifSolde" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Modifier un solde</h4>
-										</div>		
-											<form method="post" action="'.$lnkInd.'Site.php?a=modifSolde">
-												<div class="modal-body">
-													<div class="input-group">
-														<span class="input-group-addon">Compte:</span>
-														<select class="form-control" name="idu">'.
-															$options
-														.'</select>
-													</div>
-													<div class=modal-body">
-														<div class="input-group">
-															<span class="input-group-addon">Modification:</span>
-															<input class="form-control" type="number" name="solde" step="1" placeholder="Utiliser - pour retirer">
-														</div>
-													</div>
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-													<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div>
-							</div>';
-		return $html;
+	public function getModalFormulaireModificationEventAdmin($lnkInd) {
+		
+	}
+	
+	public function getModalFormulaireSuppressionEventAdmin($lnkInd) {
+		
 	}
 	
 	public function getModalScriptForMenuBarre() {
@@ -2353,255 +2306,7 @@ class FuncController extends Controller{
 		}
 		echo $this->getReturnedPage($res);
 	}
-	//Fonction utilisée lors de la création d'un diner par le menu de navigation
-    //L'organisateur de ce diner sera le compte créateur
-    public function creerDiner(){
-		
-		// Chargement de la barre de navigation
-        session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-
-        // Début des vérifications de tous les paramètres.
-        $bool=true;
-        $res='';
-        $message='';
-        if (empty($_POST['date'])){
-            $res.='<div class="alert alert-danger" role="alert">La date doit être choisie.</div>';
-            $bool=false;
-        } 
-        elseif((time()-(60*60*24)) > strtotime($_POST['date'])){ //Si la date est avant aujourd'hui
-            $res.='<div class="alert alert-danger" role="alert">La date ne peut pas être antérieure à ce jour.</div>';
-            $bool=false;            
-        }
-        else {
-            $date = strip_tags(htmlentities($_POST['date']));
-        }
-
-        if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-
-        if (empty($_POST['lieu'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le lieu doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $lieu = strip_tags(htmlentities($_POST['lieu']));
-        }
-
-        if (empty($_POST['desc'])) {
-            $res.='<div class="alert alert-danger" role="alert">La description doit être complétée.</div>';
-            $bool=false;
-        } else {
-            $desc = strip_tags(htmlentities($_POST['desc']));
-        }
-
-        if (empty($_POST['prix'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le prix doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $prix = strip_tags(htmlentities($_POST['prix']));
-        }
-
-        if (empty($_POST['capa'])) {
-            $res.='<div class="alert alert-danger" role="alert">La capacité doit être renseignée.</div>';
-            $bool=false;
-        } else {
-            $capa = strip_tags(htmlentities($_POST['capa']));
-        }
-
-        if (empty($_POST['critere'])) {
-            $res.='<div class="alert alert-danger" role="alert">Un critère doit être sélectionné.</div>';
-            $bool=false;
-        } else {
-            $critere = strip_tags(htmlentities($_POST['critere']));
-        }
-
-        if (empty($_POST['image'])) {
-            $res.='<div class="alert alert-danger" role="alert">Une image doit être insérée.</div>';
-            $bool=false;
-        } else {
-            $image = strip_tags(htmlentities($_POST['image']));
-
-            //>>>>>>>>>>>>>>>>>>>>>>>> SCRIPT VERIFICATION IMAGE <<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-            define('TARGET', $_SERVER['DOCUMENT_ROOT'] . '/ter/Images/'); // Repertoire cible
-            define('MAX_SIZE', 500000); // Taille max en octets du fichier
-            define('WIDTH_MAX', 5000); // Largeur max de l'image en pixels
-            define('HEIGHT_MAX', 5000); // Hauteur max de l'image en pixels
-            // Tableaux de donnees
-            $tabExt = array('jpg', 'gif', 'png', 'jpeg'); // Extensions autorisees
-            $infosImg = array();
-            // Variables
-            $extension = '';
-            $nomImage = '';
-            /************************************************************
-             * Creation du repertoire cible si inexistant
-             *************************************************************/
-            if (!is_dir(TARGET)) {
-                if (!mkdir(TARGET, 0755)) {
-                    exit('Erreur : le répertoire cible ne peut-être créé ! Vérifiez que vous diposiez des droits suffisants pour le faire ou créez le manuellement !');
-                }
-            }
-            /************************************************************
-             * Script d'upload
-             *************************************************************/
-
-             if (!empty($_POST['image'])&&$bool) {
-// On verifie si le champ est rempli
-                if (!empty($_FILES['fichier']['name'])) {
-// Recuperation de l'extension du fichier
-                    $extension = pathinfo($_FILES['fichier']['name'], PATHINFO_EXTENSION);
-// On verifie l'extension du fichier
-                    if (in_array(strtolower($extension), $tabExt)) {
-// On recupere les dimensions du fichier
-                        $infosImg = getimagesize($_FILES['fichier']['tmp_name']);
-// On verifie le type de l'image
-                        if ($infosImg[2] >= 1 && $infosImg[2] <= 14) {
-// On verifie les dimensions et taille de l'image
-                            if (($infosImg[0] <= WIDTH_MAX) && ($infosImg[1] <= HEIGHT_MAX) && (filesize($_FILES['fichier']['tmp_name']) <= MAX_SIZE)) {
-// Parcours du tableau d'erreurs
-                                if (isset($_FILES['fichier']['error'])
-                                    && UPLOAD_ERR_OK === $_FILES['fichier']['error']
-                                ) {
-// On nomme le fichier
-                                    $nomImage = basename(strip_tags(htmlentities($_POST['image'])));
-//On verifie qu'aucun fichier du même nom existe
-                                    if (!file_exists(TARGET . $nomImage)) {
-// Si c'est OK, on teste l'upload
-                                        if (move_uploaded_file($_FILES['fichier']['tmp_name'], TARGET . $nomImage)) {
-                                            move_uploaded_file($_FILES['fichier']['tmp_name'], TARGET . $nomImage);
-                                            $image = 'Images/' . $nomImage;
-                                            $message = 'L\'opération a été effectuée avec succès!';
-                                        } else {
-// Sinon on affiche une erreur systeme
-                                            $message = 'Problème lors de l\'enregistrement de l\'image !';
-                                            $message .= '<br/>L\'enregistrement de l\'image n\'a donc pas été pris en compte.';
-                                            $bool=false;
-                                        }
-                                    } else {
-                                        $image = 'Images/' . $nomImage;
-                                        $message = 'L\'image <strong>'.$nomImage.'</strong> existe déjà. Veuillez modifier le nom du fichier.';
-                                        $message .= '<br/>L\'enregistrement de l\'image n\'a donc pas été pris en compte.';
-                                        $bool=false;
-                                    }
-                                } else {
-                                    $message = 'Une erreur interne a empêché l\'enregistrement de l\'image';
-                                    $message .= '<br/>L\'enregistrement de l\'image n\'a donc pas été pris en compte.';
-                                    $bool=false;
-                                }
-                            } else {
-// Sinon erreur sur les dimensions et taille de l'image
-                                $message = 'Erreur dans les dimensions de l\'image !';
-                                $message .= '<br/>L\'enregistrement de l\'image n\'a donc pas été pris en compte.';
-                                $bool=false;
-                            }
-                        } else {
-// Sinon erreur sur le type de l'image
-                            $message = 'Le fichier à uploader n\'est pas une image !';
-                            $message .= '<br/>L\'enregistrement de l\'image n\'a donc pas été pris en compte.';
-                            $bool=false;
-                        }
-                    } else {
-// Sinon on affiche une erreur pour l'extension
-                        $message = 'L\'extension du fichier est incorrecte ! Extension attendue : .jpg, .gif, .png, .jpeg';
-                        $bool=false;
-                    }
-                } else {
-// Sinon on affiche une erreur pour le champ vide
-                    $message = 'Veillez insérer une image!';
-                    $bool=false;
-                }
-            }
-        }
-        //>>>>>>>>>>>>>>>>>>>>>>>> SCRIPT VERIFICATION IMAGE <<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-        // Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Création effectuée avec succès !</div>';
-            $d = new diner();
-            $d->insert($id, $nom, $lieu, $desc, $prix, $date, $capa,$image,$critere);
-        }
-
-
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-warning" role="alert">
-       '.$res.$message.'
-    </div>';
-
-    }
-
+	
     //Fonction utilisée lors de la création d'un diner par un administrateur
     //L'organisateur de ce diner est choisit parmis les comptes existants
     public function creerDinerAdmin(){
@@ -2736,106 +2441,6 @@ class FuncController extends Controller{
         L\'insertion de votre dîner a été effectué avec
         <a href="#" class="alert-link">Succès !</a>
     </div>';
-    }
-	
-	// Fonction utilisée lors de la création d'un nouveau critère
-	public function creerCritere(){
-	/*	// Chargement de la barre de navigation
-		session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-		
-		// Début des vérifications de tous les paramètres.
-        $bool=true;
-        $res='';
-		if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-		
-		// Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Création effectuée avec succès !</div>';
-            $c = new critere();
-            $c->insert($nom);
-        }
-
-        //Affichage
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-        L\'insertion de votre dîner a été effectué avec
-        <a href="#" class="alert-link">Succès !</a>
-    </div>';*/
     }
 	
 	// Fonction permettant de s'inscrire à un diner
@@ -3097,12 +2702,6 @@ class FuncController extends Controller{
 	public function getHistoResaByIdu($id){
 	/*	$r = new reservation();
 		return $r->getHistoResa($id);*/
-	}
-	
-	// Fonction permettant de récupérer la liste des niveaux d'accès
-	public function getAllAcces(){
-		$a = new acces();
-		return $a->getAllAcces();
 	}
 	
 	// Fonction permettant de récupérer la note moyenne d'hote d'un compte donné
@@ -3946,11 +3545,6 @@ echo '<div class="container">
     /*    $r = new reservation();
         return $r->getAll($id);*/
     }
-
-    public function getCapacite($idd){
-    /*    $r = new reservation();
-        return $r->getNbParticipants($idd);*/
-    }
 	
 	public function getAccesById($ida){
 		$a = new acces();
@@ -4785,7 +4379,92 @@ echo '<div class="container">
 		echo $this->getReturnedPage($res);
 	}
 	
+	public function formulaireCreerEventAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if(empty($_POST['destination'])){
+			$res .= '<div class="alart alert-danger" role="alert">Une destination doit être choisie.</div>';
+			$bool = false;
+		} else {
+			if($_POST['destination'] == 0){
+				$res .= '<div class="alart alert-danger" role="alert">Une destination doit être choisie.</div>';
+				$bool = false;
+			} else {
+				$destination = strip_tags(htmlentities($_POST['destination']));
+			}
+		}
+		
+		if(empty($_POST['utilisateur'])){
+			$res .= '<div class="alart alert-danger" role="alert">Un créateur doit être choisi.</div>';
+			$bool = false;
+		} else {
+			if($_POST['utilisateur'] == 0){
+				$createur = $_SESSION['idu'];
+				//$res .= '<div class="alart alert-danger" role="alert">Un créateur doit être choisi.</div>';
+				//$bool = false;
+			} else {
+				$createur = strip_tags(htmlentities($_POST['utilisateur']));
+			}
+		}
+		
+		if(empty($_POST['date'])){
+			$res .= '<div class="alart alert-danger" role="alert">Une date doit être choisie.</div>';
+			$bool = false;
+		} else {
+			$dateTMP = strtotime(strip_tags(htmlentities($_POST['date'])));
+			if($dateTMP <= time()){
+				$res .= '<div class="alart alert-danger" role="alert">La date doit être postérieure à aujourd\'hui.</div>';
+				$bool = false;
+			} else {
+				$date = $dateTMP;
+			}
+		}
+		
+		if(empty($_POST['nbPlace'])){
+			$res .= '<div class="alart alert-danger" role="alert">Un nombre de place doit être indiqué.</div>';
+			$bool = false;
+		} else {
+			$nbPlace = strip_tags(htmlentities($_POST['nbPlace']));
+		}
+		
+		if(empty($_POST['niveau'])){
+			$niveau = '0';
+		} else {
+			$niveau = implode(",", $_POST['niveau']);
+		}
+		
+		if(empty($_POST['description'])){
+			$description = '';
+		} else {
+			$description = strip_tags(htmlentities($_POST['description']));
+		}
+		
+		if(empty($_POST['hasLead'])){
+			$hasLead = 0;
+		} else {
+			$hasLead = 1;
+		}
+		
+		//Fonction d'insert
+		if($bool){
+			$e = new event();
+			$ide = $e->insertEvent($destination, $createur, $hasLead, $nbPlace, $niveau, $description, $date);
+			$res.= '<div class="alert alert-success" role="alert">Création du trip effectuée avec succès. Id du nouveau trip : '.$ide.'</div>';
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
+	}
 	
+	public function formulaireModifierEventAdmin(){
+		
+	}
+	
+	public function formulaireSupprimerEventAdmin(){
+		
+	}
 	
 	
 
