@@ -63,7 +63,7 @@ CREATE TABLE `event` (
   `ide` int PRIMARY KEY AUTO_INCREMENT,
   `destination` int,
   `createur` int,
-  `hasLead` boolean,
+  `hasLead` int,
   `nbPlace` int,
   `niveaux` varchar(255),
   `description` varchar(500),

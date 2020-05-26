@@ -38,7 +38,9 @@ class FuncController extends Controller{
 			"getTheBarre" => "getTheBarre",
 			"getBouttonAccueil" => "getBouttonAccueil",
 			"getReturnedPage" => "getReturnedPage",
+			"getSelectBoxInitializedUtilisateur" => "getSelectBoxInitializedUtilisateur",
 			"getSelectBoxInitializedDestination" => "getSelectBoxInitializedDestination",
+			"getSelectBoxInitializedEvent" => "getSelectBoxInitializedEvent",
 			"getSelectBoxInitializedNiveaux" => "getSelectBoxInitializedNiveaux",
 			"getSelectBoxInitializedCritere" => "getSelectBoxInitializedCritere",
 			"getSelectBoxInitializedTypeGrimpe" => "getSelectBoxInitializedTypeGrimpe",
@@ -307,6 +309,44 @@ class FuncController extends Controller{
 		
 		$html .= '>--Non renseignée--</option>'
 						.$desti
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedEvent($disableZero=false, $selectedId=0, $id='', $multi=false) {
+		$e = new event();
+		$d = new destination();
+		$u = new utilisateur();
+		$events = $e->getAllEvents();
+		$even = "";
+		
+		foreach($events as $ev){
+			if($ev['ide'] == $selectedId){
+				$even .= '<option value="'.$ev['ide'].'" selected>'.$d->getDestinationById($ev['destination'])['nom'].' par '.$u->getUtilisateurById($ev['createur'])['pseudo'].' le '.date('d/m/Y', $ev['date']).'</option>';
+			} else {
+				$even .= '<option value="'.$ev['ide'].'">'.$d->getDestinationById($ev['destination'])['nom'].' par '.$u->getUtilisateurById($ev['createur'])['pseudo'].' le '.date('d/m/Y', $ev['date']).'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Trips:</label>
+					<select name="event" class="form-control"';
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
+		$html .= '>
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
+						.$even
 					.'</select>';
 		return $html;
 	}
@@ -1335,7 +1375,7 @@ class FuncController extends Controller{
 												document.getElementById("destinationForModifierDestination").value = "0";
 											} else {
 												document.getElementById("nomForModifierDestination").setAttribute("value", dataFromDestination["nom"]);
-												document.getElementById("descriptionForModifierDestination").setAttribute("value", dataFromDestination["description"]);
+												document.getElementById("descriptionForModifierDestination").innerHTML = dataFromDestination["description"];
 												document.getElementById("gpsForModifierDestination").setAttribute("value", dataFromDestination["gps"]);
 												document.getElementById("typeGrimpeForModifierDestination").value = dataFromDestination["typeDeGrimpe"];
 												document.getElementById("hauteurSpotForModifierDestination").setAttribute("value", dataFromDestination["hauteurDuSpot"]);
@@ -1743,10 +1783,16 @@ class FuncController extends Controller{
 										data : "b=" + id,
 										dataType : "json",
 										success : function(data, statut){
-											console.log(data);
 											if(data == "ERROR"){
-												document.getElementById("destinationForModifierDestination").value = "0";
+												document.getElementById("utilisateurForModifierUtilisateur").value = "0";
 											} else {
+												var date = new Date(data["dateInscription"]*1000);
+												if(date.getMonth()+1 < 10){
+													var month = "0" + (date.getMonth()+1);
+												} else {
+													var month = date.getMonth()+1;
+												}
+												var nDate = month + "/" + date.getDate() + "/" + date.getFullYear();
 												document.getElementById("emailForModifierUtilisateur").setAttribute("value", data["email"]);
 												document.getElementById("pseudoForModifierUtilisateur").setAttribute("value", data["pseudo"]);
 												document.getElementById("accesForModifierUtilisateur").value = data["acces"];
@@ -1756,8 +1802,8 @@ class FuncController extends Controller{
 												document.getElementById("telForModifierUtilisateur").setAttribute("value", data["telephone"]);
 												document.getElementById("niveauForModifierUtilisateur").value = data["niveau"];
 												document.getElementById("soldeForModifierUtilisateur").value = data["solde"];
-												document.getElementById("diplomeForModifierUtilisateur").value = data["diplome"];
-												document.getElementById("dateForModifierUtilisateur").setAttribute("value", data["dateInscription"]);
+												//document.getElementById("diplomeForModifierUtilisateur").value = data["diplome"];
+												document.getElementById("dateForModifierUtilisateur").setAttribute("value", nDate);
 											}
 										}
 									});
@@ -1853,7 +1899,111 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireModificationEventAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de modification d un event par un admin -->
+							<div class="modal fade" id="modifierEventAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireModifierEventAdmin">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title" id="myModalLabel">Créer un trip</h4>
+											</div>
+											<div class="modal-body">
+												<div class="form-groupe">'
+													.$this->getSelectBoxInitializedEvent(false, 0, 'eventForModifierEvent')
+												.'</div>
+												<div class="form-group" id="divDestinationForModifierEventAdmin">'
+													.$this->getSelectBoxInitializedDestination()
+												.'</div>
+												<div class="form-group" id="divCreateurForModifierEventAdmin">'
+													.$this->getSelectBoxInitializedUtilisateur()
+												.'</div>
+												<div class="form-group" id="divDateForModifierEventAdmin">
+													<label for="message-text" class="control-label">Date*:</label>
+													<div class="input-group date" id="datepickerForModifierEventAdmin">
+														<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+														<input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}" min="'.date('m-d-Y').'" placeholder="Cliquer pour choisir" readonly>
+													</div>
+												</div>
+												<div class="form-group" id="divNbPlaceForModifierEventAdmin">
+                                                    <label for="message-text" class="control-label">Nombre de place*</label >
+                                                    <input name = "nbPlace" class="form-control" id="recipient-name" type = "number" min = "0" max = "1000" step = "1">
+                                                </div>
+												<div class="form-group" id="divNiveauForModifierEventAdmin">'
+													.$this->getSelectBoxInitializedNiveaux(true, 0, '', true)
+													.'(Maintenez CTRL pour sélectionner plusieurs niveaux)
+												</div>
+												<div class="form-group" id="divDescriptionForModifierEventAdmin">
+                                                    <label for="message-text" class="control-label">Description</label>
+                                                    <textarea name="description" type="text-area" class="form-control" id="recipient-name" placeholder="Description de la destination" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
+                                                </div>
+												<div class="form-group" id="divHasLeadForModifierEventAdmin">
+													<input type="checkbox" name="hasLead" id="recipient-name">
+													<label for="message-text" class="control-label">Trip guidé</label>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+												<button id="bouton" class="btn btn-info" type="submit">Modifier</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<script type="text/javascript">
+								document.getElementById("divCreateurForModifierEventAdmin").firstElementChild.innerHTML = "Créateur*:";
+								document.getElementById("divDestinationForModifierEventAdmin").firstElementChild.innerHTML = "Destination*:";
+								//$("#datepickerForModifierEventAdmin").data("DateTimePicker").minDate('.date('m-d-Y').');   //Marche pas
+								
+								document.getElementById("eventForModifierEvent").setAttribute("onChange", "refreshFormEvent()");
+								function refreshFormEvent(){
+									var id = document.getElementById("eventForModifierEvent").value;
+									$.ajax({
+										url : "'.$lnkInd.'Site.php?a=ajaxForUpdateEvent",
+										type : "GET",
+										data : "b=" + id,
+										dataType : "json",
+										success : function(data, statut){
+											console.log(data);
+											if(data == "ERROR"){
+												document.getElementById("eventForModifierevent").value = "0";
+											} else {
+												var date = new Date(data["date"]*1000);
+												if(date.getMonth()+1 < 10){
+													var month = "0" + (date.getMonth()+1);
+												} else {
+													var month = date.getMonth()+1;
+												}
+												var nDate = month + "/" + date.getDate() + "/" + date.getFullYear();
+												var niveaux = data["niveaux"].split(",");
+												var optNiv = document.getElementById("divNiveauForModifierEventAdmin").lastElementChild.getElementsByTagName("option");
+												for(var opt of optNiv) {
+													if(niveaux.includes(opt.value)){
+														opt.setAttribute("selected", "");
+													} else {
+														if(opt.hasAttribute("selected")){
+															opt.removeAttribute("selected");
+														}	
+													}
+												}
+												
+												document.getElementById("divDestinationForModifierEventAdmin").lastElementChild.value = data["destination"];
+												document.getElementById("divCreateurForModifierEventAdmin").lastElementChild.value = data["createur"];
+												document.getElementById("divDateForModifierEventAdmin").lastElementChild.lastElementChild.setAttribute("value", nDate);
+												document.getElementById("divNbPlaceForModifierEventAdmin").lastElementChild.setAttribute("value", data["nbPlace"]);
+												document.getElementById("divDescriptionForModifierEventAdmin").lastElementChild.innerHTML = data["description"];
+												if(data["hasLead"] == 1){
+													document.getElementById("divHasLeadForModifierEventAdmin").firstElementChild.checked = true;
+												} else {
+													document.getElementById("divHasLeadForModifierEventAdmin").firstElementChild.checked = false;
+												}
+											}
+										}
+									});
+								}
+							</script>';
+		return $html;
 	}
 	
 	public function getModalFormulaireSuppressionEventAdmin($lnkInd) {
@@ -4459,7 +4609,95 @@ echo '<div class="container">
 	}
 	
 	public function formulaireModifierEventAdmin(){
+		$bool = true;
+		$res = '';
+		$ev = new event();
+		$e = $ev->getEventById(strip_tags(htmlentities($_POST["event"])));
 		
+		
+		//Controles
+		if(empty($_POST['destination'])){
+			$destination = $e['destination'];
+			//$res .= '<div class="alart alert-danger" role="alert">Une destination doit être choisie.</div>';
+			//$bool = false;
+		} else {
+			if($_POST['destination'] == 0){
+				$destination = $e['destination'];
+				//$res .= '<div class="alart alert-danger" role="alert">Une destination doit être choisie.</div>';
+				//$bool = false;
+			} else {
+				$destination = strip_tags(htmlentities($_POST['destination']));
+			}
+		}
+		
+		if(empty($_POST['utilisateur'])){
+			$createur = $e['createur'];
+			//$res .= '<div class="alart alert-danger" role="alert">Un créateur doit être choisi.</div>';
+			//$bool = false;
+		} else {
+			if($_POST['utilisateur'] == 0){
+				$createur = $e['createur'];
+				//$res .= '<div class="alart alert-danger" role="alert">Un créateur doit être choisi.</div>';
+				//$bool = false;
+			} else {
+				$createur = strip_tags(htmlentities($_POST['utilisateur']));
+			}
+		}
+		
+		if(empty($_POST['date'])){
+			$date = $e['date'];
+			//$res .= '<div class="alart alert-danger" role="alert">Une date doit être choisie.</div>';
+			//$bool = false;
+		} else {
+			$dateTMP = strtotime(strip_tags(htmlentities($_POST['date'])));
+			if($dateTMP <= time()){
+				$res .= '<div class="alart alert-danger" role="alert">La date doit être postérieure à aujourd\'hui.</div>';
+				$bool = false;
+			} else {
+				$date = $dateTMP;
+			}
+		}
+		
+		if(empty($_POST['nbPlace'])){
+			$nbPlace = $e['nbPlace'];
+			//$res .= '<div class="alart alert-danger" role="alert">Un nombre de place doit être indiqué.</div>';
+			//$bool = false;
+		} else {
+			$nbPlace = strip_tags(htmlentities($_POST['nbPlace']));
+		}
+		
+		if(empty($_POST['niveau'])){
+			$niveau = $e['niveaux'];
+			//$niveau = '0';
+		} else {
+			$niveau = implode(",", $_POST['niveau']);
+		}
+		
+		if(empty($_POST['description'])){
+			$description = $e['description'];
+			//$description = '';
+		} else {
+			$description = strip_tags(htmlentities($_POST['description']));
+		}
+		
+		if(empty($_POST['hasLead'])){
+			$hasLead = 0;
+		} else {
+			$hasLead = 1;
+		}
+		
+		//Fonction d'update
+		if($bool){
+			$query = $ev->updateEvent(strip_tags(htmlentities($_POST['event'])), $destination, $createur, $hasLead, $nbPlace, $niveau, $description, $date);
+			if($query == 1){
+				$res.= '<div class="alert alert-success" role="alert">Modification du trip réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+
+		//Affichage de la page de retour
+		echo $this->getReturnedPage($res);
 	}
 	
 	public function formulaireSupprimerEventAdmin(){
