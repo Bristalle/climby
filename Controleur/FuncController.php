@@ -2007,7 +2007,31 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalFormulaireSuppressionEventAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression d un event -->
+							<div class="modal fade" id="supprimerEventAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Suppression d\'un trip</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerEventAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedEvent(true)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 	
 	public function getModalScriptForMenuBarre() {
@@ -4516,7 +4540,7 @@ echo '<div class="container">
 			$idt = strip_tags(htmlentities($_POST['utilisateur']));
 		}
 		
-		//Fonction d'insert
+		//Fonction de suppression
 		if($bool){
 			$c = new utilisateur();
 			$idc = $c->deleteUtilisateur($idt);
@@ -4701,7 +4725,28 @@ echo '<div class="container">
 	}
 	
 	public function formulaireSupprimerEventAdmin(){
+		$bool = true;
+		$res = '';
 		
+		//Controles
+		if($_POST['event'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Un trip doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$idt = strip_tags(htmlentities($_POST['event']));
+		}
+		
+		//Fonction de suppression
+		if($bool){
+			$e = new event();
+			$query = $e->deleteEvent($idt);
+			if($query == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression du trip réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
 	}
 	
 	
