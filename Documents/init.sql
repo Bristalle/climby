@@ -48,15 +48,15 @@ CREATE TABLE `inscription` (
   `idi` int PRIMARY KEY AUTO_INCREMENT,
   `participant` int,
   `event` int,
-  `date` date
+  `date` int
 );
 
 CREATE TABLE `inscriptionannulee` (
   `idi` int,
   `participant` int,
   `event` int,
-  `date` date,
-  `dateannul` date
+  `date` int,
+  `dateannul` int
 );
 
 CREATE TABLE `event` (

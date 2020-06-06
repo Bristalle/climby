@@ -83,6 +83,15 @@ class inscription
 		return $query->fetch();
 	}
 	
+	public function getInscriptionUnique($participant, $event){
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM inscription WHERE participant = :participant AND event = :event");
+		$query->bindParam (':participant', $participant, PDO::PARAM_INT);
+		$query->bindParam (':event', $event, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
+	}
+	
 	public function getAllInscriptions() {
 		$c = Base::getConnection();
 		$query = $c->prepare("SELECT * FROM inscription");

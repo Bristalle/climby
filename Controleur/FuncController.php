@@ -46,6 +46,7 @@ class FuncController extends Controller{
 			"getSelectBoxInitializedTypeGrimpe" => "getSelectBoxInitializedTypeGrimpe",
 			"getSelectBoxInitializedCotation" => "getSelectBoxInitializedCotation",
 			"getSelectBoxInitializedAcces" => "getSelectBoxInitializedAcces",
+			"getSelectBoxInitializedInscription" => "getSelectBoxInitializedInscription",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
@@ -72,6 +73,10 @@ class FuncController extends Controller{
 			"getModalFormulaireCreationEventAdmin" => "getModalFormulaireCreationEventAdmin",
 			"getModalFormulaireModificationEventAdmin" => "getModalFormulaireModificationEventAdmin", 
 			"getModalFormulaireSuppressionEventAdmin" => "getModalFormulaireSuppressionEventAdmin",
+			"getModalCreationInscriptionAdmin" => "getModalCreationInscriptionAdmin",
+			"getModalArchivageInscriptionAdmin" => "getModalArchivageInscriptionAdmin",
+			"getModalRestaurationInscriptionAdmin" => "getModalRestaurationInscriptionAdmin",
+			"getModalSuppressionInscriptionAdmin" => "getModalSuppressionInscriptionAdmin",
 			"getModalScriptForMenuBarre" => "getModalScriptForMenuBarre",
 			"getJumbotron" => "getJumbotron",
 			"getModalEnSavoirPlus" => "getModalEnSavoirPlus",
@@ -97,14 +102,12 @@ class FuncController extends Controller{
 	//		"getNoteInviteByIdd" => "getNoteInviteByIdd",
 	//		"dinerDejaNote" => "dinerDejaNote",
 	//		"modifCompteAdmin" => "modifCompteAdmin",
-	//		"modifSolde" => "modifSolde",
 	//		"modifierDiner" => "modifierDiner",
 	//		"modifDinerAdmin" => "modifDinerAdmin",
 	//		"annulerDiner" => "annulerDiner",
 	//		"annulerResa" => "annulerResa",
 	//		"contactAdmin" => "contactAdmin",
 	//		"get3LatestDiners" => "get3LatestDiners",
-	//		"supprimerUtilisateurAdm" => "supprimerUtilisateurAdm",
     //      "insert_resa" => "insert_resa",
     //      "justDoIt" => "justDoIt",
     //      "retirerSolde" => "retirerSolde",
@@ -134,6 +137,7 @@ class FuncController extends Controller{
 			"formulaireCreerEventAdmin" => "formulaireCreerEventAdmin",
 			"formulaireModifierEventAdmin" => "formulaireModifierEventAdmin",
 			"formulaireSupprimerEventAdmin" => "formulaireSupprimerEventAdmin",
+			"formulaireCreerInscriptionAdmin" => "formulaireCreerInscriptionAdmin",
         );
     }
 	
@@ -531,6 +535,56 @@ class FuncController extends Controller{
 		
 		$html .= '>--Non renseignée--</option>'
 						.$acces
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedInscription($disableZero=false, $selectedId=0, $id='', $multi=false){
+		$i = new inscription();
+		$u = new utilisateur();
+		$e = new event();
+		$d = new destination();
+		$listeInscriptions = $i->getAllInscriptions();
+		$inscriptions = '';
+
+		foreach($listeInscriptions as $c){
+			if($c['idi'] == $selectedId){
+				$inscriptions .= '<option value="'.$c['idi'].'" selected>Inscription le '
+											.date('d/m/Y', intval($c['date'])) .' de '
+											.$u->getUtilisateurById($c['participant'])['pseudo']. ' pour ' 
+											.$d->getDestinationById($e->getEventById($c['event'])['destination'])['nom'].' par '
+											.$u->getUtilisateurById($e->getEventById($c['event'])['ide'])['pseudo'].' le '
+											.date('d/m/Y', $e->getEventById($c['event'])['date']).'</option>';
+			} else {
+				$inscriptions .= '<option value="'.$c['idi'].'">Inscription le '
+											.date('d/m/Y', intval($c['date'])) .' de '
+											.$u->getUtilisateurById($c['participant'])['pseudo']. ' pour ' 
+											.$d->getDestinationById($e->getEventById($c['event'])['destination'])['nom'].' par '
+											.$u->getUtilisateurById($e->getEventById($c['event'])['ide'])['pseudo'].' le '
+											.date('d/m/Y', $e->getEventById($c['event'])['date']).'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Inscription*:</label>
+					<select name="inscription" class="form-control"';
+		
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
+		$html .= '>
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
+						.$inscriptions
 					.'</select>';
 		return $html;
 	}
@@ -976,15 +1030,9 @@ class FuncController extends Controller{
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Inscriptions</a>
 					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
-					</ul>
-				</li>
-				<li class="dropdown-submenu"><a tabindex="-1" href="#">Inscriptions Annulées</a>
-					<ul class="dropdown-menu">
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Ajouter</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Modifier</a></li>
+						<li><a data-toggle="modal" data-target="#creerInscriptionAdmin" style="cursor:pointer">Ajouter</a></li>
+						<li><a data-toggle="modal" data-target="#archiverInscriptionAdmin" style="cursor:pointer">Archiver</a></li>
+						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Restaurer</a></li>
 						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
@@ -1019,13 +1067,9 @@ class FuncController extends Controller{
 				</li>
 				
 				
-				<!--<li><a data-toggle="modal" data-target="#creerCompteAdm" style="cursor:pointer">Créer un compte</a></li>-->
 				<!--<li><a href="'.$lnkInd.'Vue/modifCompteAdm.php">Modifier un compte utilisateur</a></li>-->
-				<!--<li><a data-toggle="modal" data-target="#modifSolde" style="cursor:pointer">Modifier un solde</a></li>-->
-				<!--<li><a data-toggle="modal" data-target="#supprimerCompteAdm" style="cursor:pointer">Supprimer un compte</a></li>-->
 				<!--<li><a data-toggle="modal" data-target="#creerDinerAdm" style="cursor:pointer">Créer un dîner</a></li>-->
 				<!--<li><a href="'.$lnkInd.'Vue/modifDinerAdm.php">Modifier un dîner</a></li>-->
-				<!--<li><a data-toggle="modal" data-target="#creerCritere" style="cursor:pointer">Créer un critère</a></li>-->
 				<!--<li class="dropdown-submenu"><a tabindex="-1" href="#">Exemple objet</a>
 					<ul class="dropdown-menu">
 						<li><a href="#">Ajouter</a></li>
@@ -1042,6 +1086,7 @@ class FuncController extends Controller{
 						</li>
 					</ul>
 				</li>-->
+				
 			</ul>
 		</li>';
 		return $html;
@@ -2032,6 +2077,79 @@ class FuncController extends Controller{
 								</div>
 							</div>';
 		return $html;
+	}
+	
+	public function getModalCreationInscriptionAdmin($lnkInd){
+				$html = '<!-- Modal -->
+<!-- Formulaire de création d inscription -->
+							<div class="modal fade" id="creerInscriptionAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Création d\'une inscription</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerInscriptionAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedUtilisateur()
+													.'</div>
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedEvent()
+													.'</div>
+													<div class="form-group">
+													<label for="message-text" class="control-label">Date de création :</label>
+													<div class="input-group date">
+														<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+														<input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}" placeholder="Cliquer pour choisir" readonly>
+													</div>
+												</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Créer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	
+	public function getModalArchivageInscriptionAdmin($lnkInd) {
+		$html = '<!-- Modal -->
+<!-- Formulaire de archivage d une inscription -->
+							<div class="modal fade" id="archiverInscriptionAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Archivage d\'une inscription</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireArchiverInscriptionAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedInscription(true)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Archiver</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
+	}
+	public function getModalRestaurationInscriptionAdmin($lnkInd) {
+		
+	}
+		
+	public function getModalSuppressionInscriptionAdmin($lnkInd) {
+		
 	}
 	
 	public function getModalScriptForMenuBarre() {
@@ -3058,119 +3176,6 @@ echo '<div class="container">
     '.$res.'
     </div>';*/
     }
-
-	// Fonction permettant à un administrateur de modifier le solde d'un compte
-	public function modifSolde(){
-		// Chargement de la barre de navigation
-		/*session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-		
-		// Début des vérifications de tous les paramètres.
-        $bool=true;
-        $res='';
-		$idu = $_POST['idu'];
-		
-        if (empty($_POST['solde'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le solde doit être choisi.</div>';
-            $bool=false;
-        } else {
-            $solde = strip_tags(htmlentities($_POST['solde']));
-        }
-		
-		// Vérification de faisabilité et exécution
-		$u = new utilisateur();
-		$c = $u->getId($idu);
-		
-		foreach($c as $compte){
-			$soldebd = $compte['solde'];
-		}
-		
-		if($soldebd + $solde >= 0){
-			$res = '<div class="alert alert-success" role="alert">Modifications effectuée avec succès !</div>';
-			if($solde >= 0){
-				$u->credSolde($idu, $solde);
-			}else{
-				$u->retirerSolde($idu, abs($solde));
-			}
-		}else{
-			$res = '<span class=\"titre\">Erreur ...</span><br/>Le solde n\'a pas pu être modifié.<br/>';
-		}
-
-		// Affichage retour
-		       echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-	<div class="alert alert-warning" role="alert">
-       '.$res.'
-    </div>';*/
-	}
 	
 	// Fonction permettant à un abonné de modifier un de ses diner
     public function modifierDiner($p){
@@ -3602,91 +3607,6 @@ echo '<div class="container">
 		return $d->get3Latest();*/
     }
 	
-	// Fonction permettant à un administrateur de supprimer un compte donné
-	public function supprimerUtilisateurAdm(){
-	/*		// Chargement de la barre de navigation
-		session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-		
-		$res = '<div class="alert alert-success" role="alert">Suppression effectuée avec succès !</div>';
-		$u = new utilisateur();
-		$u->deleteUser($_POST['orga']);
-		
-		
-        //Affichage
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>'
-	.$res;*/
-	}
-
     public function insert_resa($idu,$idd,$date){
     /*    $r = new reservation();
         if(!empty($idu) && !empty($idd) && !empty($date))
@@ -4744,6 +4664,64 @@ echo '<div class="container">
 				$res .= '<div class="alert alert-success" role="alert">Suppression du trip réussie.</div>';
 			} else {
 				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireCreerInscriptionAdmin(){
+		$bool = true;
+		$res = '';
+		
+		var_dump($_POST);
+		
+		//Controles
+		if(empty($_POST['utilisateur'])){
+			$res .= '<div class="alart alert-danger" role="alert">Un utilisateur doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$utilisateurTMP = strip_tags(htmlentities($_POST['utilisateur']));
+			if($utilisateurTMP == 0){
+				$res .= '<div class="alart alert-danger" role="alert">Un utilisateur doit être sélectionné.</div>';
+				$bool = false;
+			} else {
+				$utilisateur = $utilisateurTMP;
+			}
+		}
+		
+		if(empty($_POST['event'])){
+			$res .= '<div class="alart alert-danger" role="alert">Un trip doit être sélectionné.</div>';
+			$bool = false;
+		} else {
+			$eventTMP = strip_tags(htmlentities($_POST['event']));
+			if($eventTMP == 0){
+				$res .= '<div class="alart alert-danger" role="alert">Un trip doit être sélectionné.</div>';
+				$bool = false;
+			} else {
+				$event = $eventTMP;
+			}
+		}
+
+		if(empty($_POST['date'])){
+			$date = time();
+		} else {
+			$date = strtotime(strip_tags(htmlentities($_POST['date'])));
+		}
+		
+		if($bool){
+			//Test de pré existance
+			$ia = new inscriptionAnnulee();
+			if($ia->getInscriptionAnnuleeUnique($utilisateur, $event) > 0){
+				$res .= '<div class="alart alert-danger" role="alert">Cette inscription existe déjà dans la liste des archivées.</div>';
+			} else {
+				$i = new inscription();
+				if ($i->getInscriptionUnique($utilisateur, $event) > 0){
+					$res .= '<div class="alart alert-danger" role="alert">Cette inscription existe déjà.</div>';
+				} else {
+					//Fonction d'insert
+					$idi = $i->insertInscription($utilisateur, $event, $date);
+					$res .= '<div class="alert alert-success" role="alert">Création de l\'inscription réussie. ID de l\'inscription : '.$idi.'</div>';
+				}
 			}
 		}
 		echo $this->getReturnedPage($res);

@@ -78,6 +78,15 @@ class inscriptionAnnulee
 		return $query->fetch();
 	}
 	
+	public function getInscriptionAnnuleeUnique($participant, $event){
+		$c = Base::getConnection();
+		$query = $c->prepare("SELECT * FROM inscriptionannulee WHERE participant = :participant AND event = :event");
+		$query->bindParam (':participant', $participant, PDO::PARAM_INT);
+		$query->bindParam (':event', $event, PDO::PARAM_INT);
+		$query->execute();
+		return $query->rowCount();
+	}
+	
 	public function getAllInscriptionAnnulees() {
 		$c = Base::getConenction();
 		$query = $c->prepare("SELECT * FROM inscriptionannulee");
