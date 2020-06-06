@@ -138,6 +138,7 @@ class FuncController extends Controller{
 			"formulaireModifierEventAdmin" => "formulaireModifierEventAdmin",
 			"formulaireSupprimerEventAdmin" => "formulaireSupprimerEventAdmin",
 			"formulaireCreerInscriptionAdmin" => "formulaireCreerInscriptionAdmin",
+			"formulaireArchiverInscriptionAdmin" => "formulaireArchiverInscriptionAdmin",
         );
     }
 	
@@ -4673,8 +4674,6 @@ echo '<div class="container">
 		$bool = true;
 		$res = '';
 		
-		var_dump($_POST);
-		
 		//Controles
 		if(empty($_POST['utilisateur'])){
 			$res .= '<div class="alart alert-danger" role="alert">Un utilisateur doit être sélectionné.</div>';
@@ -4727,6 +4726,37 @@ echo '<div class="container">
 		echo $this->getReturnedPage($res);
 	}
 	
+	public function formulaireArchiverInscriptionAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['inscription'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Une inscription doit être sélectionnée.</div>';
+			$bool = false;
+		} else {
+			$idi = strip_tags(htmlentities($_POST['inscription']));
+		}
+		
+		//Fonction de suppression
+		if($bool){
+			$i = new inscription();
+			$ia = new inscriptionAnnulee();
+			$inscription = $i->getInscriptionById($idi);
+	
+			$query = $i->deleteInscription($idi);
+			if($query == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression de l\'inscription réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+			
+			$query = $ia->insertInscriptionAnnuleeWithId($inscription['idi'], $inscription['participant'], $inscription['event'], $inscription['date'], time());
+			$res .= '<div class="alert alert-success" role="alert">Archivage de l\'inscription réussie.</div>';
+			
+		}
+		echo $this->getReturnedPage($res);
+	}
 	
 
 }

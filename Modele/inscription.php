@@ -100,7 +100,7 @@ class inscription
 	}
 
 	public function deleteInscription($idi) {
-		$i = $this.getInscriptionById($idi);
+		$i = $this->getInscriptionById($idi);
 		$c = Base::getConnection();
 		$query = $c->prepare("DELETE FROM inscription WHERE idi = :idi");
 		$query->bindParam (':idi', $idi, PDO::PARAM_INT);

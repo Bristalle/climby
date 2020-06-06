@@ -52,6 +52,7 @@ CREATE TABLE `inscription` (
 );
 
 CREATE TABLE `inscriptionannulee` (
+  `idia` int PRIMARY KEY AUTO_INCREMENT,
   `idi` int,
   `participant` int,
   `event` int,
