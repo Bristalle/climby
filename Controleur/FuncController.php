@@ -47,6 +47,7 @@ class FuncController extends Controller{
 			"getSelectBoxInitializedCotation" => "getSelectBoxInitializedCotation",
 			"getSelectBoxInitializedAcces" => "getSelectBoxInitializedAcces",
 			"getSelectBoxInitializedInscription" => "getSelectBoxInitializedInscription",
+			"getSelectBoxInitializedInscriptionAnnulee" => "getSelectBoxInitializedInscriptionAnnulee",
 			"getModalFormulaireCreationCompte" => "getModalFormulaireCreationCompte",
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
@@ -139,6 +140,8 @@ class FuncController extends Controller{
 			"formulaireSupprimerEventAdmin" => "formulaireSupprimerEventAdmin",
 			"formulaireCreerInscriptionAdmin" => "formulaireCreerInscriptionAdmin",
 			"formulaireArchiverInscriptionAdmin" => "formulaireArchiverInscriptionAdmin",
+			"formulaireRestaurerInscriptionAdmin" => "formulaireRestaurerInscriptionAdmin",
+			"formulaireSupprimerInscriptionAdmin" => "formulaireSupprimerInscriptionAdmin",
         );
     }
 	
@@ -558,6 +561,56 @@ class FuncController extends Controller{
 											.date('d/m/Y', $e->getEventById($c['event'])['date']).'</option>';
 			} else {
 				$inscriptions .= '<option value="'.$c['idi'].'">Inscription le '
+											.date('d/m/Y', intval($c['date'])) .' de '
+											.$u->getUtilisateurById($c['participant'])['pseudo']. ' pour ' 
+											.$d->getDestinationById($e->getEventById($c['event'])['destination'])['nom'].' par '
+											.$u->getUtilisateurById($e->getEventById($c['event'])['ide'])['pseudo'].' le '
+											.date('d/m/Y', $e->getEventById($c['event'])['date']).'</option>';
+			}
+		}
+		
+		$html = '<label for="message-text" class="control-label">Inscription*:</label>
+					<select name="inscription" class="form-control"';
+		
+		if($multi){
+			$html .= ' multiple';
+		}
+		
+		if($id != ''){
+			$html .= ' id="'.$id.'"';
+		}
+		
+		$html .= '>
+						<option value="0"';
+		
+		if($disableZero){
+			$html .= ' disabled';
+		}
+		
+		$html .= '>--Non renseignée--</option>'
+						.$inscriptions
+					.'</select>';
+		return $html;
+	}
+	
+	public function getSelectBoxInitializedInscriptionAnnulee($disableZero=false, $selectedId=0, $id='', $multi=false){
+		$i = new inscriptionAnnulee();
+		$u = new utilisateur();
+		$e = new event();
+		$d = new destination();
+		$listeInscriptions = $i->getAllInscriptionAnnulees();
+		$inscriptions = '';
+
+		foreach($listeInscriptions as $c){
+			if($c['idia'] == $selectedId){
+				$inscriptions .= '<option value="'.$c['idia'].'" selected>Inscription le '
+											.date('d/m/Y', intval($c['date'])) .' de '
+											.$u->getUtilisateurById($c['participant'])['pseudo']. ' pour ' 
+											.$d->getDestinationById($e->getEventById($c['event'])['destination'])['nom'].' par '
+											.$u->getUtilisateurById($e->getEventById($c['event'])['ide'])['pseudo'].' le '
+											.date('d/m/Y', $e->getEventById($c['event'])['date']).'</option>';
+			} else {
+				$inscriptions .= '<option value="'.$c['idia'].'">Inscription le '
 											.date('d/m/Y', intval($c['date'])) .' de '
 											.$u->getUtilisateurById($c['participant'])['pseudo']. ' pour ' 
 											.$d->getDestinationById($e->getEventById($c['event'])['destination'])['nom'].' par '
@@ -1033,8 +1086,8 @@ class FuncController extends Controller{
 					<ul class="dropdown-menu">
 						<li><a data-toggle="modal" data-target="#creerInscriptionAdmin" style="cursor:pointer">Ajouter</a></li>
 						<li><a data-toggle="modal" data-target="#archiverInscriptionAdmin" style="cursor:pointer">Archiver</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Restaurer</a></li>
-						<li><a data-toggle="modal" data-target="#" style="cursor:pointer">Supprimer</a></li>
+						<li><a data-toggle="modal" data-target="#restaurerInscriptionAdmin" style="cursor:pointer">Restaurer</a></li>
+						<li><a data-toggle="modal" data-target="#supprimerInscriptionAdmin" style="cursor:pointer">Supprimer</a></li>
 					</ul>
 				</li>
 				<li class="dropdown-submenu"><a tabindex="-1" href="#">Notes Destinations</a>
@@ -2126,9 +2179,9 @@ class FuncController extends Controller{
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="myModalLabel">Archivage d\'une inscription</h4>
+											<h4 class="modal-title" id="myModalLabel">Restauration d\'une inscription</h4>
 										</div>		
-											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireArchiverInscriptionAdmin">
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireRestaurerInscriptionAdmin">
 												<div class="modal-body">
 													<div class="form-group">'
 														.$this->getSelectBoxInitializedInscription(true)
@@ -2145,12 +2198,61 @@ class FuncController extends Controller{
 							</div>';
 		return $html;
 	}
+	
 	public function getModalRestaurationInscriptionAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de restauration d une inscription -->
+							<div class="modal fade" id="restaurerInscriptionAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Archivage d\'une inscription</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireArchiverInscriptionAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedInscriptionAnnulee(true)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-info" type="submit">Restaurer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 		
 	public function getModalSuppressionInscriptionAdmin($lnkInd) {
-		
+		$html = '<!-- Modal -->
+<!-- Formulaire de suppression d une inscription -->
+							<div class="modal fade" id="supprimerInscriptionAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h4 class="modal-title" id="myModalLabel">Archivage d\'une inscription</h4>
+										</div>		
+											<form method="post" action="'.$lnkInd.'Site.php?a=formulaireSupprimerInscriptionAdmin">
+												<div class="modal-body">
+													<div class="form-group">'
+														.$this->getSelectBoxInitializedInscriptionAnnulee(true)
+													.'</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+													<button id="bouton" class="btn btn-danger" type="submit">Supprimer</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>';
+		return $html;
 	}
 	
 	public function getModalScriptForMenuBarre() {
@@ -4741,23 +4843,65 @@ echo '<div class="container">
 		//Fonction de suppression
 		if($bool){
 			$i = new inscription();
-			$ia = new inscriptionAnnulee();
-			$inscription = $i->getInscriptionById($idi);
 	
 			$query = $i->deleteInscription($idi);
 			if($query == 1){
 				$res .= '<div class="alert alert-success" role="alert">Suppression de l\'inscription réussie.</div>';
 			} else {
 				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
-			}
-			
-			$query = $ia->insertInscriptionAnnuleeWithId($inscription['idi'], $inscription['participant'], $inscription['event'], $inscription['date'], time());
-			$res .= '<div class="alert alert-success" role="alert">Archivage de l\'inscription réussie.</div>';
+			}	
+		}
+		echo $this->getReturnedPage($res);
+	}
+	
+	public function formulaireRestaurerInscriptionAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['inscription'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Une inscription doit être sélectionnée.</div>';
+			$bool = false;
+		} else {
+			$idia = strip_tags(htmlentities($_POST['inscription']));
+		}
+		
+		//Fonction de suppression
+		if($bool){
+			$ia = new inscriptionAnnulee();
+	
+			$query = $ia->restoreInscriptionAnnulee($idia);
+			$res .= '<div class="alert alert-success" role="alert">Restauration de l\'inscription réussie.</div>';
 			
 		}
 		echo $this->getReturnedPage($res);
 	}
 	
+	public function formulaireSupprimerInscriptionAdmin(){
+		$bool = true;
+		$res = '';
+		
+		//Controles
+		if($_POST['inscription'] == 0){
+			$res .= '<div class="alart alert-danger" role="alert">Une inscription doit être sélectionnée.</div>';
+			$bool = false;
+		} else {
+			$idia = strip_tags(htmlentities($_POST['inscription']));
+		}
+		
+		//Fonction de suppression
+		if($bool){
+			$ia = new inscriptionAnnulee();
+	
+			$query = $ia->deleteInscriptionAnnulee($idia);
+			if($query == 1){
+				$res .= '<div class="alert alert-success" role="alert">Suppression de l\'inscription réussie.</div>';
+			} else {
+				$res .= '<div class="alert alert-danger" role="alert">Erreur lors du changement. Reessayer plus tard ou contacter un administrateur.</div>';
+			}
+		}
+		echo $this->getReturnedPage($res);
+	}
 
 }
 ?>

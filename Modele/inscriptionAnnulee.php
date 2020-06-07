@@ -56,24 +56,25 @@ class inscriptionAnnulee
 		return $c->lastInsertId('inscriptionannulee');
     }
 	
-	public function updateInscriptionAnnulee($idi, $participant, $event, $date, $dateannul){
+	public function updateInscriptionAnnulee($idia, $idi, $participant, $event, $date, $dateannul){
 		$c = Base::getConnection();
 		$query = $c->prepare("UPDATE inscriptionannulee 
-							SET participant = :participant, event = :event, date = :date, dateannul = :dateannul 
-							WHERE idi = :idi");
+							SET idi = :idi, participant = :participant, event = :event, date = :date, dateannul = :dateannul 
+							WHERE idia = :idia");
+		$query->bindParam(':idi', $idi, PDO::PARAM_INT);
 		$query->bindParam(':participant', $participant, PDO::PARAM_INT);
 		$query->bindParam(':event', $event, PDO::PARAM_INT);
 		$query->bindParam(':date', $date, PDO::PARAM_INT);
 		$query->bindParam(':dateannul', $dateannul, PDO::PARAM_INT);
-		$query->bindParam(':idi', $idi, PDO::PARAM_INT);
+		$query->bindParam(':idia', $idia, PDO::PARAM_INT);
 		$query->execute();
 		return $query->rowCount();
 	}
 	
-	public function getInscriptionAnnuleeById($idi) {
+	public function getInscriptionAnnuleeById($idia) {
 		$c = Base::getConnection();
-		$query = $c->prepare("SELECT * FROM inscriptionannulee WHERE idi = :idi");
-		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
+		$query = $c->prepare("SELECT * FROM inscriptionannulee WHERE idia = :idia");
+		$query->bindParam (':idia', $idia, PDO::PARAM_INT);
 		$query->execute();
 		return $query->fetch();
 	}
@@ -88,27 +89,28 @@ class inscriptionAnnulee
 	}
 	
 	public function getAllInscriptionAnnulees() {
-		$c = Base::getConenction();
+		$c = Base::getConnection();
 		$query = $c->prepare("SELECT * FROM inscriptionannulee");
 		$query->execute();
 		return $query->fetchAll();
 	}
 	
-	public function restoreInscriptionAnnulee($idi) {
-		$ia = $this.getInscriptionAnnuleeById($idi);
+	public function restoreInscriptionAnnulee($idia) {
+		$ia = $this->getInscriptionAnnuleeById($idia);
 		$c = Base::getConnection(); 
-		$query = $c->prepare("DELETE FROM inscriptionannulee WHERE idi = :idi");
-		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
+		$query = $c->prepare("DELETE FROM inscriptionannulee WHERE idia = :idia");
+		$query->bindParam (':idia', $idia, PDO::PARAM_INT);
 		$query->execute();
 		$i = new inscription();
 		$i->insertInscriptionWithId($ia['idi'], $ia['participant'], $ia['event'], $ia['date']);
 	}
 
-	public function deleteInscriptionAnnulee($idi) {
+	public function deleteInscriptionAnnulee($idia) {
 		$c = Base::getConnection();
-		$query = $c->prepare("DELETE FROM inscriptionannulee WHERE idi = :idi");
-		$query->bindParam (':idi', $idi, PDO::PARAM_INT);
+		$query = $c->prepare("DELETE FROM inscriptionannulee WHERE idia = :idia");
+		$query->bindParam (':idia', $idia, PDO::PARAM_INT);
 		$query->execute();
+		return $query->rowCount();
 	}
 
 	// Fonction retournant la liste des informations d'une réservation
