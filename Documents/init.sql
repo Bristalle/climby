@@ -109,3 +109,6 @@ CREATE TABLE `image` (
   `idp` int PRIMARY KEY AUTO_INCREMENT,
   `path` varchar(255)
 );
+
+INSERT INTO `image` (`idp`, `path`) VALUES
+(1, 'Images/image_not_found.jpg');

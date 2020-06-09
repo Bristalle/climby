@@ -85,11 +85,6 @@ class FuncController extends Controller{
 			"formulaireCreerDestinationAdmin" => "formulaireCreerDestinationAdmin",
 			"formulaireModifierDestinationAdmin" => "formulaireModifierDestinationAdmin",
 			"formulaireSupprimerDestinationAdmin" => "formulaireSupprimerDestinationAdmin",
-	//		"creerDinerAdmin" => "creerDinerAdmin",
-	//		"participer" => "participer",
-	//		"noterDiner" => "noterDiner",
-			"getAllUtilisateurs" => "getAllUsers",
-			"getUtilisateurId" => "getUtilisateurId",
 	//		"getInfoDinerByIdd" => "getInfoDinerByIdd",
 	//		"getAllDinerAvenirByIdu" => "getAllDinerAvenirByIdu",
 	//		"getHistoDinerByIdu" => "getHistoDinerByIdu",
@@ -111,8 +106,6 @@ class FuncController extends Controller{
 	//		"get3LatestDiners" => "get3LatestDiners",
     //      "insert_resa" => "insert_resa",
     //      "justDoIt" => "justDoIt",
-    //      "retirerSolde" => "retirerSolde",
-    //      "getSolde" => "getSolde",
     //      "getResaEnCours" => "getResaEnCours",
 			"getAccesById" => "getAccesById",
 			"getAccesByNom" => "getAccesByNom",
@@ -916,7 +909,8 @@ class FuncController extends Controller{
 	}
 	
 	public function getModalMonCompte($lnkInd, $idu) {
-		$u = $this->getUtilisateurId($idu);
+		$user = new utilisateur();
+		$u = $user->getUtilisateurById($idu);
 		$html = '			<li>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mon compte <span class="caret"></span></a>
 <!-- Menu déroulant d interface de gestion de compte -->
@@ -1322,7 +1316,7 @@ class FuncController extends Controller{
 							<div class="modal fade" id="creerDestinationAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 								<div class="modal-dialog" role="document">
 									<div class="modal-content">
-										<form method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerDestinationAdmin">
+										<form enctype="multipart/form-data" method="post" action="'.$lnkInd.'Site.php?a=formulaireCreerDestinationAdmin">
 											<div class="modal-header">
 												<button type="button" class="close" data-dismiss="modal" aira-label="Close"><span aria-hidden="true">&times;</span></button>
 												<h4 class="modal-title" id="myModalLabel">Créer une destination</h4>
@@ -1372,10 +1366,19 @@ class FuncController extends Controller{
 													<label for="message-text" class="control-label">Région</label>
 													<input name="region" type="text" class="form-control" id="recipient-name" placeholder="Région de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
 												</div>
-												<div class="form-group">
-													<label for="message-text" class="control-label">Photo*</label>
-													<input name="photo" type="text" class="form-control" id="recipient-name" placeholder="Pas encore prêt" aria-describedby="basic-addon1" disabled>
+												<div classe="from-group">
+												<label form"message-text" class="control-label">Photo*: </label>
+													<div class="input-group">
+														<input type="text" id="text_for_image" class="form-control" name="image" />
+														<input type="hidden" name="MAX_FILE_SIZE" value="500000" />
+														<input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("text_for_image") . value = this . value\'  />
+														<span class="input-group-addon">Parcourir</span>
+													</div>
+													<div class="alert alert-warning" role="alert"><small class="alert_info">
+														Taille max : 5000x5000px et 500Mo.</small >
+													</div >
 												</div>
+												
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
@@ -2305,7 +2308,8 @@ class FuncController extends Controller{
     public function formulaireCreerCompteUtilisateur(){
 		
 		//Controles
-		$us = $this->getAllUtilisateurs();
+		$util = new utilisateur();
+		$us = $util->getAllUtilisateurs();
 		$bool = true;
 		$res = '';
 		
@@ -2428,6 +2432,7 @@ class FuncController extends Controller{
 		if(empty($_POST['nom'])){
 			$res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
             $bool=false;
+			$nom = 'nomTMP';
 		} else {
 			$nomTMP = strip_tags(htmlentities($_POST['nom']));
 			$d = new destination();
@@ -2526,19 +2531,38 @@ class FuncController extends Controller{
 		} else {
 			$region = strip_tags(htmlentities($_POST['region']));
 		}
-		
-		if(empty($_POST['photo'])){
-			//$res.='<div class="alert alert-danger" role="alert">Une photo du spot doit être fournie.</div>';
-            //$bool=false;
-			$photo = '';
-		} else {
-			$photo = strip_tags(htmlentities($_POST['photo']));
+	
+		if (empty($_POST['image'])) {
+			$res.='<div class="alert alert-danger" role="alert">Une photo doit être fournie.</div>';
+            $bool=false;
+        } else {
+			if (!empty($_FILES['fichier']['name'])) { // On verifie si le champ est rempli
+				if (file_exists("index.php")){
+					$linkIndex = './';
+				}else{
+					$linkIndex = '../';
+				}
+				$target = $linkIndex . 'Images/';
+				
+				$i = new image();
+				//$upload = array();
+				$upload = $i->uploadImage($_FILES['fichier'], $nom, $target);
+				$res .= $upload['res'];
+				$bool = $upload['bool'];
+				$image = $upload['idp'];
+				// recup bool, res, idp
+				
+				
+			} else { // Sinon on affiche une erreur pour le champ vide
+				$res.='<div class="alert alert-danger" role="alert">Une photo doit être fournie.</div>';
+				$bool=false;
+			}
 		}
 		
 		//Fonction d'insert
 		if($bool){
 			$d = new destination();
-			$idd = $d->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $photo);
+			$idd = $d->insertDestination($nom, $description, $gps, $critere, $typeDeGrimpe, $hauteurDuSpot, $nbVoies, $cotationMin, $cotationMax, $pays, $region, $image);
 			$res .= '<div class="alert alert-success" role="alert">Création de la destination réussie. ID de la nouvelle destination : '.$idd.'</div>';
 		}
 		echo $this->getReturnedPage($res);
@@ -2702,360 +2726,6 @@ class FuncController extends Controller{
 		echo $this->getReturnedPage($res);
 	}
 	
-    //Fonction utilisée lors de la création d'un diner par un administrateur
-    //L'organisateur de ce diner est choisit parmis les comptes existants
-    public function creerDinerAdmin(){
-		// Chargement de la barre de navigation
-        session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-
-        // Début des vérifications de tous les paramètres.
-        $bool=true;
-        $res='';
-        if (empty($_POST['date'])) {
-            $res.='<div class="alert alert-danger" role="alert">La date doit être choisie.</div>';
-            $bool=false;
-        } else {
-            $date = strip_tags(htmlentities($_POST['date']));
-        }
-
-        if (empty($_POST['nom'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le nom doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $nom = strip_tags(htmlentities($_POST['nom']));
-        }
-
-        if (empty($_POST['lieu'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le lieu doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $lieu = strip_tags(htmlentities($_POST['lieu']));
-        }
-
-        if (empty($_POST['desc'])) {
-            $res.='<div class="alert alert-danger" role="alert">La description doit être complétée.</div>';
-            $bool=false;
-        } else {
-            $desc = strip_tags(htmlentities($_POST['desc']));
-        }
-
-        if (empty($_POST['prix'])) {
-            $res.='<div class="alert alert-danger" role="alert">Le prix doit être renseigné.</div>';
-            $bool=false;
-        } else {
-            $prix = strip_tags(htmlentities($_POST['prix']));
-        }
-
-        if (empty($_POST['capa'])) {
-            $res.='<div class="alert alert-danger" role="alert">La capacité doit être renseignée.</div>';
-            $bool=false;
-        } else {
-            $capa = strip_tags(htmlentities($_POST['capa']));
-        }
-
-        // Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Création effectuée avec succès !</div>';
-            $d = new diner();
-            $d->insert($_POST['orga'], $nom, $lieu, $desc, $prix, $date, $capa);
-        }
-
-        //Affichage
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-        L\'insertion de votre dîner a été effectué avec
-        <a href="#" class="alert-link">Succès !</a>
-    </div>';
-    }
-	
-	// Fonction permettant de s'inscrire à un diner
-    public function participer(){
-
-        $f = new FuncController();
-        $bool = $f->justDoIt($_POST['idu'],$_POST['idd'],$_POST['date'],$_POST['prix']);
-        $utilisateur = $f->getSolde($_POST['idu']);
-        session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>';
-        if($bool) {
-            echo '<div class="alert alert-success" role="alert">
-                    <a class="alert-link">Félicitation!</a> Vous participez à ce diner.
-                    Votre nouveau solde est de <a class="alert-link">'.$utilisateur[0]['solde'].'</a>
-                  </div>';
-        }
-        else{
-            echo '<div class="alert alert-warning" role="alert">
-                    <a href="#" class="alert-link">Attention!</a> Votre solde est insuffisant. Pensez à le recharger.
-                    <table id="table" class="table-condensed">
-                        <tr>
-                            <th>Votre Solde</th>
-                            <th>Prix</th>
-                        </tr>
-                        <tr>
-                            <td>'.$utilisateur[0]['solde'].'€</td>
-                            <td>'.$_POST['prix'].'€</td>
-                        </tr>
-                    </table>
-                  </div>';
-        }
-    }
-	
-	// Fonction permettant à un utilisateur de donner une note à un diner
-	public function noterDiner(){
-		// Chargement de la barre de navigation
-		session_start();
-        $barre = "barreVisiteur";
-        if(isset($_SESSION['acces']) && isset($_SESSION['idu']))
-        {
-            $grade=$_SESSION['acces'];
-            $id=$_SESSION['idu'];
-
-            switch($grade) {
-                case "Abonne":
-                    $barre = "barreAbonne";
-                    break;
-                case "Administrateur":
-                    $barre = "barreAdmin";
-                    break;
-            }
-        }else{
-            if(isset($grade))
-                unset($grade);
-        }
-		
-		// Début des vérifications de tous les paramètres.
-        $bool=true;
-        $res='';
-		$idd = $_POST['diner'];
-		if (empty($_POST['note'])) {
-            $res.='<div class="alert alert-danger" role="alert">Une note doit être donnée.</div>';
-            $bool=false;
-        } else {
-            $note = strip_tags(htmlentities($_POST['note']));
-        }
-		
-		$d = $this->getInfoDinerByIdd($idd);
-		$idu_Hot = $d->idu;
-		
-		// Si l'on a aucune erreur, on lance la fonction
-        if($bool){
-            $res = '<div class="alert alert-success" role="alert">Notation effectuée avec succès !</div>';
-            $nH = new noteHote();
-            $nH->insert($idd, $idu_Hot, $id, $note);
-        }
-
-        //Affichage
-        echo '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Dîner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <!-- CSS -->
-	<link type="text/Css" href="Css/menuBarre.Css" rel="stylesheet" />
-    <link type="text/Css" href="Css/index.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/dist/Css/bootstrap.Css" rel="stylesheet" />
-    <link type="text/Css" href="./bootstrap/datepicker/Css/datepicker.Css" rel="stylesheet"/>
-    <link type="text/Css" href="./slider/Css/slider.Css" rel="stylesheet"/>
-
-
-
-    <!--JS-->
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/bootstrap.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/dist/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="./bootstrap/datepicker/js/bootstrap-datepicker.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/index.js"></script>
-    <script language="javascript" type="text/javascript" src="Js/menuBarre.js"></script>
-    <script language="javascript" type="text/javascript" src="./slider/js/bootstrap-slider.js"></script>
-    <script language="javascript" type="text/javascript" src="./Js/rating.js"></script>
-
-</head>
-<body id="body">';
-
-        $v = new menuBarre();
-        echo $v->affichage($barre);
-
-        echo '<div class="container">
-    <div class="jumbotron">
-        <h1 class="shadow" style="color: #ffffff">Besoin d\'un dîner?</h1>
-        <p class="shadow" style="color: #ffffff">Ce site vous propose de rechercher des dîners près de chez vous rapidement !</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#savoirPlus" style="cursor:pointer">En savoir plus</a></p>
-        <!-- Modal -->
-        <div class="modal fade" id="savoirPlus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="exampleModalLabel">Partage de diners en ligne</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Ce site web a été développé dans le cadre d\'un projet universitaire, au cours du M1 MIAGE à l\'Université Paris-Sud.</p>
-                        <p>Il a pour but de faciliter le partage de diners entre particuliers en proposant deux fonctionnalités, très simples d\'utilisation.</p>
-                        <p>Ainsi, vous pouvez proposer un dîner, organisé par vos soins, ou rechercher un dîner auquel participer.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="alert alert-success" role="alert">
-        L\'insertion de votre dîner a été effectué avec
-        <a href="#" class="alert-link">Succès !</a>
-    </div>';
-	}
-	
-    //Fonction utilisée pour obtenir l'ensemble des comptes existants
-    public function getAllUtilisateurs(){
-        $u = new utilisateur();
-        return $u->getAllUtilisateurs();
-    }	
-	
-	// Fonction permettant de récupérer les infos d'un compte donné
-	public function getUtilisateurId($idu){
-		$u = new utilisateur();
-		$info = $u->getUtilisateurById($idu);
-		return $info;
-	}
-
 	// Fonction permettant de récupérer les infos d'un diner donné
 	public function getInfoDinerByIdd($idd) {
 	/*	$d = new diner();
@@ -3716,16 +3386,6 @@ echo '<div class="container">
             $r->insert($idu,$idd,$date);*/
     }
 
-    public function retirerSolde($idu,$solde){
-    /*    $u = new utilisateur();
-        $u->retirerSolde($idu,$solde);*/
-    }
-
-    public function getSolde($id){
-    /*    $u = new utilisateur();
-        return $u->getId($id);*/
-    }
-
 	//Participer à un diner avec verification du solde
 	public function justDoIt($idu,$idd,$date,$prix){
     /*    $f = new FuncController();
@@ -3799,7 +3459,8 @@ echo '<div class="container">
 		$idu = $_POST['idu'];
 
 		//Controles	
-		$u = $this->getUtilisateurId($idu);
+		$user = new utilisateur();
+		$u = $user->getUtilisateurById($idu);
 		$bool=true;
         $res='';
 		
@@ -3878,7 +3539,8 @@ echo '<div class="container">
 		$idu = $_POST['idu'];
 		
 		//Controles
-		$u = $this->getUtilisateurId($idu);
+		$user = new utilisateur();
+		$u = $user->getUtilisateurById($idu);
 		$bool = true;
 		$res = '';
 		

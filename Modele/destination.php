@@ -116,7 +116,7 @@ class destination {
 		$query->bindParam(':cotationMax', $cotationMax, PDO::PARAM_STR);
 		$query->bindParam(':pays', $pays, PDO::PARAM_STR);
 		$query->bindParam(':region', $region, PDO::PARAM_STR);
-		$query->bindParam(':photo', $photo, PDO::PARAM_STR);
+		$query->bindParam(':photo', $photo, PDO::PARAM_INT);
 		$query->bindParam(':idd', $idd, PDO::PARAM_INT);
 		$query->execute();
 		return $query->rowCount();
