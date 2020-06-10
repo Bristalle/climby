@@ -52,11 +52,9 @@ class FuncController extends Controller{
 			"getModalFormulaireConnexion" => "getModalFormulaireConnexion",
 			"getModalFormulaireRecherche" => "getModalFormulaireRecherche",
 			"getModalFormulaireContacterAdmin" => "getModalFormulaireContacterAdmin",
-			//"getModalFormulaireCreationEvent" => "getModalFormulaireCreationEvent",
 			"getModalMonCompte" => "getModalMonCompte", 
 			"getModalFormulaireDeconnexion" => "getModalFormulaireDeconnexion",
 			"getModalMenuAdministration" => "getModalMenuAdministration",
-			//"getModalFormulaireCreationEventByAdmin" => "getModalFormulaireCreationEventByAdmin",
 			"getModalFormulaireCreationCritereAdmin" => "getModalFormulaireCreationCritereAdmin",
 			"getModalFormulaireModificationCritereAdmin" => "getModalFormulaireModificationCritereAdmin",
 			"getModalFormulaireSuppressionCritereAdmin" => "getModalFormulaireSuppressionCritereAdmin",
@@ -837,77 +835,6 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	public function getModalFormulaireCreationEvent($lnkInd, $crit) {
-		$html = '			<li class="nav-item">
-                                <a style="cursor:pointer" data-toggle="modal" data-target="#proposeModal">Proposer un Dîner</a>
-                            </li>
-                            <!-- Modal -->
-<!-- Formulaire de création d un diner par un Abonné -->
-                            <div class="modal fade" id="proposeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="exampleModalLabel">Proposer un nouveau diner</h4>
-										</div>
-										<div class="modal-body">
-                                            <form enctype="multipart/form-data" method="post" action="'.$lnkInd.'Site.php?a=creerDiner">
-												<div class="input-group date">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                                    <input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" min="'.date('Y-m-d').'">
-                                                </div>
-												<div class="input-group">
-                                                    <span class="input-group-addon">Nom</span>
-                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du dîner" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Lieu</span>
-                                                    <textarea name="lieu" type="text" class="form-control" placeholder="Lieu du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Description</span>
-                                                    <textarea name="desc" type="text-area" class="form-control" placeholder="Description du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Prix:</span>
-                                                    <input name="prix" class="form-control" type="number" name="prix" min="0" max="1000" step="10" placeholder="Prix du dîner">
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Maximum d\'invités:</span >
-                                                    <input name = "capa" class="form-control" type = "number" name = "capa" min = "0" max = "200" step = "1" placeholder = "Capacité du diner" >
-                                                </div >
-                                                <select name = "critere" class="form-control" >
-													<option value = "0" selected disabled >Critère</option >'
-													.$crit
-												.'</select>
-												<script>
-                                                    $("#date_insert").datepicker({
-												    format: \'yyyy-mm-dd\',
-                                                    startDate: \'-d\'
-												});
-                                                </script>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Image : </span>
-                                                    <input type="text" id="input_text" class="form-control" name="image" />
-                                                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_SIZE; ?>" />
-                                                    <input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("input_text") . value = this . value\'  />
-                                                    <span class="input-group-addon">Parcourir</span>
-                                                </div>
-                                                <div class="alert alert-warning" role="alert"><small class="alert_info">
-                                                    L\'image insérée doit avoir des dimensions inférieures à 5000x5000px et une taille inférieure à 500Mo .</small >
-                                                </div >
-                                                <div class="modal-footer" >
-                                                    <button type = "button" class="btn btn-default" data-dismiss="modal"> Fermer</button >
-                                                    <button class="btn btn-info" type = "submit" > Envoyer</button >
-                                                </div >
-										    </form >
-                                        </div>
-									</div>
-								</div>
-                            </div>';
-		return '';//$html;
-	}
-	
 	public function getModalMonCompte($lnkInd, $idu) {
 		$user = new utilisateur();
 		$u = $user->getUtilisateurById($idu);
@@ -1140,81 +1067,6 @@ class FuncController extends Controller{
 		return $html;
 	}
 	
-	//Pour hebergement de la photo
-	public function getModalFormulaireCreationEventByAdmin($lnkInd, $crit, $options) {
-		$html = '<!-- Modal -->
-<!-- Formulaire de creation de diner via admin -->
-                            <div class="modal fade" id="creerDinerAdm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h4 class="modal-title" id="exampleModalLabel">Proposer un nouveau diner</h4>
-										</div>
-										<div class="modal-body">
-                                            <form method="post" action="'.$lnkInd.'Site.php?a=creerDinerAdmin">
-											
-												<div class="input-group">
-													<span class="input-group-addon">Organisateur</span>
-													<select class="form-control" name="orga">'.
-														$options
-													.'</select>
-												</div>
-												<div class="input-group date">
-                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                                    <input id="date_insert" name="date" type="text" class="form-control" data-provide="datepicker" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" min="'.date('Y-m-d').'">
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Nom</span>
-                                                    <input name="nom" type="text" class="form-control" placeholder="Nom du dîner" aria-describedby="basic-addon1" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Lieu</span>
-                                                    <textarea name="lieu" type="text" class="form-control" placeholder="Lieu du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Description</span>
-                                                    <textarea name="desc" type="text-area" class="form-control" placeholder="Description du dîner" aria-describedby="basic-addon1" style="resize: vertical;"></textarea>
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Prix:</span>
-                                                    <input name="prix" class="form-control" type="number" name="prix" min="0" max="1000" placeholder="Prix du dîner">
-                                                </div>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Maximum d\'invités:</span >
-                                                    <input name = "capa" class="form-control" type = "number" name = "capa" min = "0" max = "200" step = "1" placeholder = "Capacité du diner" >
-                                                </div >
-                                                <select name = "critere" class="form-control" >
-                                                    <option value = "0" selected disabled >Critère</option > '.
-													$crit
-												.'</select><script>
-                                                    $("#date_insert").datepicker({
-												    format: \'yyyy-mm-dd\',
-                                                    startDate: \'-d\'
-												});
-                                                </script>
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">Image : </span>
-                                                    <input type="text" id="input_text" class="form-control" name="image" />
-                                                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_SIZE; ?>" />
-                                                    <input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("input_text") . value = this . value\'  />
-                                                    <span class="input-group-addon">Parcourir</span>
-                                                </div>
-                                                <div class="alert alert-warning" role="alert"><small class="alert_info">
-                                                    L\'image insérée doit avoir des dimensions inférieures à 5000x5000px et une taille inférieure à 500Mo .</small >
-                                                </div >
-												<div class="modal-footer" >
-                                                    <button type = "button" class="btn btn-default" data-dismiss="modal"> Fermer</button >
-                                                    <button class="btn btn-info" type = "submit" > Envoyer</button >
-                                                </div >
-                                            </form >
-                                        </div>
-									</div>
-								</div>
-                            </div>';
-		return $html;
-	}
-	
 	public function getModalFormulaireCreationCritereAdmin($lnkInd) {
 		$html = '<!-- Modal -->
 <!-- Formulaire de création de critère -->
@@ -1369,7 +1221,7 @@ class FuncController extends Controller{
 												<div classe="from-group">
 												<label form"message-text" class="control-label">Photo*: </label>
 													<div class="input-group">
-														<input type="text" id="text_for_image" class="form-control" name="image" />
+														<input type="text" id="text_for_image" class="form-control" name="image" disabled/>
 														<input type="hidden" name="MAX_FILE_SIZE" value="500000" />
 														<input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("text_for_image") . value = this . value\'  />
 														<span class="input-group-addon">Parcourir</span>
@@ -1450,9 +1302,17 @@ class FuncController extends Controller{
 													<label for="message-text" class="control-label">Région</label>
 													<input name="region" type="text" class="form-control" id="regionFormOdifierDestination" placeholder="Région de la destination" pattern="[a-zA-Z0-9]+[a-zA-Z0-9 ]+">
 												</div>
-												<div class="form-group">
-													<label for="message-text" class="control-label">Photo*</label>
-													<input name="photo" type="text" class="form-control" id="photoForModifierDestination" placeholder="Pas encore prêt" aria-describedby="basic-addon1" disabled>
+												<div classe="from-group">
+												<label form"message-text" class="control-label">Photo*: </label>
+													<div class="input-group">
+														<input type="text" id="photoForModifierDestination" class="form-control" name="image" disabled/>
+														<input type="hidden" name="MAX_FILE_SIZE" value="500000" />
+														<input name="fichier" type="file" id="fichier_a_uploader" class="input_file" onchange=\'document . getElementById("photoForModifierDestination") . value = this . value\'  />
+														<span class="input-group-addon">Parcourir</span>
+													</div>
+													<div class="alert alert-warning" role="alert"><small class="alert_info">
+														Taille max : 5000x5000px et 500Mo.</small >
+													</div >
 												</div>
 											</div>
 											<div class="modal-footer">
@@ -1487,7 +1347,7 @@ class FuncController extends Controller{
 												document.getElementById("critereForModifierDestination").value = dataFromDestination["critere"];
 												document.getElementById("paysForModifierDestination").setAttribute("value", dataFromDestination["pays"]);
 												document.getElementById("regionFormOdifierDestination").setAttribute("value", dataFromDestination["region"]);
-												document.getElementById("photoForModifierDestination").setAttribute("value", dataFromDestination["photo"]);
+												document.getElementById("photoForModifierDestination").setAttribute("value", "");
 											}
 										}
 									});
@@ -2678,13 +2538,33 @@ class FuncController extends Controller{
 				$region = strip_tags(htmlentities($_POST['region']));
 			}
 			
-			if(empty($_POST['photo'])){
+			if(empty($_POST['image'])){
 				//$res.='<div class="alert alert-danger" role="alert">Une photo du spot doit être fournie.</div>';
 				//$bool=false;
-				//$photo = $d['photo'];
+				$photo = $d['photo'];
 				$photo = '';
 			} else {
-				$photo = strip_tags(htmlentities($_POST['photo']));
+				if (!empty($_FILES['fichier']['name'])) { // On verifie si le champ est rempli
+				if (file_exists("index.php")){
+					$linkIndex = './';
+				}else{
+					$linkIndex = '../';
+				}
+				$target = $linkIndex . 'Images/';
+				
+				$i = new image();
+				//$upload = array();
+				$upload = $i->uploadImage($_FILES['fichier'], $nom, $target);
+				$res .= $upload['res'];
+				$bool = $upload['bool'];
+				$photo = $upload['idp'];
+				// recup bool, res, idp
+				
+				
+			} else { // Sinon on affiche une erreur pour le champ vide
+				$res.='<div class="alert alert-danger" role="alert">Une photo doit être fournie.</div>';
+				$bool=false;
+			}
 			}
 			
 			//Fonction d'update
